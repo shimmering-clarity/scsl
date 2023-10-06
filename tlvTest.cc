@@ -97,7 +97,7 @@ main(int argc, const char *argv[])
 
 	if (-1 == CreateArena(arenaFile, ARENA_FILE, ARENA_SIZE, 0644)) {
 		abort();
-	} else if (!run_suite(arenaFile, "arenaFile")) {
+	} else if (!runSuite(arenaFile, "arenaFile")) {
 		abort();
 	}
 	#endif

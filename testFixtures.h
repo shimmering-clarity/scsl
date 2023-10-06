@@ -2,6 +2,9 @@
 #define KLIB_TESTFIXTURES_H
 
 
+#include <string.h>
+
+
 #define ARENA_SIZE	128
 #define ARENA_FILE	"arena_test.bin"
 

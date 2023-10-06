@@ -135,17 +135,17 @@ Dictionary::DumpKVPairs()
 	}
 
 }
+#else
+void
+Dictionary::DumpKVPairs()
+{
+
+}
+#endif
+
 
 void
 Dictionary::DumpToFile(const char *path)
 {
 	WriteArena(this->arena, path);
 }
-
-#else
-void
-Dictionary::dump_kvpairs()
-{
-
-}
-#endif

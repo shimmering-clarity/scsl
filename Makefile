@@ -5,7 +5,7 @@ SOURCES :=	$(wildcard *.cc)
 OBJS :=		Arena.o Dictionary.o TLV.o
 
 CXX :=		clang++
-CXXFLAGS :=	-g -std=c++14 -Werror -Wall
+CXXFLAGS :=	-g -std=c++14 -Werror -Wall -DDESKTOP_BUILD
 
 .PHONY: all 
 all: $(TARGET) $(TESTS) tags run-tests
@@ -17,10 +17,10 @@ $(TARGET): $(OBJS)
 	$(AR) rcs $@ $(OBJS)
 
 tlv_test: tlvTest.o $(TARGET)
-	$(CXX) -o $@ $(CXXFLAGS) $@.o $(TARGET)
+	$(CXX) -o $@ $(CXXFLAGS) tlvTest.o $(TARGET)
 
 dictionary_test: dictionaryTest.o $(TARGET)
-	$(CXX) -o $@ $(CXXFLAGS) $@.o $(TARGET)
+	$(CXX) -o $@ $(CXXFLAGS) dictionaryTest.o $(TARGET)
 
 .PHONY: print-%
 print-%: ; @echo '$(subst ','\'',$*=$($*))'

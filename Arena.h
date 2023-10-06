@@ -38,8 +38,7 @@ int	DestroyArena(Arena &); /* dispose of any memory used by arena */
  * BACKING FILE! */
 int	WriteArena(const Arena &arena, const char *path);
 
-void
-DisplayArena(const Arena &arena);
+void	DisplayArena(const Arena &arena);
 
 
 #endif

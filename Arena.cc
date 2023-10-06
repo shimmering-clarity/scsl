@@ -69,18 +69,18 @@ AllocNewArena(Arena & arena, size_t size)
 
 #if defined(__linux__)
 int
-MMapArena(Arena &arena, int fd, size_t Size)
+MMapArena(Arena &arena, int fd, size_t size)
 {
 	if (arena.Size > 0) {
-		if (arena_destroy(arena) != 0) {
+		if (DestroyArena(arena) != 0) {
 			return -1;
 		}
 	}
 
 	arena.Type = ARENA_MMAP;
-	arena.Size = Size;
-	arena.store = (uint8_t *)mmap(NULL, Size, PROT_RW, MAP_SHARED, fd, 0);
-	if ((void *)arena.store == MAP_FAILED) {
+	arena.Size = size;
+	arena.Store = (uint8_t *)mmap(NULL, size, PROT_RW, MAP_SHARED, fd, 0);
+	if ((void *)arena.Store == MAP_FAILED) {
 		return -1;
 	}
 	arena.fd = fd;
@@ -94,7 +94,7 @@ OpenArena(Arena &arena, const char *path)
 	struct stat	st;
 
 	if (arena.Size > 0) {
-		if (arena_destroy(arena) != 0) {
+		if (DestroyArena(arena) != 0) {
 			return -1;
 		}
 	}
@@ -113,12 +113,12 @@ OpenArena(Arena &arena, const char *path)
 
 
 int
-CreateArena(Arena &arena, const char *path, size_t Size, mode_t mode)
+CreateArena(Arena &arena, const char *path, size_t size, mode_t mode)
 {
 	int	fd = 0;
 
 	if (arena.Size > 0) {
-		if (arena_destroy(arena) != 0) {
+		if (DestroyArena(arena) != 0) {
 			return -1;
 		}
 	}
@@ -128,7 +128,7 @@ CreateArena(Arena &arena, const char *path, size_t Size, mode_t mode)
 		return -1;
 	}
 
-	if (ftruncate(fd, Size) == -1) {
+	if (ftruncate(fd, size) == -1) {
 		return -1;
 	}
 
@@ -170,7 +170,7 @@ DestroyArena(Arena &arena)
 		break;
 	#if defined(__linux__)
 	case ARENA_MMAP:
-		if (munmap(arena.store, arena.Size) == -1) {
+		if (munmap(arena.Store, arena.Size) == -1) {
 			return -1;
 		}
 
@@ -219,7 +219,7 @@ DisplayArena(const Arena &arena)
 		break;
 #if defined(__linux__)
 	case ARENA_MMAP:
-		std::cout << "mmap/file"
+		std::cout << "mmap/file";
 		break;
 #endif
 	default:
