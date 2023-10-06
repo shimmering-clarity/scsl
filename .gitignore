@@ -1,0 +1,6 @@
+*.a
+*.o
+*.bin
+build
+cmake-build-*
+tlv_test
