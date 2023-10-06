@@ -26,7 +26,7 @@ Phonebook::lookup(const char *key, uint8_t klen, TLV::Record &res)
 
 
 int
-Phonebook::set(const char *key, uint8_t klen, char *val, uint8_t vlen)
+Phonebook::set(const char *key, uint8_t klen, const char *val, uint8_t vlen)
 {
 	TLV::Record	 rec;
 	uint8_t		*cursor = NULL;
@@ -36,6 +36,10 @@ Phonebook::set(const char *key, uint8_t klen, char *val, uint8_t vlen)
 	if (cursor != NULL) {
 		TLV::delete_record(this->arena, cursor);
 		TLV::delete_record(this->arena, cursor);
+	}
+
+	if (!space_available(klen, vlen)) {
+		return -1;
 	}
 
 	cursor = TLV::write_to_memory(this->arena, NULL, rec);
@@ -80,3 +84,23 @@ Phonebook::has(const char *key, uint8_t klen)
 }
 
 
+bool
+Phonebook::space_available(uint8_t kl, uint8_t vl)
+{
+	size_t		 required = 0;
+	uintptr_t	 remaining = 0;
+	uint8_t		*cursor = NULL;
+
+
+	cursor = TLV::find_empty(this->arena, NULL);
+	if (cursor == NULL) {
+		return false;
+	}
+
+	required += kl + 2;
+	required += vl + 2;
+
+	remaining = (uintptr_t)cursor - (uintptr_t)arena.store;
+	remaining = arena.size - remaining;
+	return ((size_t)remaining >= required);
+}

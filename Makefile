@@ -1,5 +1,5 @@
 TARGET :=	klib.a
-TESTS :=	tlv_test
+TESTS :=	tlv_test phonebook_test
 HEADERS :=	$(wildcard *.h)
 SOURCES :=	$(wildcard *.cc)
 OBJS :=		Arena.o Phonebook.o TLV.o
@@ -17,6 +17,9 @@ $(TARGET): $(OBJS)
 	$(AR) rcs $@ $(OBJS)
 
 tlv_test: tlv_test.o $(TARGET)
+	$(CXX) -o $@ $(CXXFLAGS) $@.o $(TARGET)
+
+phonebook_test: phonebook_test.o $(TARGET)
 	$(CXX) -o $@ $(CXXFLAGS) $@.o $(TARGET)
 
 .PHONY: print-%

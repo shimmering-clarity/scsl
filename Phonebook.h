@@ -23,11 +23,13 @@ public:
 		vtag(vt) {};
 
 	bool	lookup(const char *key, uint8_t klen, TLV::Record &res);
-	int	set(const char *key, uint8_t klen, char *val, uint8_t vlen);
+	int	set(const char *key, uint8_t klen, const char *val,
+		    uint8_t vlen);
 	bool	has(const char *key, uint8_t klen);
 
 private:
 	uint8_t	*seek(const char *key, uint8_t klen);
+	bool	 space_available(uint8_t klen, uint8_t vlen);
 
 	Arena	&arena;
 	uint8_t	 ktag;

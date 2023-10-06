@@ -2,5 +2,8 @@
 *.o
 *.bin
 build
+core
+core.*
 cmake-build-*
+phonebook_test
 tlv_test
