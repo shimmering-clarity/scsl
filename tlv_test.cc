@@ -60,8 +60,12 @@ tlv_test_suite(Arena &backend)
 	TLV::set_record(rec4, 3, TEST_STRLEN3, TEST_STR3);
 	assert(TLV::write_to_memory(backend, NULL, rec4));
 
+	rec4.Tag = 2;
+	cursor = TLV::find_tag(backend, NULL, rec4);
+	assert(cursor != NULL);
+
 	TLV::delete_record(backend, cursor);
-	assert(cursor[0] == TAG_EMPTY);
+	assert(cursor[0] == 3);
 
 	return true;
 }

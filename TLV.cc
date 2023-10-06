@@ -53,9 +53,12 @@ write_to_memory(Arena &arena, uint8_t *cursor, Record &rec)
 void	
 set_record(Record &rec, uint8_t tag, uint8_t len, const char *val)
 {
+	uint8_t	trail = TLV_MAX_LEN-len;
+
 	rec.Tag = tag;
 	rec.Len = len;
 	memcpy(rec.Val, val, len);
+	memset(rec.Val+len, 0, trail);
 }
 
 
@@ -127,14 +130,21 @@ delete_record(Arena &arena, uint8_t *cursor)
 		return;
 	}
 
-	uintptr_t	len = cursor[1] + 2;
-	uintptr_t	stop = (uintptr_t)arena.size - (uintptr_t)cursor;
+	uint8_t	 	 len = cursor[1] + 2;
+	uint8_t		*stop = arena.store + arena.size;
 
 	stop -= len;
 
-	for (uintptr_t i = (uintptr_t)cursor; i < stop; i++) {
-		cursor[i] = cursor[i+len];
-	};
+	while (cursor != stop) {
+		cursor[0] = cursor[len];
+		cursor++;
+	}
+
+	stop += len;
+	while (cursor != stop) {
+		cursor[0] = 0;
+		cursor++;
+	}
 }
 
 

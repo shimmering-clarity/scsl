@@ -107,7 +107,7 @@ create_arena(Arena &arena, const char *path, size_t size, mode_t mode)
 		}
 	}
 
-	fd = open(path, O_WRONLY|O_CREAT, mode);
+	fd = open(path, O_WRONLY|O_CREAT|O_TRUNC, mode);
 	if (fd == -1) {
 		return -1;
 	}
