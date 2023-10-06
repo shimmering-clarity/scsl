@@ -2,22 +2,26 @@
 #include <cstdlib>
 #include "Phonebook.h"
 
+#if defined(DESKTOP_BUILD)
+#include <iostream>
+#endif
+
 bool
-Phonebook::lookup(const char *key, uint8_t klen, TLV::Record &res)
+Phonebook::Lookup(const char *key, uint8_t klen, TLV::Record &res)
 {
-	res.Tag = this->ktag;
-	uint8_t	*cursor = TLV::find_tag(this->arena, NULL, res);
+	res.Tag = this->kTag;
+	uint8_t	*cursor = TLV::FindTag(this->arena, NULL, res);
 
 	while (cursor != NULL) {
 		if ((klen == res.Len) &&
 		    (memcmp(res.Val, key, klen) == 0)) {
-			TLV::read_from_memory(res, cursor);
-			if (res.Tag != this->vtag) {
+			TLV::ReadFromMemory(res, cursor);
+			if (res.Tag != this->vTag) {
 				abort();
 			}
 			return true;
 		}
-		cursor = TLV::find_tag(this->arena, cursor, res);
+		cursor = TLV::FindTag(this->arena, cursor, res);
 	}
 
 	return false;
@@ -26,29 +30,29 @@ Phonebook::lookup(const char *key, uint8_t klen, TLV::Record &res)
 
 
 int
-Phonebook::set(const char *key, uint8_t klen, const char *val, uint8_t vlen)
+Phonebook::Set(const char *key, uint8_t klen, const char *val, uint8_t vlen)
 {
 	TLV::Record	 rec;
 	uint8_t		*cursor = NULL;
 
-	set_record(rec, this->ktag, klen, key);
+	SetRecord(rec, this->kTag, klen, key);
 	cursor = this->seek(key, klen);
 	if (cursor != NULL) {
-		TLV::delete_record(this->arena, cursor);
-		TLV::delete_record(this->arena, cursor);
+		TLV::DeleteRecord(this->arena, cursor);
+		TLV::DeleteRecord(this->arena, cursor);
 	}
 
-	if (!space_available(klen, vlen)) {
+	if (!spaceAvailable(klen, vlen)) {
 		return -1;
 	}
 
-	cursor = TLV::write_to_memory(this->arena, NULL, rec);
+	cursor = TLV::WriteToMemory(this->arena, NULL, rec);
 	if (cursor == NULL) {
 		return -1;
 	}
 
-	set_record(rec, this->vtag, vlen, val);
-	if (TLV::write_to_memory(this->arena, NULL, rec) == NULL) {
+	SetRecord(rec, this->vTag, vlen, val);
+	if (TLV::WriteToMemory(this->arena, NULL, rec) == NULL) {
 		return -1;
 	}
 
@@ -62,15 +66,17 @@ Phonebook::seek(const char *key, uint8_t klen)
 {
 	TLV::Record	 rec;
 
-	rec.Tag = this->ktag;
-	uint8_t	*cursor = TLV::find_tag(this->arena, NULL, rec);
+	rec.Tag = this->kTag;
+	uint8_t	*cursor = TLV::LocateTag(this->arena, NULL, rec);
 
 	while (cursor != NULL) {
-		if ((klen == rec.Len) &&
-		    (memcmp(rec.Val, key, klen) == 0)) {
-			return cursor;
+		if ((klen == rec.Len) && (this->kTag == rec.Tag)) {
+			if (memcmp(rec.Val, key, klen) == 0) {
+				return cursor;
+			}
 		}
-		cursor = TLV::skip_record(rec, cursor);
+		cursor = TLV::SkipRecord(rec, cursor);
+		cursor = TLV::LocateTag(this->arena, cursor, rec);
 	}
 
 	return NULL;
@@ -78,29 +84,68 @@ Phonebook::seek(const char *key, uint8_t klen)
 
 
 bool
-Phonebook::has(const char *key, uint8_t klen)
+Phonebook::Has(const char *key, uint8_t klen)
 {
 	return this->seek(key, klen) != NULL;
 }
 
 
 bool
-Phonebook::space_available(uint8_t kl, uint8_t vl)
+Phonebook::spaceAvailable(uint8_t klen, uint8_t vlen)
 {
 	size_t		 required = 0;
 	uintptr_t	 remaining = 0;
 	uint8_t		*cursor = NULL;
 
-
-	cursor = TLV::find_empty(this->arena, NULL);
+	cursor = TLV::FindEmpty(this->arena, NULL);
 	if (cursor == NULL) {
 		return false;
 	}
 
-	required += kl + 2;
-	required += vl + 2;
+	required += klen + 2;
+	required += vlen + 2;
 
-	remaining = (uintptr_t)cursor - (uintptr_t)arena.store;
-	remaining = arena.size - remaining;
+	remaining = (uintptr_t)cursor - (uintptr_t)arena.Store;
+	remaining = arena.Size - remaining;
 	return ((size_t)remaining >= required);
 }
+
+
+#if defined(DESKTOP_BUILD)
+void
+Phonebook::DumpKVPairs()
+{
+	uint8_t 	*cursor = (this->arena).Store;
+	TLV::Record	 rec;
+
+	TLV::ReadFromMemory(rec, cursor);
+	std::cout << "Phonebook KV pairs" << std::endl;
+	if (rec.Tag == TAG_EMPTY) {
+		std::cout << "\t(NONE)" << std::endl;
+		return;
+	}
+
+	while ((cursor != NULL) && (rec.Tag != TAG_EMPTY)) {
+		std::cout << "\t" << rec.Val << "->";
+		cursor = TLV::SkipRecord(rec, cursor);
+		TLV::ReadFromMemory(rec, cursor);
+		std::cout << rec.Val << std::endl;
+		cursor = TLV::SkipRecord(rec, cursor);
+		TLV::ReadFromMemory(rec, cursor);
+	}
+
+}
+
+void
+Phonebook::DumpToFile(const char *path)
+{
+	WriteArena(this->arena, path);
+}
+
+#else
+void
+Phonebook::dump_kvpairs()
+{
+
+}
+#endif

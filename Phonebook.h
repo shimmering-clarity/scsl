@@ -14,26 +14,27 @@
 class Phonebook {
 public:
 	Phonebook(Arena &arena) :
-		arena(arena),
-		ktag(PHONEBOOK_KEY_TAG),
-		vtag(PHONEBOOK_VAL_TAG) {} ;
+	    arena(arena),
+	    kTag(PHONEBOOK_KEY_TAG),
+	    vTag(PHONEBOOK_VAL_TAG) {} ;
 	Phonebook(Arena &arena, uint8_t kt, uint8_t vt) :
-		arena(arena),
-		ktag(kt),
-		vtag(vt) {};
+	    arena(arena),
+	    kTag(kt),
+	    vTag(vt) {};
 
-	bool	lookup(const char *key, uint8_t klen, TLV::Record &res);
-	int	set(const char *key, uint8_t klen, const char *val,
-		    uint8_t vlen);
-	bool	has(const char *key, uint8_t klen);
-
+	bool	Lookup(const char *key, uint8_t klen, TLV::Record &res);
+	int	Set(const char *key, uint8_t klen, const char *val,
+		       uint8_t vlen);
+	bool	Has(const char *key, uint8_t klen);
+	void	DumpKVPairs();
+	void	DumpToFile(const char *path);
 private:
 	uint8_t	*seek(const char *key, uint8_t klen);
-	bool	 space_available(uint8_t klen, uint8_t vlen);
+	bool	 spaceAvailable(uint8_t klen, uint8_t vlen);
 
 	Arena	&arena;
-	uint8_t	 ktag;
-	uint8_t	 vtag;
+	uint8_t	 kTag;
+	uint8_t	 vTag;
 };
 
 

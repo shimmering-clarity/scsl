@@ -17,4 +17,23 @@
 #define TEST_STR4	"How is a raven like a writing desk?"
 #define TEST_STRLEN4	35
 
+static bool
+cmp_record(TLV::Record &a, TLV::Record &b)
+{
+	if (a.Tag != b .Tag) {
+		return false;
+	}
+
+	if (a.Len != b.Len) {
+		return false;
+	}
+
+	if (memcmp(a.Val, b.Val, a.Len) != 0) {
+		return false;
+	}
+
+	return true;
+}
+
+
 #endif

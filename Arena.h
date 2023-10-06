@@ -8,27 +8,38 @@
 
 
 typedef struct {
-	uint8_t	*store;
-	size_t	 size;
+	uint8_t	*Store;
+	size_t	 Size;
 	int	 fd;
-	uint8_t	 type;
+	uint8_t	 Type;
 } Arena;
 
 
-int 	new_arena(Arena &, uint8_t *, size_t);
-int 	alloc_new_arena(Arena &, size_t);
+/*
+ * InitializeArena is intended for use only with systems that
+ * do not initialize new variables to zero. It should be called
+ * exactly once, at the start of the program. Any other time the
+ * arena needs to be reset, it should be called with clear_arena
+ * or destroy_arena.
+ */
+void	InitializeArena(Arena &arena);
+int 	NewStaticArena(Arena &, uint8_t *, size_t);
+int 	AllocNewArena(Arena &, size_t);
 #if defined(__linux__)
-int 	mmap_arena(Arena &, int); /* arena will own fd */
-int	create_arena(Arena &arena, const char *path, size_t size, mode_t mode);
-int 	open_arena(Arena &, const char *, size_t);
+int 	MMapArena(Arena &, int); /* arena will own fd */
+int	CreateArena(Arena &arena, const char *path, size_t size, mode_t mode);
+int 	OpenArena(Arena &, const char *, size_t);
 #endif
 
-void	arena_clear(Arena &);
-int	arena_destroy(Arena &); /* dispose of any memory used by arena */
+void	ClearArena(Arena &);
+int	DestroyArena(Arena &); /* dispose of any memory used by arena */
 
 /* DANGER: if arena is file backed (mmap or open), DO NOT WRITE TO THE
  * BACKING FILE! */
-int	write_arena(const char *);
+int	WriteArena(const Arena &arena, const char *path);
+
+void
+DisplayArena(const Arena &arena);
 
 
 #endif

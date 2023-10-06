@@ -24,18 +24,22 @@ struct Record {
 };
 
 
-uint8_t	*write_to_memory(Arena &, uint8_t *, Record &);
-void	 read_from_memory(Record &, uint8_t *);
-void	 set_record(Record &, uint8_t, uint8_t, const char *);
-void	 delete_record(Arena &, uint8_t *);
+uint8_t	*WriteToMemory(Arena &, uint8_t *, Record &);
+void	 ReadFromMemory(Record &, uint8_t *);
+void	 SetRecord(Record &, uint8_t, uint8_t, const char *);
+void	 DeleteRecord(Arena &, uint8_t *);
 
-/* 
+/*
  * returns a pointer to memory where the record was found,
- * e.g. find_tag(...)[0] is the tag of the found record.
+ * e.g. LocateTag(...)[0] is the tag of the found record.
+ * FindTag will call LocateTag and then SkipRecord if the
+ * tag was found.
  */
-uint8_t *find_tag(Arena &, uint8_t *, Record &);
-uint8_t	*find_empty(Arena &, uint8_t *);
-uint8_t	*skip_record(Record &, uint8_t *);
+uint8_t *FindTag(Arena &, uint8_t *, Record &);
+uint8_t *LocateTag(Arena &, uint8_t *, Record &);
+
+uint8_t	*FindEmpty(Arena &, uint8_t *);
+uint8_t	*SkipRecord(Record &, uint8_t *);
 
 
 } // namespace TLV
