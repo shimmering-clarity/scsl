@@ -1,5 +1,5 @@
-#ifndef KLIB_TEST_FIXTURES_H
-#define KLIB_TEST_FIXTURES_H
+#ifndef KLIB_TESTFIXTURES_H
+#define KLIB_TESTFIXTURES_H
 
 
 #define ARENA_SIZE	128
@@ -18,7 +18,7 @@
 #define TEST_STRLEN4	35
 
 static bool
-cmp_record(TLV::Record &a, TLV::Record &b)
+cmpRecord(TLV::Record &a, TLV::Record &b)
 {
 	if (a.Tag != b .Tag) {
 		return false;

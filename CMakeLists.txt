@@ -17,11 +17,11 @@ add_compile_options("-DDESKTOP_BUILD")
 add_library(klib STATIC
 	Arena.cc
 	TLV.cc
-	Phonebook.cc)
+	Dictionary.cc)
 
-add_executable(tlv_test tlv_test.cc)
+add_executable(tlv_test tlvTest.cc)
 target_link_libraries(tlv_test klib)
 
-add_executable(phonebook_test phonebook_test.cc)
-target_link_libraries(phonebook_test klib)
+add_executable(dictionary_test dictionaryTest.cc)
+target_link_libraries(dictionary_test klib)
 

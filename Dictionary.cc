@@ -1,13 +1,13 @@
 #include <cstring>
 #include <cstdlib>
-#include "Phonebook.h"
+#include "Dictionary.h"
 
 #if defined(DESKTOP_BUILD)
 #include <iostream>
 #endif
 
 bool
-Phonebook::Lookup(const char *key, uint8_t klen, TLV::Record &res)
+Dictionary::Lookup(const char *key, uint8_t klen, TLV::Record &res)
 {
 	res.Tag = this->kTag;
 	uint8_t	*cursor = TLV::FindTag(this->arena, NULL, res);
@@ -30,7 +30,7 @@ Phonebook::Lookup(const char *key, uint8_t klen, TLV::Record &res)
 
 
 int
-Phonebook::Set(const char *key, uint8_t klen, const char *val, uint8_t vlen)
+Dictionary::Set(const char *key, uint8_t klen, const char *val, uint8_t vlen)
 {
 	TLV::Record	 rec;
 	uint8_t		*cursor = NULL;
@@ -62,7 +62,7 @@ Phonebook::Set(const char *key, uint8_t klen, const char *val, uint8_t vlen)
 
 
 uint8_t	*
-Phonebook::seek(const char *key, uint8_t klen)
+Dictionary::seek(const char *key, uint8_t klen)
 {
 	TLV::Record	 rec;
 
@@ -84,14 +84,14 @@ Phonebook::seek(const char *key, uint8_t klen)
 
 
 bool
-Phonebook::Has(const char *key, uint8_t klen)
+Dictionary::Has(const char *key, uint8_t klen)
 {
 	return this->seek(key, klen) != NULL;
 }
 
 
 bool
-Phonebook::spaceAvailable(uint8_t klen, uint8_t vlen)
+Dictionary::spaceAvailable(uint8_t klen, uint8_t vlen)
 {
 	size_t		 required = 0;
 	uintptr_t	 remaining = 0;
@@ -113,13 +113,13 @@ Phonebook::spaceAvailable(uint8_t klen, uint8_t vlen)
 
 #if defined(DESKTOP_BUILD)
 void
-Phonebook::DumpKVPairs()
+Dictionary::DumpKVPairs()
 {
 	uint8_t 	*cursor = (this->arena).Store;
 	TLV::Record	 rec;
 
 	TLV::ReadFromMemory(rec, cursor);
-	std::cout << "Phonebook KV pairs" << std::endl;
+	std::cout << "Dictionary KV pairs" << std::endl;
 	if (rec.Tag == TAG_EMPTY) {
 		std::cout << "\t(NONE)" << std::endl;
 		return;
@@ -137,14 +137,14 @@ Phonebook::DumpKVPairs()
 }
 
 void
-Phonebook::DumpToFile(const char *path)
+Dictionary::DumpToFile(const char *path)
 {
 	WriteArena(this->arena, path);
 }
 
 #else
 void
-Phonebook::dump_kvpairs()
+Dictionary::dump_kvpairs()
 {
 
 }

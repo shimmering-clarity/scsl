@@ -5,14 +5,14 @@
 #include "Arena.h"
 #include "TLV.h"
 
-#include "test_fixtures.h"
+#include "testFixtures.h"
 
 
-static uint8_t		arena_buffer[ARENA_SIZE];
+static uint8_t		arenaBuffer[ARENA_SIZE];
 
 
 bool
-tlv_test_suite(Arena &backend)
+tlvTestSuite(Arena &backend)
 {
 	TLV::Record	 rec1, rec2, rec3, rec4;
 	uint8_t		*cursor = NULL;
@@ -32,11 +32,11 @@ tlv_test_suite(Arena &backend)
 	cursor = TLV::FindTag(backend, cursor, rec4);
 	assert(cursor != NULL); 
 	assert(cursor != backend.Store);
-	assert(cmp_record(rec1, rec4));
+	assert(cmpRecord(rec1, rec4));
 
 	cursor = TLV::FindTag(backend, cursor, rec4);
 	assert(cursor != NULL);
-	assert(cmp_record(rec3, rec4));
+	assert(cmpRecord(rec3, rec4));
 
 	TLV::SetRecord(rec4, 3, TEST_STRLEN3, TEST_STR3);
 	assert(TLV::WriteToMemory(backend, NULL, rec4));
@@ -52,12 +52,12 @@ tlv_test_suite(Arena &backend)
 }
 
 bool
-run_suite(Arena &backend, const char *label)
+runSuite(Arena &backend, const char *label)
 {
 	DisplayArena(backend);
 
 	std::cout << "running test suite " << label << ": ";
-	if (!tlv_test_suite(backend)) {
+	if (!tlvTestSuite(backend)) {
 		std::cout << "FAILED" << std::endl;
 		return false;
 	}
@@ -77,33 +77,34 @@ run_suite(Arena &backend, const char *label)
 int
 main(int argc, const char *argv[])
 {
-	Arena	arena_static;
-	Arena	arena_mem;
-	Arena	arena_file;
+	Arena	arenaStatic;
+	Arena	arenaMem;
 
 	std::cout << "TESTPROG: " << argv[0] << std::endl;
-	InitializeArena(arena_static);
-	InitializeArena(arena_mem);
-	InitializeArena(arena_file);
+	InitializeArena(arenaStatic);
+	InitializeArena(arenaMem);
 
-	if (-1 == NewStaticArena(arena_static, arena_buffer, ARENA_SIZE)) {
+	if (-1 == NewStaticArena(arenaStatic, arenaBuffer, ARENA_SIZE)) {
 		abort();
-	} else if (!run_suite(arena_static, "arena_static")) {
+	} else if (!runSuite(arenaStatic, "arenaStatic")) {
 		abort();
 	}
-	ClearArena(arena_static);
+	ClearArena(arenaStatic);
 
 	#if defined(__linux__)
-	if (-1 == CreateArena(arena_file, ARENA_FILE, ARENA_SIZE, 0644)) {
+	Arena	arenaFile;
+	InitializeArena(arenaFile);
+
+	if (-1 == CreateArena(arenaFile, ARENA_FILE, ARENA_SIZE, 0644)) {
 		abort();
-	} else if (!run_suite(arena_file, "arena_file")) {
+	} else if (!run_suite(arenaFile, "arenaFile")) {
 		abort();
 	}
 	#endif
 
-	if (-1 == AllocNewArena(arena_mem, ARENA_SIZE)) {
+	if (-1 == AllocNewArena(arenaMem, ARENA_SIZE)) {
 		abort();
-	} else if (!run_suite(arena_mem, "arena_mem")) {
+	} else if (!runSuite(arenaMem, "arenaMem")) {
 		abort();
 	}
 

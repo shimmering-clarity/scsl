@@ -1,8 +1,8 @@
 TARGET :=	klib.a
-TESTS :=	tlv_test phonebook_test
+TESTS :=	tlv_test dictionary_test
 HEADERS :=	$(wildcard *.h)
 SOURCES :=	$(wildcard *.cc)
-OBJS :=		Arena.o Phonebook.o TLV.o
+OBJS :=		Arena.o Dictionary.o TLV.o
 
 CXX :=		clang++
 CXXFLAGS :=	-g -std=c++14 -Werror -Wall
@@ -16,10 +16,10 @@ tags: $(HEADERS) $(SOURCES)
 $(TARGET): $(OBJS)
 	$(AR) rcs $@ $(OBJS)
 
-tlv_test: tlv_test.o $(TARGET)
+tlv_test: tlvTest.o $(TARGET)
 	$(CXX) -o $@ $(CXXFLAGS) $@.o $(TARGET)
 
-phonebook_test: phonebook_test.o $(TARGET)
+dictionary_test: dictionaryTest.o $(TARGET)
 	$(CXX) -o $@ $(CXXFLAGS) $@.o $(TARGET)
 
 .PHONY: print-%

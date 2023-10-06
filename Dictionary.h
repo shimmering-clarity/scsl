@@ -1,23 +1,26 @@
-#ifndef KLIB_PHONEBOOK_H
-#define KLIB_PHONEBOOK_H
+#ifndef KLIB_DICTIONARY_H
+#define KLIB_DICTIONARY_H
 
 
 #include "Arena.h"
 #include "TLV.h"
 
 
-#define PHONEBOOK_KEY_TAG	1
-#define PHONEBOOK_VAL_TAG	2
+#define DICTIONARY_TAG_KEY	1
+#define DICTIONARY_TAG_VAL	2
 
 
-
-class Phonebook {
+/*
+ * A Dictionary is a collection of key-value pairs, similar to how
+ * a dictionary is a mapping of names to definitions.
+ */
+class Dictionary {
 public:
-	Phonebook(Arena &arena) :
+	Dictionary(Arena &arena) :
 	    arena(arena),
-	    kTag(PHONEBOOK_KEY_TAG),
-	    vTag(PHONEBOOK_VAL_TAG) {} ;
-	Phonebook(Arena &arena, uint8_t kt, uint8_t vt) :
+	    kTag(DICTIONARY_TAG_KEY),
+	    vTag(DICTIONARY_TAG_VAL) {} ;
+	Dictionary(Arena &arena, uint8_t kt, uint8_t vt) :
 	    arena(arena),
 	    kTag(kt),
 	    vTag(vt) {};
