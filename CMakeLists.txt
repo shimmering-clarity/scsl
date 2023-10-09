@@ -14,11 +14,20 @@ else()
 endif()
 add_compile_options("-DDESKTOP_BUILD")
 
+set(HEADER_FILES
+	Arena.h
+	Buffer.h
+	Dictionary.h
+	TLV.h)
+
 add_library(klib STATIC
 	Arena.cc
 	Buffer.cc
-	TLV.cc
-	Dictionary.cc)
+	Dictionary.cc
+	TLV.cc)
+install(TARGETS klib LIBRARY DESTINATION ${PREFIX}/lib)
+install(FILES ${HEADER_FILES} DESTINATION include/klib)
+install(FILES klibConfig.cmake DESTINATION share/klib/cmake)
 
 add_executable(tlv_test tlvTest.cc)
 target_link_libraries(tlv_test klib)
