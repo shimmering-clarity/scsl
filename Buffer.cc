@@ -5,6 +5,7 @@
 #include <cassert>
 #include <cstring>
 #include "Buffer.h"
+#include <iostream>
 
 namespace klib {
 
@@ -18,7 +19,9 @@ nearestPower(size_t x)
 {
 	if (x == 0) {
 		return 0;
-	}
+	};
+
+    std::cout << "x -> ";
 
 	x--;
 
@@ -28,6 +31,8 @@ nearestPower(size_t x)
 	x |= x >> 8;
 	x |= x >> 16;
 	x |= x >> 32;
+
+    std::cout << x + 1 << std::endl;
 
 	return x+1;
 }
@@ -170,6 +175,9 @@ Buffer::Trim()
 void
 Buffer::Clear()
 {
+    if (this->length == 0) {
+        return;
+    }
 	memset(this->contents, 0, this->length);
 	this->length = 0;
 }
@@ -179,7 +187,13 @@ Buffer::Reclaim()
 {
 	this->Clear();
 
+    if (this->contents == nullptr) {
+        assert(this->length == 0);
+        assert(this->capacity == 0);
+        return;
+    }
 	delete this->contents;
+    this->contents = nullptr;
 	this->capacity = 0;
 }
 
@@ -216,11 +230,11 @@ Buffer::shiftRight(size_t offset, size_t delta)
 bool
 Buffer::shiftLeft(size_t offset, size_t delta)
 {
-	auto	resized = false;
+//	for (size_t i = offset; i < this->length; i++) {
+//		this->contents[i] = this->contents[i+delta];
+//	}
 
-	for (size_t i = offset; i < this->length; i++) {
-		this->contents[i] = this->contents[i+delta];
-	}
+    memmove(this->contents+offset, this->contents+(offset+delta), this->length);
 
 	return this->Trim() != 0;
 }

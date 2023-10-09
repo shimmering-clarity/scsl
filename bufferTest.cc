@@ -24,6 +24,12 @@ main()
 	buffer.Append("and now for something completely different...");
 
 	std::cout << buffer.Contents() << std::endl;
+    std::cout << "Length: " << buffer.Length() << ", capacity " << buffer.Capacity() << std::endl;
+    buffer.Resize(128);
+    std::cout << "Length: " << buffer.Length() << ", capacity " << buffer.Capacity() << std::endl;
+    buffer.Trim();
+    std::cout << "Length: " << buffer.Length() << ", capacity " << buffer.Capacity() << std::endl;
 
-	return 0;
+
+    return 0;
 }
