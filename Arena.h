@@ -38,20 +38,22 @@ public:
 	int SetAlloc(size_t allocSize);
 
 #if defined(__linux__)
-	int 	 MemoryMap(int fd); // Arena will own fd.
-	int	 Create(const char *path, size_t size, mode_t mode);
-	int 	 Open(const char *, size_t);
+	int 	 MemoryMap(int memFileDes, size_t memSize); // Arena will own fd.
+	int	 Create(const char *path, size_t fileSize, mode_t mode);
+	int 	 Open(const char *path);
 #endif
 
 	uint8_t *NewCursor() const { return this->store; }
 	uint8_t *End() { return this->store + this->size; }
-	bool	 CursorInArena(uint8_t *cursor);
+	bool	 CursorInArena(const uint8_t *cursor);
 
 	size_t Size() const
 	{ return this->size; }
 
 	uint8_t Type() const
 	{ return this->arenaType; }
+
+	uintptr_t	Store() { return (uintptr_t)this->store; }
 
 	bool Ready() const { return this->Type() != ARENA_UNINIT; };
 	void Clear();
@@ -74,7 +76,7 @@ private:
 };
 
 
-std::ostream &operator<<(std::ostream& os, Arena arena);
+std::ostream &operator<<(std::ostream& os, Arena &arena);
 
 
 } // namespace klib

@@ -42,10 +42,9 @@ main(int argc, const char *argv[])
 	TLV::Record	expect;
 
 	std::cout << "TESTPROG: " << argv[0] << std::endl;
-	InitializeArena(arena);
 
 	#if defined(__linux__)
-	if (CreateArena(arena, ARENA_FILE, ARENA_SIZE, 0644) == -1) {
+	if (arena.Create(ARENA_FILE, ARENA_SIZE, 0644) == -1) {
 		abort();
 	}
 	#else
@@ -53,8 +52,7 @@ main(int argc, const char *argv[])
 		abort();
 	}
 	#endif
-	DisplayArena(arena);
-
+	std::cout << arena << std::endl;
 	TLV::SetRecord(expect, DICTIONARY_TAG_VAL, TEST_KVSTRLEN3, TEST_KVSTR3);
 
 	Dictionary	dict(arena);
@@ -101,6 +99,6 @@ main(int argc, const char *argv[])
 	dict.DumpToFile(ARENA_FILE);
 	#endif
 
-	ClearArena(arena);
+	arena.Clear();
 	dict.DumpKVPairs();
 }

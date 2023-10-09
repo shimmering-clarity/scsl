@@ -1,5 +1,6 @@
 #include <cassert>
 #include <cstring>
+#include <exception>
 #include <iostream>
 
 #include "Arena.h"
@@ -62,7 +63,7 @@ runSuite(Arena &backend, const char *label)
 	std::cout << "running test suite " << label << ": ";
 	try {
 		tlvTestSuite(backend);
-	} catch (_exception){
+	} catch (std::exception &exc){
 		std::cout << "FAILED" << std::endl;
 		return false;
 	}
@@ -95,9 +96,8 @@ main(int argc, const char *argv[])
 
 	#if defined(__linux__)
 	Arena	arenaFile;
-	InitializeArena(arenaFile);
 
-	if (-1 == CreateArena(arenaFile, ARENA_FILE, ARENA_SIZE, 0644)) {
+	if (-1 == arenaFile.Create(ARENA_FILE, ARENA_SIZE, 0644)) {
 		abort();
 	} else if (!runSuite(arenaFile, "arenaFile")) {
 		abort();

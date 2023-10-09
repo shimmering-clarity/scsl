@@ -4,11 +4,16 @@
 #include <cstring>
 
 #if defined(__linux__)
+
 #include <sys/mman.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <unistd.h>
+
+#define PROT_RW                (PROT_WRITE|PROT_READ)
+#elif defined(__WIN64__) || defined(__WIN32__)
+#include <fileapi.h>
 #endif
 
 #include <ios>
@@ -71,79 +76,81 @@ Arena::SetAlloc(size_t allocSize)
 
 
 #if defined(__linux__)
+
 int
-MMapArena(Arena &arena, int fd, size_t size)
+Arena::MemoryMap(int memFileDes, size_t memSize)
 {
 	if (this->size > 0) {
-		if (DestroyArena(arena) != 0) {
-			return -1;
-		}
+		this->Destroy();
 	}
 
 	this->arenaType = ARENA_MMAP;
-	this->size = size;
-	this->store = (uint8_t *)mmap(NULL, size, PROT_RW, MAP_SHARED, fd, 0);
-	if ((void *)this->store == MAP_FAILED) {
+	this->size = memSize;
+	this->store = (uint8_t *) mmap(NULL, memSize, PROT_RW, MAP_SHARED,
+				       memFileDes, 0);
+	if ((void *) this->store == MAP_FAILED) {
 		return -1;
 	}
-	this->fd = fd;
+	this->fd = memFileDes;
 	return 0;
 }
 
 
 int
-OpenArena(Arena &arena, const char *path)
+Arena::Open(const char *path)
 {
-	struct stat	st;
+	struct stat st{};
 
 	if (this->size > 0) {
-		if (DestroyArena(arena) != 0) {
-			return -1;
-		}
+		this->Destroy();
 	}
 
 	if (stat(path, &st) != 0) {
 		return -1;
 	}
 
-	this->fd = open(path, O_RDWR); 
+	this->fd = open(path, O_RDWR);
 	if (this->fd == -1) {
 		return -1;
 	}
 
-	return MMapArena(arena, this->fd, (size_t)st.st_size);
+	return this->MemoryMap(this->fd, (size_t) st.st_size);
 }
 
 
 int
-CreateArena(Arena &arena, const char *path, size_t size, mode_t mode)
+Arena::Create(const char *path, size_t fileSize, mode_t mode)
 {
-	int	fd = 0;
+	int newFileDes = 0;
 
 	if (this->size > 0) {
-		if (DestroyArena(arena) != 0) {
-			return -1;
-		}
+		this->Destroy();
 	}
 
-	fd = open(path, O_WRONLY|O_CREAT|O_TRUNC, mode);
-	if (fd == -1) {
+	newFileDes = open(path, O_WRONLY | O_CREAT | O_TRUNC, mode);
+	if (newFileDes == -1) {
 		return -1;
 	}
 
-	if (ftruncate(fd, size) == -1) {
+	if (ftruncate(newFileDes, fileSize) == -1) {
 		return -1;
 	}
 
-	close(fd);
+	close(newFileDes);
 
-	return OpenArena(arena, path);
+	return this->Open(path);
+}
+#elif defined(__WIN64__) || defined(__WIN32__)
+int
+Arena::Open(const char *path)
+{
+
 }
 #endif
 
 
 bool
-Arena::CursorInArena(uint8_t *cursor)
+Arena::CursorInArena(const uint8_t *cursor)
 {
 	if (cursor < this->store) {
 		return false;
@@ -186,25 +193,26 @@ Arena::Destroy()
 		case ARENA_ALLOC:
 			delete this->store;
 			break;
-			#if defined(__linux__)
-			case ARENA_MMAP:
-				if (munmap(this->store, this->size) == -1) {
-					return -1;
-				}
+#if defined(__linux__)
+		case ARENA_MMAP:
+			if (munmap(this->store, this->size) == -1) {
+				abort();
+				return;
+			}
 
-				if (close(this->fd) == -1) {
-					return -1;
-				}
+			if (close(this->fd) == -1) {
+				abort();
+			}
 
-				this->fd = 0;
-				break;
-			#endif
+			this->fd = 0;
+			break;
+#endif
 		default:
-			#if defined(NDEBUG)
+#if defined(NDEBUG)
 			return -1;
-			#else
+#else
 			abort();
-			#endif
+#endif
 
 	}
 
@@ -215,11 +223,11 @@ Arena::Destroy()
 }
 
 std::ostream &
-operator<<(std::ostream &os, const Arena arena)
+operator<<(std::ostream &os, Arena &arena)
 {
-	auto cursor = arena.NewCursor();
-	char cursorString[17] = {0};
-	snprintf(cursorString, 16, "%0p", cursor);
+	auto cursor = arena.Store();
+	char cursorString[33] = {0};
+	snprintf(cursorString, 32, "%#016lx", cursor);
 
 	os << "Arena<";
 	switch (arena.Type()) {
@@ -233,9 +241,9 @@ operator<<(std::ostream &os, const Arena arena)
 			os << "allocated";
 			break;
 #if defined(__linux__)
-			case ARENA_MMAP:
-				os << "mmap/file";
-				break;
+		case ARENA_MMAP:
+			os << "mmap/file";
+			break;
 #endif
 		default:
 			os << "unknown (this is a bug)";
@@ -243,7 +251,7 @@ operator<<(std::ostream &os, const Arena arena)
 	os << ">@0x";
 	os << std::hex << (uintptr_t) &arena;
 	os << std::dec;
-	os << ",store<" << arena.Size() << "B>@0x";
+	os << ",store<" << arena.Size() << "B>@";
 	os << std::hex << cursorString;
 	os << std::dec;
 
@@ -257,11 +265,11 @@ Arena::Write(const char *path)
 	FILE *arenaFile = NULL;
 	int retc = -1;
 
-#if defined(__posix__)
+#if defined(__posix__) || defined(__linux__)
 	arenaFile = fopen(path, "w");
-	if (arenaFile == NULL) {
+	if (arenaFile == nullptr) {
 #else
-	if (fopen_s(&arenaFile, path, "w") != 0) {
+		if (fopen_s(&arenaFile, path, "w") != 0) {
 #endif
 		return -1;
 	}
