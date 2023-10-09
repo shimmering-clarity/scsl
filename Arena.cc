@@ -1,6 +1,7 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include <cassert>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
 
 #if defined(__linux__)
 #include <sys/mman.h>
@@ -10,59 +11,61 @@
 #include <unistd.h>
 #endif
 
-#if defined(DESKTOP_BUILD)
-#include <iostream>
 #include <ios>
-#endif
 
 #include "Arena.h"
 
 
-#define ARENA_UNINIT	0
-#define ARENA_STATIC	1
-#define ARENA_ALLOC	2
-#if defined(__linux__)
-#define ARENA_MMAP	3
-#define PROT_RW		PROT_READ|PROT_WRITE
-#endif
+namespace klib {
+
+
+Arena::Arena()
+    : store(nullptr), size(0), fd(0), arenaType(ARENA_UNINIT)
+{}
+
+
+Arena::~Arena()
+{
+	this->Destroy();
+}
 
 
 void
-InitializeArena(Arena &arena)
+Arena::Initialize()
 {
-	arena.Store = NULL;
-	arena.Size = 0;
-	arena.Type = ARENA_UNINIT;
-	arena.fd = 0;
+	assert(this->arenaType != ARENA_UNINIT);
+	this->store = nullptr;
+	this->size = 0;
+	this->arenaType = ARENA_UNINIT;
+	this->fd = 0;
 }
 
 
 int
-NewStaticArena(Arena &arena, uint8_t *mem, size_t size)
+Arena::SetStatic(uint8_t *mem, size_t allocSize)
 {
-	arena.Store = mem;
-	arena.Size = size;
-	arena.Type = ARENA_STATIC;
+	this->store = mem;
+	this->size = allocSize;
+	this->arenaType = ARENA_STATIC;
 	return 0;
 }
 
 
 int
-AllocNewArena(Arena & arena, size_t size)
+Arena::SetAlloc(size_t allocSize)
 {
-	if (arena.Size > 0) {
-		if (DestroyArena(arena) != 0) {
-			return -1;
-		}
+	if (this->size > 0) {
+		this->Destroy();
 	}
 
-	arena.Type = ARENA_ALLOC;
-	arena.Size = size;
-	arena.Store = (uint8_t *)calloc(sizeof(uint8_t), size);
-	if (arena.Store == NULL) {
+	this->arenaType = ARENA_ALLOC;
+	this->size = allocSize;
+	this->store = new uint8_t[allocSize];
+	if (this->store == nullptr) {
 		return -1;
 	}
 
+	this->Clear();
 	return 0;
 }
 
@@ -71,19 +74,19 @@ AllocNewArena(Arena & arena, size_t size)
 int
 MMapArena(Arena &arena, int fd, size_t size)
 {
-	if (arena.Size > 0) {
+	if (this->size > 0) {
 		if (DestroyArena(arena) != 0) {
 			return -1;
 		}
 	}
 
-	arena.Type = ARENA_MMAP;
-	arena.Size = size;
-	arena.Store = (uint8_t *)mmap(NULL, size, PROT_RW, MAP_SHARED, fd, 0);
-	if ((void *)arena.Store == MAP_FAILED) {
+	this->arenaType = ARENA_MMAP;
+	this->size = size;
+	this->store = (uint8_t *)mmap(NULL, size, PROT_RW, MAP_SHARED, fd, 0);
+	if ((void *)this->store == MAP_FAILED) {
 		return -1;
 	}
-	arena.fd = fd;
+	this->fd = fd;
 	return 0;
 }
 
@@ -93,7 +96,7 @@ OpenArena(Arena &arena, const char *path)
 {
 	struct stat	st;
 
-	if (arena.Size > 0) {
+	if (this->size > 0) {
 		if (DestroyArena(arena) != 0) {
 			return -1;
 		}
@@ -103,12 +106,12 @@ OpenArena(Arena &arena, const char *path)
 		return -1;
 	}
 
-	arena.fd = open(path, O_RDWR); 
-	if (arena.fd == -1) {
+	this->fd = open(path, O_RDWR); 
+	if (this->fd == -1) {
 		return -1;
 	}
 
-	return MMapArena(arena, arena.fd, (size_t)st.st_size);
+	return MMapArena(arena, this->fd, (size_t)st.st_size);
 }
 
 
@@ -117,7 +120,7 @@ CreateArena(Arena &arena, const char *path, size_t size, mode_t mode)
 {
 	int	fd = 0;
 
-	if (arena.Size > 0) {
+	if (this->size > 0) {
 		if (DestroyArena(arena) != 0) {
 			return -1;
 		}
@@ -139,115 +142,132 @@ CreateArena(Arena &arena, const char *path, size_t size, mode_t mode)
 #endif
 
 
+bool
+Arena::CursorInArena(uint8_t *cursor)
+{
+	if (cursor < this->store) {
+		return false;
+	}
+
+	if (cursor >= this->End()) {
+		return false;
+	}
+
+	return true;
+}
+
+
 /*
  * ClearArena clears the memory being used, removing any data
  * present. It does not free the memory; it is effectively a
  * wrapper around memset.
  */
 void
-ClearArena(Arena &arena)
+Arena::Clear()
 {
-	if (arena.Size == 0) {
+	if (this->size == 0) {
 		return;
 	}
 
-	memset(arena.Store, 0, arena.Size);
+	memset(this->store, 0, this->size);
 }
 
 
-int
-DestroyArena(Arena &arena)
-{
-	if (arena.Type == ARENA_UNINIT) {
-		return 0;
-	}
-
-	switch (arena.Type) {
-	case ARENA_STATIC:
-		break;
-	case ARENA_ALLOC:
-		free(arena.Store);
-		break;
-	#if defined(__linux__)
-	case ARENA_MMAP:
-		if (munmap(arena.Store, arena.Size) == -1) {
-			return -1;
-		}
-
-		if (close(arena.fd) == -1) {
-			return -1;
-		}
-
-		arena.fd = 0;
-		break;
-	#endif
-	default:
-		#if defined(NDEBUG)
-		return -1;
-		#else
-		abort();
-		#endif
-
-	}
-
-	arena.Type = ARENA_UNINIT;
-	arena.Size = 0;
-	arena.Store = NULL;
-	return 0;
-}
-
-#if defined(DESKTOP_BUILD)
 void
-DisplayArena(const Arena &arena)
+Arena::Destroy()
 {
-	std::cout << "Arena @ 0x";
-	std::cout << std::hex << (uintptr_t)&arena << std::endl;
-	std::cout << std::dec;
-	std::cout << "\tStore is " << arena.Size << " bytes at address 0x";
-	std::cout << std::hex << (uintptr_t)&(arena.Store) << std::endl;
-	std::cout << "\tType: ";
+	if (this->arenaType == ARENA_UNINIT) {
+		return;
+	}
 
-	switch (arena.Type) {
-	case ARENA_UNINIT:
-		std::cout << "uninitialized";
-		break;
-	case ARENA_STATIC:
-		std::cout << "static";
-		break;
-	case ARENA_ALLOC:
-		std::cout << "allocated";
-		break;
+	switch (this->arenaType) {
+		case ARENA_STATIC:
+			break;
+		case ARENA_ALLOC:
+			delete this->store;
+			break;
+			#if defined(__linux__)
+			case ARENA_MMAP:
+				if (munmap(this->store, this->size) == -1) {
+					return -1;
+				}
+
+				if (close(this->fd) == -1) {
+					return -1;
+				}
+
+				this->fd = 0;
+				break;
+			#endif
+		default:
+			#if defined(NDEBUG)
+			return -1;
+			#else
+			abort();
+			#endif
+
+	}
+
+	this->arenaType = ARENA_UNINIT;
+	this->size = 0;
+	this->store = nullptr;
+	return;
+}
+
+std::ostream &
+operator<<(std::ostream &os, const Arena arena)
+{
+	auto cursor = arena.NewCursor();
+	char cursorString[17] = {0};
+	snprintf(cursorString, 16, "%0p", cursor);
+
+	os << "Arena<";
+	switch (arena.Type()) {
+		case ARENA_UNINIT:
+			os << "uninitialized";
+			break;
+		case ARENA_STATIC:
+			os << "static";
+			break;
+		case ARENA_ALLOC:
+			os << "allocated";
+			break;
 #if defined(__linux__)
-	case ARENA_MMAP:
-		std::cout << "mmap/file";
-		break;
+			case ARENA_MMAP:
+				os << "mmap/file";
+				break;
 #endif
-	default:
-		std::cout << "unknown (this is a bug)";
+		default:
+			os << "unknown (this is a bug)";
 	}
-	std::cout << std::endl;
-}
-#else
-void
-DisplayArena(const Arena &arena)
-{
+	os << ">@0x";
+	os << std::hex << (uintptr_t) &arena;
+	os << std::dec;
+	os << ",store<" << arena.Size() << "B>@0x";
+	os << std::hex << cursorString;
+	os << std::dec;
 
+	return os;
 }
-#endif
+
 
 int
-WriteArena(const Arena &arena, const char *path)
+Arena::Write(const char *path)
 {
-	FILE	*arenaFile = NULL;
-	int	 retc = -1;
+	FILE *arenaFile = NULL;
+	int retc = -1;
 
+#if defined(__posix__)
 	arenaFile = fopen(path, "w");
 	if (arenaFile == NULL) {
+#else
+	if (fopen_s(&arenaFile, path, "w") != 0) {
+#endif
 		return -1;
 	}
 
-	if (fwrite(arena.Store, sizeof(*arena.Store), arena.Size,
-		   arenaFile) == arena.Size) {
+	if (fwrite(this->store, sizeof(*this->store), this->size,
+		   arenaFile) == this->size) {
 		retc = 0;
 	}
 
@@ -258,3 +278,5 @@ WriteArena(const Arena &arena, const char *path)
 	return retc;
 }
 
+
+} // namespace klib

@@ -105,8 +105,8 @@ Dictionary::spaceAvailable(uint8_t klen, uint8_t vlen)
 	required += klen + 2;
 	required += vlen + 2;
 
-	remaining = (uintptr_t)cursor - (uintptr_t)arena.Store;
-	remaining = arena.Size - remaining;
+	remaining = (uintptr_t)cursor - (uintptr_t)arena.NewCursor();
+	remaining = arena.Size() - remaining;
 	return ((size_t)remaining >= required);
 }
 
@@ -115,7 +115,7 @@ Dictionary::spaceAvailable(uint8_t klen, uint8_t vlen)
 void
 Dictionary::DumpKVPairs()
 {
-	uint8_t 	*cursor = (this->arena).Store;
+	uint8_t 	*cursor = (this->arena).NewCursor();
 	TLV::Record	 rec;
 
 	TLV::ReadFromMemory(rec, cursor);
@@ -147,5 +147,5 @@ Dictionary::DumpKVPairs()
 void
 Dictionary::DumpToFile(const char *path)
 {
-	WriteArena(this->arena, path);
+	this->arena.Write(path);
 }

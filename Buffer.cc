@@ -19,7 +19,7 @@ nearestPower(size_t x)
 {
 	if (x == 0) {
 		return 0;
-	};
+	}
 
     std::cout << "x -> ";
 
@@ -80,6 +80,7 @@ Buffer::Append(uint8_t *data, size_t datalen)
 		resized = true;
 	}
 
+	assert(this->contents != nullptr);
 	memcpy(this->contents + this->length, data, datalen);
 	this->length += datalen;
 	return resized;
@@ -142,17 +143,14 @@ Buffer::Resize(size_t newCapacity)
 		return;
 	}
 
-	uint8_t *newContents = new uint8_t[newCapacity];
+	auto newContents = new uint8_t[newCapacity];
 
 	memset(newContents, 0, newCapacity);
 	if (this->length > 0) {
 		memcpy(newContents, this->contents, this->length);
 	}
 
-	if (this->contents != nullptr) {
-		delete this->contents;
-	}
-
+	delete this->contents;
 	this->contents = newContents;
 	this->capacity = newCapacity;
 }
@@ -198,7 +196,7 @@ Buffer::Reclaim()
 }
 
 size_t
-Buffer::mustGrow(size_t delta)
+Buffer::mustGrow(size_t delta) const
 {
 	if ((delta + this->length) < this->capacity) {
 		return 0;

@@ -11,63 +11,65 @@
 static uint8_t		arenaBuffer[ARENA_SIZE];
 
 
-bool
+void
 tlvTestSuite(Arena &backend)
 {
 	TLV::Record	 rec1, rec2, rec3, rec4;
-	uint8_t		*cursor = NULL;
+	uint8_t		*cursor = nullptr;
 
+	std::cout << "\tSetting first three records." << std::endl;
 	TLV::SetRecord(rec1, 1, TEST_STRLEN1, TEST_STR1);
 	TLV::SetRecord(rec2, 2, TEST_STRLEN2, TEST_STR2);
 	TLV::SetRecord(rec3, 1, TEST_STRLEN4, TEST_STR4);
 	rec4.Tag = 1;
 
-	assert(TLV::WriteToMemory(backend, cursor, rec1) != NULL);
-	assert((cursor = TLV::WriteToMemory(backend, cursor, rec2)) != NULL);
-	assert(TLV::WriteToMemory(backend, cursor, rec3) != NULL);
-	cursor = NULL;
+	std::cout << "\twriting new rec1" << std::endl;
+	assert(TLV::WriteToMemory(backend, cursor, rec1) != nullptr);
+	std::cout << "\twriting new rec2" << std::endl;
+	assert((cursor = TLV::WriteToMemory(backend, cursor, rec2)) != nullptr);
+	std::cout << "\twriting new rec3" << std::endl;
+	assert(TLV::WriteToMemory(backend, cursor, rec3) != nullptr);
+	cursor = nullptr;
 
 	// the cursor should point at the next record,
 	// and rec4 should contain the same data as rec1.
+	std::cout << "\tFindTag 1" << std::endl;
 	cursor = TLV::FindTag(backend, cursor, rec4);
-	assert(cursor != NULL); 
-	assert(cursor != backend.Store);
+	assert(cursor != nullptr); 
+	assert(cursor != backend.NewCursor());
 	assert(cmpRecord(rec1, rec4));
 
+	std::cout << "\tFindTag 2" << std::endl;
 	cursor = TLV::FindTag(backend, cursor, rec4);
-	assert(cursor != NULL);
+	assert(cursor != nullptr);
 	assert(cmpRecord(rec3, rec4));
 
 	TLV::SetRecord(rec4, 3, TEST_STRLEN3, TEST_STR3);
-	assert(TLV::WriteToMemory(backend, NULL, rec4));
+	assert(TLV::WriteToMemory(backend, nullptr, rec4));
 
 	rec4.Tag = 2;
-	cursor = TLV::FindTag(backend, NULL, rec4);
-	assert(cursor != NULL);
+	cursor = TLV::FindTag(backend, nullptr, rec4);
+	assert(cursor != nullptr);
 
 	TLV::DeleteRecord(backend, cursor);
 	assert(cursor[0] == 3);
-
-	return true;
 }
 
 bool
 runSuite(Arena &backend, const char *label)
 {
-	DisplayArena(backend);
-
+	std::cout << backend << std::endl;
 	std::cout << "running test suite " << label << ": ";
-	if (!tlvTestSuite(backend)) {
+	try {
+		tlvTestSuite(backend);
+	} catch (_exception){
 		std::cout << "FAILED" << std::endl;
 		return false;
 	}
 	std::cout << "OK" << std::endl;
 
 	std::cout << "\tdestroying arena: ";
-	if (DestroyArena(backend) != 0) {
-		std::cout << "FAILED" << std::endl;
-		return false;
-	}
+	backend.Destroy();
 
 	std::cout << "OK" << std::endl;
 	return true;
@@ -83,15 +85,13 @@ main(int argc, const char *argv[])
 	Arena	arenaMem;
 
 	std::cout << "TESTPROG: " << argv[0] << std::endl;
-	InitializeArena(arenaStatic);
-	InitializeArena(arenaMem);
 
-	if (-1 == NewStaticArena(arenaStatic, arenaBuffer, ARENA_SIZE)) {
+	if (-1 == arenaStatic.SetStatic(arenaBuffer, ARENA_SIZE)) {
 		abort();
 	} else if (!runSuite(arenaStatic, "arenaStatic")) {
 		abort();
 	}
-	ClearArena(arenaStatic);
+	arenaStatic.Clear();
 
 	#if defined(__linux__)
 	Arena	arenaFile;
@@ -104,11 +104,12 @@ main(int argc, const char *argv[])
 	}
 	#endif
 
-	if (-1 == AllocNewArena(arenaMem, ARENA_SIZE)) {
+	if (-1 == arenaMem.SetAlloc(ARENA_SIZE)) {
 		abort();
 	} else if (!runSuite(arenaMem, "arenaMem")) {
 		abort();
 	}
+	arenaMem.Clear();
 
 	std::cout << "OK" << std::endl;
 	return 0;

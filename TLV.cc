@@ -1,33 +1,32 @@
 #include <cstring>
 #include "TLV.h"
 
+using namespace klib;
+
 
 #define REC_SIZE(x)	((std::size_t)x.Len + 2)
 
 
+namespace klib {
 namespace TLV {
 
 
 static bool
 spaceAvailable(Arena &arena, uint8_t *cursor, uint8_t len)
 {
-	uintptr_t	remaining = 0;
-
 	if (cursor == NULL) {
 		return false;
 	}
 
-	remaining = (uintptr_t)cursor - (uintptr_t)arena.Store;
-	remaining = arena.Size - remaining;
-	return ((size_t)remaining >= ((size_t)len+2));
+	return arena.CursorInArena(cursor + len);
 }
 
 static inline void
 clearUnused(Record &rec)
 {
-	uint8_t	trail = TLV_MAX_LEN-rec.Len;
+	uint8_t trail = TLV_MAX_LEN - rec.Len;
 
-	memset(rec.Val+rec.Len, 0, trail);
+	memset(rec.Val + rec.Len, 0, trail);
 }
 
 
@@ -58,7 +57,7 @@ WriteToMemory(Arena &arena, uint8_t *cursor, Record &rec)
 }
 
 
-void	
+void
 SetRecord(Record &rec, uint8_t tag, uint8_t len, const char *val)
 {
 	rec.Tag = tag;
@@ -73,7 +72,7 @@ ReadFromMemory(Record &rec, uint8_t *cursor)
 {
 	rec.Tag = cursor[0];
 	rec.Len = cursor[1];
-	memcpy(rec.Val, cursor+2, rec.Len);
+	memcpy(rec.Val, cursor + 2, rec.Len);
 	clearUnused(rec);
 }
 
@@ -97,10 +96,10 @@ FindTag(Arena &arena, uint8_t *cursor, Record &rec)
 uint8_t *
 LocateTag(Arena &arena, uint8_t *cursor, Record &rec)
 {
-	uint8_t	tag, len;
+	uint8_t tag, len;
 
 	if (cursor == NULL) {
-		cursor = arena.Store;
+		cursor = arena.NewCursor();
 	}
 
 	while ((tag = cursor[0]) != rec.Tag) {
@@ -124,19 +123,19 @@ LocateTag(Arena &arena, uint8_t *cursor, Record &rec)
 
 
 uint8_t *
-FindEmpty(Arena &arena, uint8_t *cursor) {
-	Record	rec;
-	
+FindEmpty(Arena &arena, uint8_t *cursor)
+{
+	Record rec;
+
 	rec.Tag = TAG_EMPTY;
 	return FindTag(arena, cursor, rec);
 }
 
 
-
-uint8_t	*
+uint8_t *
 SkipRecord(Record &rec, uint8_t *cursor)
 {
-	return (uint8_t *)((uintptr_t)cursor + rec.Len + 2);
+	return (uint8_t *) ((uintptr_t) cursor + rec.Len + 2);
 }
 
 
@@ -147,8 +146,8 @@ DeleteRecord(Arena &arena, uint8_t *cursor)
 		return;
 	}
 
-	uint8_t	 	 len = cursor[1] + 2;
-	uint8_t		*stop = arena.Store + arena.Size;
+	uint8_t len = cursor[1] + 2;
+	uint8_t *stop = arena.NewCursor() + arena.Size();
 
 	stop -= len;
 
@@ -166,3 +165,4 @@ DeleteRecord(Arena &arena, uint8_t *cursor)
 
 
 } // namespace TLV
+} // namespace klib

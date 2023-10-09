@@ -41,7 +41,7 @@ public:
 
 	uint8_t	&operator[](size_t index);
 private:
-	size_t	 mustGrow(size_t delta);
+	size_t	 mustGrow(size_t delta) const;
 	bool	 shiftRight(size_t offset, size_t delta);
 	bool	 shiftLeft(size_t offset, size_t delta);
 
