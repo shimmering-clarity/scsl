@@ -29,7 +29,7 @@ nearestPower(size_t x)
 	x |= x >> 16;
 	x |= x >> 32;
 
-	return x;
+	return x+1;
 }
 
 
@@ -57,6 +57,14 @@ Buffer::Buffer(const char *data)
 
 
 bool
+Buffer::Append(const char *s)
+{
+	size_t	slen = strnlen(s, maxReasonableLine);
+
+	return this->Append((uint8_t *)s, slen);
+}
+
+bool
 Buffer::Append(uint8_t *data, size_t datalen)
 {
 	auto	resized = false;
@@ -78,12 +86,23 @@ Buffer::Append(uint8_t c)
 	return this->Append(&c, 1);
 }
 
+
+bool
+Buffer::Insert(size_t index, const char *s)
+{
+	size_t	slen = strnlen(s, maxReasonableLine);
+
+	return this->Insert(index, (uint8_t *)(s), slen);
+}
+
+
 bool
 Buffer::Insert(size_t index, uint8_t *data, size_t datalen)
 {
-	auto	resized = this->shift(index, datalen);
+	auto	resized = this->shiftRight(index, datalen);
 
 	memcpy(this->contents + index, data, datalen);
+	this->length += datalen;
 	return resized;
 }
 
@@ -91,6 +110,23 @@ bool
 Buffer::Insert(size_t index, uint8_t c)
 {
 	return this->Insert(index, &c, 1);
+}
+
+
+bool
+Buffer::Remove(size_t index, size_t count)
+{
+	auto resized = this->shiftLeft(index, count);
+
+	this->length -= count;
+	return resized;
+}
+
+
+bool
+Buffer::Remove(size_t index)
+{
+	return this->Remove(index, 1);
 }
 
 
@@ -103,6 +139,7 @@ Buffer::Resize(size_t newCapacity)
 
 	uint8_t *newContents = new uint8_t[newCapacity];
 
+	memset(newContents, 0, newCapacity);
 	if (this->length > 0) {
 		memcpy(newContents, this->contents, this->length);
 	}
@@ -140,8 +177,9 @@ Buffer::Clear()
 void
 Buffer::Reclaim()
 {
+	this->Clear();
+
 	delete this->contents;
-	this->length = 0;
 	this->capacity = 0;
 }
 
@@ -158,7 +196,7 @@ Buffer::mustGrow(size_t delta)
 
 
 bool
-Buffer::shift(size_t offset, size_t delta)
+Buffer::shiftRight(size_t offset, size_t delta)
 {
 	auto	resized = false;
 	auto	newCap = this->mustGrow(delta);
@@ -168,12 +206,30 @@ Buffer::shift(size_t offset, size_t delta)
 		resized = true;
 	}
 
-	
-	for (size_t i = this->length; i >= offset; i++) {
-		this->contents[i+delta] = this->contents[i];
+	if (this->length == 0)	return 0;
+
+	memmove(this->contents+(offset+delta), this->contents+offset, this->length);
+	return resized;
+}
+
+
+bool
+Buffer::shiftLeft(size_t offset, size_t delta)
+{
+	auto	resized = false;
+
+	for (size_t i = offset; i < this->length; i++) {
+		this->contents[i] = this->contents[i+delta];
 	}
 
-	return resized;
+	return this->Trim() != 0;
+}
+
+
+uint8_t&
+Buffer::operator[](size_t index)
+{
+	return this->contents[index];
 }
 
 
