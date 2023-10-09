@@ -16,6 +16,7 @@ add_compile_options("-DDESKTOP_BUILD")
 
 add_library(klib STATIC
 	Arena.cc
+	Buffer.cc
 	TLV.cc
 	Dictionary.cc)
 
@@ -24,4 +25,7 @@ target_link_libraries(tlv_test klib)
 
 add_executable(dictionary_test dictionaryTest.cc)
 target_link_libraries(dictionary_test klib)
+
+add_executable(buffer_test bufferTest.cc)
+target_link_libraries(buffer_test klib)
 
