@@ -35,6 +35,8 @@ testSetKV(Dictionary &pb, const char *k, uint8_t kl, const char *v,
 int
 main(int argc, const char *argv[])
 {
+	(void)argc; (void)argv;
+
 	Arena		arena;
 	TLV::Record	value;
 	TLV::Record	expect;

@@ -4,8 +4,10 @@
 
 
 int
-main()
+main(int argc, char *argv[])
 {
+	(void)argc; (void)argv;
+
 	klib::Buffer	buffer("hlo, world");
 
 	std::cout << buffer.Contents() << std::endl;

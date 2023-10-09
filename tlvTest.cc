@@ -77,6 +77,8 @@ runSuite(Arena &backend, const char *label)
 int
 main(int argc, const char *argv[])
 {
+	(void)argc; (void)argv;
+
 	Arena	arenaStatic;
 	Arena	arenaMem;
 
