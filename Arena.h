@@ -58,7 +58,7 @@ enum class ArenaType
 /// #NewCursor and #End methods return pointers to the start and end of the
 /// arena memory.
 ///
-/// The arena should be initalized with one of the Set methods (SetStatic,
+/// The arena should be initialized with one of the Set methods (SetStatic,
 /// SetAlloc) or one of the file-based options (Create, Open, MemoryMap). At
 /// this point, no further memory management should be done until the end of the
 /// arena's life, at which point Destroy should be called.
@@ -68,12 +68,6 @@ public:
 	Arena();
 
 	~Arena();
-
-	/// Initialize is intended for use only with systems that do not
-	/// initialize new variables to zero. It should be called exactly once,
-	/// at the start of the program. Any other time the arena needs to be
-	/// reset, it should be called with #Clear or #Destroy.
-	void Initialize();
 
 	/// SetStatic points the arena to a chunk of memory. That memory is
 	/// intended to be statically allocated, e.g. via a global `static

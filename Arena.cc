@@ -39,17 +39,6 @@ Arena::~Arena()
 }
 
 
-void
-Arena::Initialize()
-{
-	assert(this->arenaType != ArenaType::Uninit);
-	this->store = nullptr;
-	this->size = 0;
-	this->arenaType = ArenaType::Uninit;
-	this->fd = 0;
-}
-
-
 int
 Arena::SetStatic(uint8_t *mem, size_t memSize)
 {

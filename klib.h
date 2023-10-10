@@ -57,6 +57,14 @@ namespace klib {
 /// Arena, TLV::Record to store the records, and finally Dictionary to make use
 /// of both of them.
 ///
+/// Closely related to this, I've been working on building an ARM-based handheld
+/// computer, for which I would also need a memory arena.
+///
+/// \subsection The text editors
+///
+/// Some time ago, I wrote a console text editor of my own; then later, started
+/// working on a graphical editor. For this, I needed some data structures to
+/// manage memory in the editor. Thus, Buffer was born.
 ///
 
 
