@@ -14,7 +14,7 @@ namespace TLV {
 static bool
 spaceAvailable(Arena &arena, uint8_t *cursor, uint8_t len)
 {
-	if (cursor == NULL) {
+	if (cursor == nullptr) {
 		return false;
 	}
 
@@ -33,21 +33,25 @@ clearUnused(Record &rec)
 uint8_t *
 WriteToMemory(Arena &arena, uint8_t *cursor, Record &rec)
 {
-	// If cursor is NULL, the user needs us to select an empty
+	// If cursor is nullptr, the user needs us to select an empty
 	// slot for the record. If we can't find one, that's an
 	// error.
 	//
 	// If, however, the user gives us a cursor, we'll trust it
 	// (though spaceAvailable will sanity check that cursor).
-	if (cursor == NULL) {
+	if (cursor == nullptr) {
 		cursor = FindEmpty(arena, cursor);
-		if (cursor == NULL) {
-			return NULL;
+		if (cursor == nullptr) {
+			return nullptr;
 		}
 	}
 
+	if (!arena.CursorInArena(cursor)) {
+		return nullptr;
+	}
+
 	if (!spaceAvailable(arena, cursor, rec.Len)) {
-		return NULL;
+		return nullptr;
 	}
 
 	memcpy(cursor, &rec, REC_SIZE(rec));
@@ -98,21 +102,21 @@ LocateTag(Arena &arena, uint8_t *cursor, Record &rec)
 {
 	uint8_t tag, len;
 
-	if (cursor == NULL) {
+	if (cursor == nullptr) {
 		cursor = arena.NewCursor();
 	}
 
 	while ((tag = cursor[0]) != rec.Tag) {
 		len = cursor[1];
 		if (!spaceAvailable(arena, cursor, len)) {
-			return NULL;
+			return nullptr;
 		}
 		cursor += len;
 		cursor += 2;
 	}
 
 	if (tag != rec.Tag) {
-		return NULL;
+		return nullptr;
 	}
 
 	if (tag != TAG_EMPTY) {
@@ -142,7 +146,11 @@ SkipRecord(Record &rec, uint8_t *cursor)
 void
 DeleteRecord(Arena &arena, uint8_t *cursor)
 {
-	if (cursor == NULL) {
+	if (cursor == nullptr) {
+		return;
+	}
+
+	if (!arena.CursorInArena(cursor)) {
 		return;
 	}
 

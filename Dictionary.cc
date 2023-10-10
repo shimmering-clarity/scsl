@@ -6,13 +6,17 @@
 #include <iostream>
 #endif
 
+
+namespace klib {
+
+
 bool
 Dictionary::Lookup(const char *key, uint8_t klen, TLV::Record &res)
 {
 	res.Tag = this->kTag;
-	uint8_t	*cursor = TLV::FindTag(this->arena, NULL, res);
+	uint8_t	*cursor = TLV::FindTag(this->arena, nullptr, res);
 
-	while (cursor != NULL) {
+	while (cursor != nullptr) {
 		if ((klen == res.Len) &&
 		    (memcmp(res.Val, key, klen) == 0)) {
 			TLV::ReadFromMemory(res, cursor);
@@ -33,11 +37,11 @@ int
 Dictionary::Set(const char *key, uint8_t klen, const char *val, uint8_t vlen)
 {
 	TLV::Record	 rec;
-	uint8_t		*cursor = NULL;
+	uint8_t		*cursor = nullptr;
 
 	SetRecord(rec, this->kTag, klen, key);
 	cursor = this->seek(key, klen);
-	if (cursor != NULL) {
+	if (cursor != nullptr) {
 		TLV::DeleteRecord(this->arena, cursor);
 		TLV::DeleteRecord(this->arena, cursor);
 	}
@@ -46,13 +50,13 @@ Dictionary::Set(const char *key, uint8_t klen, const char *val, uint8_t vlen)
 		return -1;
 	}
 
-	cursor = TLV::WriteToMemory(this->arena, NULL, rec);
-	if (cursor == NULL) {
+	cursor = TLV::WriteToMemory(this->arena, nullptr, rec);
+	if (cursor == nullptr) {
 		return -1;
 	}
 
 	SetRecord(rec, this->vTag, vlen, val);
-	if (TLV::WriteToMemory(this->arena, NULL, rec) == NULL) {
+	if (TLV::WriteToMemory(this->arena, nullptr, rec) == nullptr) {
 		return -1;
 	}
 
@@ -67,9 +71,9 @@ Dictionary::seek(const char *key, uint8_t klen)
 	TLV::Record	 rec;
 
 	rec.Tag = this->kTag;
-	uint8_t	*cursor = TLV::LocateTag(this->arena, NULL, rec);
+	uint8_t	*cursor = TLV::LocateTag(this->arena, nullptr, rec);
 
-	while (cursor != NULL) {
+	while (cursor != nullptr) {
 		if ((klen == rec.Len) && (this->kTag == rec.Tag)) {
 			if (memcmp(rec.Val, key, klen) == 0) {
 				return cursor;
@@ -79,14 +83,14 @@ Dictionary::seek(const char *key, uint8_t klen)
 		cursor = TLV::LocateTag(this->arena, cursor, rec);
 	}
 
-	return NULL;
+	return nullptr;
 }
 
 
 bool
-Dictionary::Has(const char *key, uint8_t klen)
+Dictionary::Contains(const char *key, uint8_t klen)
 {
-	return this->seek(key, klen) != NULL;
+	return this->seek(key, klen) != nullptr;
 }
 
 
@@ -95,10 +99,10 @@ Dictionary::spaceAvailable(uint8_t klen, uint8_t vlen)
 {
 	size_t		 required = 0;
 	uintptr_t	 remaining = 0;
-	uint8_t		*cursor = NULL;
+	uint8_t		*cursor = nullptr;
 
-	cursor = TLV::FindEmpty(this->arena, NULL);
-	if (cursor == NULL) {
+	cursor = TLV::FindEmpty(this->arena, nullptr);
+	if (cursor == nullptr) {
 		return false;
 	}
 
@@ -111,41 +115,39 @@ Dictionary::spaceAvailable(uint8_t klen, uint8_t vlen)
 }
 
 
-#if defined(DESKTOP_BUILD)
-void
-Dictionary::DumpKVPairs()
+std::ostream &
+operator<<(std::ostream &os, const Dictionary &dictionary)
 {
-	uint8_t 	*cursor = (this->arena).NewCursor();
+#if defined(DESKTOP_BUILD)
+	uint8_t 	*cursor = (dictionary.arena).NewCursor();
 	TLV::Record	 rec;
 
 	TLV::ReadFromMemory(rec, cursor);
-	std::cout << "Dictionary KV pairs" << std::endl;
-	if (rec.Tag == TAG_EMPTY) {
-		std::cout << "\t(NONE)" << std::endl;
-		return;
+	os << "Dictionary KV pairs" << std::endl;
+	if (rec.Tag == TLV::TAG_EMPTY) {
+		os << "\t(NONE)" << std::endl;
+		return os;
 	}
 
-	while ((cursor != NULL) && (rec.Tag != TAG_EMPTY)) {
-		std::cout << "\t" << rec.Val << "->";
+	while ((cursor != nullptr) && (rec.Tag != TLV::TAG_EMPTY)) {
+		os << "\t" << rec.Val << "->";
 		cursor = TLV::SkipRecord(rec, cursor);
 		TLV::ReadFromMemory(rec, cursor);
-		std::cout << rec.Val << std::endl;
+		os << rec.Val << std::endl;
 		cursor = TLV::SkipRecord(rec, cursor);
 		TLV::ReadFromMemory(rec, cursor);
 	}
-
-}
-#else
-void
-Dictionary::DumpKVPairs()
-{
-
-}
 #endif
 
+	return os;
+}
 
-void
+
+int
 Dictionary::DumpToFile(const char *path)
 {
-	this->arena.Write(path);
+	return this->arena.Write(path);
 }
+
+
+} // namespace klib

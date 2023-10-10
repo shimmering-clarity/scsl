@@ -1,26 +1,9 @@
 ///
-/// \file Buffer.hcc
+/// \file Buffer.h
 /// \author K. Isom <kyle@imap.cc>
 /// \date 2023-10-09
 /// \brief Buffer implements basic line buffers.
 ///
-/// \section COPYRIGHT
-/// Copyright 2023 K. Isom <kyle@imap.cc>
-///
-/// Permission to use, copy, modify, and/or distribute this software for
-/// any purpose with or without fee is hereby granted, provided that the
-/// above copyright notice and this permission notice appear in all copies.
-///
-/// THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL
-/// WARRANTIES WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED
-/// WARRANTIES OF MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR
-/// BE LIABLE FOR ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES
-/// OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS,
-/// WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION,
-/// ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS
-/// SOFTWARE.
-///
-/// \section DESCRIPTION
 /// Buffer implements a basic uint8_t line buffer that is intended for use in text
 /// editing. It allocates memory in powers of two, and will grow or shrink
 /// as needed.
@@ -221,8 +204,11 @@ private:
 	bool autoTrim;
 };
 
-
+/// The << operator is overloaded to write out the contents of the Buffer.
 std::ostream &operator<<(std::ostream &os, const Buffer &buf);
+
+/// Two Buffers are not equal if their lengths differ or if their contents
+/// differ.
 inline bool operator!=(const Buffer &lhs, const Buffer &rhs) { return !(lhs == rhs); };
 
 } // namespace klib

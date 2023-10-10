@@ -4,6 +4,7 @@
 #include "Arena.h"
 #include "Dictionary.h"
 #include "testFixtures.h"
+using namespace klib;
 
 
 constexpr char		TEST_KVSTR1[] = "foo";
@@ -56,18 +57,18 @@ main(int argc, const char *argv[])
 	TLV::SetRecord(expect, DICTIONARY_TAG_VAL, TEST_KVSTRLEN3, TEST_KVSTR3);
 
 	Dictionary	dict(arena);
-	assert(!dict.Has(TEST_KVSTR2, TEST_KVSTRLEN2));
+	assert(!dict.Contains(TEST_KVSTR2, TEST_KVSTRLEN2));
 
 	assert(testSetKV(dict, TEST_KVSTR1, TEST_KVSTRLEN1, TEST_KVSTR3,
 			 TEST_KVSTRLEN3));
-	dict.DumpKVPairs();
+	std::cout << dict;
 	assert(testSetKV(dict, TEST_KVSTR2, TEST_KVSTRLEN2, TEST_KVSTR3,
 			 TEST_KVSTRLEN3));
-	dict.DumpKVPairs();
-	assert(dict.Has(TEST_KVSTR2, TEST_KVSTRLEN2));
+	std::cout << dict;
+	assert(dict.Contains(TEST_KVSTR2, TEST_KVSTRLEN2));
 	assert(testSetKV(dict, TEST_KVSTR4, TEST_KVSTRLEN4, TEST_KVSTR5,
 			 TEST_KVSTRLEN5));
-	dict.DumpKVPairs();
+	std::cout << dict;
 	assert(dict.Lookup(TEST_KVSTR2, TEST_KVSTRLEN2, value));
 
 	assert(cmpRecord(value, expect));
@@ -75,7 +76,7 @@ main(int argc, const char *argv[])
 	std::cout << "test overwriting key" << std::endl;
 	assert(testSetKV(dict, TEST_KVSTR2, TEST_KVSTRLEN2, TEST_KVSTR6,
 			 TEST_KVSTRLEN6));
-	dict.DumpKVPairs();
+	std::cout << dict;
 	TLV::SetRecord(expect, DICTIONARY_TAG_VAL, TEST_KVSTRLEN6, TEST_KVSTR6);
 	std::cout << "\tlookup" << std::endl;
 	assert(dict.Lookup(TEST_KVSTR2, TEST_KVSTRLEN2, value));
@@ -85,7 +86,7 @@ main(int argc, const char *argv[])
 	std::cout << "\tadd new key to dictionary" << std::endl;
 	assert(testSetKV(dict, TEST_KVSTR3, TEST_KVSTRLEN3, TEST_KVSTR5,
 			 TEST_KVSTRLEN5));
-	dict.DumpKVPairs();
+	std::cout << dict;
 
 	TLV::SetRecord(expect, DICTIONARY_TAG_VAL, TEST_KVSTRLEN5, TEST_KVSTR5);
 	assert(dict.Lookup(TEST_KVSTR4, TEST_KVSTRLEN4, value));
@@ -100,5 +101,5 @@ main(int argc, const char *argv[])
 	#endif
 
 	arena.Clear();
-	dict.DumpKVPairs();
+	std::cout << dict;
 }

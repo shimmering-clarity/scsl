@@ -15,7 +15,7 @@ namespace klib {
 void
 TestAssert(bool condition, std::string message = "Assertion failed.")
 {
-#if defined(NDEBUG)
+#if defined(NDEBUG) || defined(KLIB_NO_ASSERT)
 	if (!condition) {
 		throw AssertionFailed(message);
 	}

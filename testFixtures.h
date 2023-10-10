@@ -3,6 +3,7 @@
 
 
 #include <string.h>
+#include "TLV.h"
 
 
 #define ARENA_SIZE	128
@@ -20,10 +21,14 @@
 #define TEST_STR4	"How is a raven like a writing desk?"
 #define TEST_STRLEN4	35
 
+
+namespace klib {
+
+
 static bool
 cmpRecord(TLV::Record &a, TLV::Record &b)
 {
-	if (a.Tag != b .Tag) {
+	if (a.Tag != b.Tag) {
 		return false;
 	}
 
@@ -39,4 +44,7 @@ cmpRecord(TLV::Record &a, TLV::Record &b)
 }
 
 
-#endif
+} // namespace klib
+
+
+#endif // KLIB_TESTFIXTURES_H

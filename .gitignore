@@ -1,10 +1,12 @@
 .idea
+.trunk
 .vc
 .vscode
 
 *.a
 *.o
 *.bin
+*.pc
 build
 core
 core.*

@@ -26,7 +26,7 @@ namespace klib {
 
 
 Arena::Arena()
-    : store(nullptr), size(0), fd(0), arenaType(ARENA_UNINIT)
+    : store(nullptr), size(0), fd(0), arenaType(ArenaType::Uninit)
 {}
 
 
@@ -39,20 +39,20 @@ Arena::~Arena()
 void
 Arena::Initialize()
 {
-	assert(this->arenaType != ARENA_UNINIT);
+	assert(this->arenaType != ArenaType::Uninit);
 	this->store = nullptr;
 	this->size = 0;
-	this->arenaType = ARENA_UNINIT;
+	this->arenaType = ArenaType::Uninit;
 	this->fd = 0;
 }
 
 
 int
-Arena::SetStatic(uint8_t *mem, size_t allocSize)
+Arena::SetStatic(uint8_t *mem, size_t memSize)
 {
 	this->store = mem;
-	this->size = allocSize;
-	this->arenaType = ARENA_STATIC;
+	this->size = memSize;
+	this->arenaType = ArenaType::Static;
 	return 0;
 }
 
@@ -64,7 +64,7 @@ Arena::SetAlloc(size_t allocSize)
 		this->Destroy();
 	}
 
-	this->arenaType = ARENA_ALLOC;
+	this->arenaType = ArenaType::Alloc;
 	this->size = allocSize;
 	this->store = new uint8_t[allocSize];
 	if (this->store == nullptr) {
@@ -85,7 +85,7 @@ Arena::MemoryMap(int memFileDes, size_t memSize)
 		this->Destroy();
 	}
 
-	this->arenaType = ARENA_MMAP;
+	this->arenaType = ArenaType::MemoryMapped;
 	this->size = memSize;
 	this->store = (uint8_t *) mmap(NULL, memSize, PROT_RW, MAP_SHARED,
 				       memFileDes, 0);
@@ -224,18 +224,18 @@ Arena::Clear()
 void
 Arena::Destroy()
 {
-	if (this->arenaType == ARENA_UNINIT) {
+	if (this->arenaType == ArenaType::Uninit) {
 		return;
 	}
 
 	switch (this->arenaType) {
-		case ARENA_STATIC:
+		case ArenaType::Static:
 			break;
-		case ARENA_ALLOC:
+		case ArenaType::Alloc:
 			delete this->store;
 			break;
 #if defined(__linux__)
-		case ARENA_MMAP:
+		case ArenaType::MemoryMapped:
 			if (munmap(this->store, this->size) == -1) {
 				abort();
 				return;
@@ -257,7 +257,7 @@ Arena::Destroy()
 
 	}
 
-	this->arenaType = ARENA_UNINIT;
+	this->arenaType = ArenaType::Uninit;
 	this->size = 0;
 	this->store = nullptr;
 	return;
@@ -266,24 +266,24 @@ Arena::Destroy()
 std::ostream &
 operator<<(std::ostream &os, Arena &arena)
 {
-	auto cursor = arena.Store();
+	auto cursor = arena.NewCursor();
 	char cursorString[33] = {0};
 	snprintf(cursorString, 32, "%#016llx",
 			(long long unsigned int)cursor);
 
 	os << "Arena<";
 	switch (arena.Type()) {
-		case ARENA_UNINIT:
+		case ArenaType::Uninit:
 			os << "uninitialized";
 			break;
-		case ARENA_STATIC:
+		case ArenaType::Static:
 			os << "static";
 			break;
-		case ARENA_ALLOC:
+		case ArenaType::Alloc:
 			os << "allocated";
 			break;
 #if defined(__linux__)
-		case ARENA_MMAP:
+		case ArenaType::MemoryMapped:
 			os << "mmap/file";
 			break;
 #endif
@@ -326,6 +326,19 @@ Arena::Write(const char *path)
 	}
 
 	return retc;
+}
+
+uint8_t &
+Arena::operator[](size_t index)
+{
+		if (index > this->size) {
+#if defined(DESKTOP_BUILD) and !defined(KLIB_NO_ASSERT)
+			throw std::range_error("index out of range");
+#else
+			abort();
+#endif
+		}
+		return this->store[index];
 }
 
 
