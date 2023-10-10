@@ -76,7 +76,7 @@ install(FILES ${HEADER_FILES} DESTINATION include/klib)
 install(FILES klibConfig.cmake DESTINATION share/klib/cmake)
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/klib.pc DESTINATION lib/pkgconfig)
 install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/html DESTINATION share/doc/klib)
-install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/man DESTINATION share/man)
+install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/man DESTINATION share)
 
 include(CMakePack.txt)
 include(CMakeDocs.txt)
