@@ -13,6 +13,7 @@
 
 #define PROT_RW                (PROT_WRITE|PROT_READ)
 #elif defined(__WIN64__) || defined(__WIN32__)
+#include <Windows.h>
 #include <fileapi.h>
 #endif
 
@@ -144,7 +145,47 @@ Arena::Create(const char *path, size_t fileSize, mode_t mode)
 int
 Arena::Open(const char *path)
 {
+	HANDLE 		fHandle;
+	size_t		fSize;
+	size_t		fRead = 0;
+	size_t		fRemaining;
+	auto		cursor = this->store;
+	OVERLAPPED	overlap;
 
+	fHandle = CreateFileA(
+	    (LPSTR)path,
+	    GENERIC_READ,
+	    (FILE_SHARE_DELETE|FILE_SHARE_READ|FILE_SHARE_WRITE),
+	    NULL,
+	    OPEN_ALWAYS,
+	    FILE_ATTRIBUTE_NORMAL,
+	    NULL);
+	if (fHandle == INVALID_HANDLE_VALUE) {
+		return -1;
+	}
+
+	if (!GetFileSizeEx(fHandle, reinterpret_cast<PLARGE_INTEGER>(&fSize))) {
+		CloseHandle(fHandle);
+		return -1;
+	}
+
+	this->SetAlloc(fSize);
+
+	fRemaining = fSize;
+	while (fRemaining != 0) {
+		overlap.Offset = (fSize - fRemaining);
+		if (!ReadFile(fHandle, cursor, fSize, reinterpret_cast<LPDWORD>(&fRead), &overlap)) {
+			CloseHandle(fHandle);
+			this->Destroy();
+			return -1;
+		}
+
+		cursor += fRead;
+		fRemaining -= fRead;
+	}
+
+	CloseHandle(fHandle);
+	return 0;
 }
 #endif
 
@@ -227,7 +268,7 @@ operator<<(std::ostream &os, Arena &arena)
 {
 	auto cursor = arena.Store();
 	char cursorString[33] = {0};
-	snprintf(cursorString, 32, "%#016lx", cursor);
+	snprintf(cursorString, 32, "%#016llx", cursor);
 
 	os << "Arena<";
 	switch (arena.Type()) {

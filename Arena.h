@@ -1,3 +1,9 @@
+/// @file Arena.h
+/// @author K. Isom
+/// @brief Memory management using an arena.
+/// @section DESCRIPTION
+/// Arena defines a memory management backend for pre-allocating memory.
+
 #ifndef KIMODEM_ARENA_H
 #define KIMODEM_ARENA_H
 
@@ -41,6 +47,8 @@ public:
 	int 	 MemoryMap(int memFileDes, size_t memSize); // Arena will own fd.
 	int	 Create(const char *path, size_t fileSize, mode_t mode);
 	int 	 Open(const char *path);
+#elif defined(__WIN64__) || defined(__WIN32__)
+	int	 Open(const char *path);
 #endif
 
 	uint8_t *NewCursor() const { return this->store; }

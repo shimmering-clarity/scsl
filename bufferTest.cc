@@ -18,12 +18,26 @@ main(int argc, char *argv[])
 
 	std::cout << buffer.Contents() << std::endl;
 
+	std::cout << "remove end" << std::endl;
 	buffer.Remove(buffer.Length() - 1);
-	buffer.Remove(0, 5);
-	buffer.Insert(0, 'g');
-	buffer.Insert(1, (uint8_t *) "oodbye", 6);
 
+	std::cout << "remove start" << std::endl;
+	buffer.Remove(0, 5);
+
+	std::cout << "insert char" << std::endl;
+	buffer.Insert(0, 'g');
+
+	std::cout << "insert chunk" << std::endl;
+	buffer.Insert(1, (uint8_t *) "oodbye", 6);
+	std::cout << "cruel" << std::endl;
+	buffer.Insert(9, (uint8_t *)"cruel ", 6);
+	std::cout << buffer.Contents() << std::endl;
+	buffer.HexDump(std::cout);
+
+	std::cout << "reclaim" << std::endl;
 	buffer.Reclaim();
+
+	std::cout << "append" << std::endl;
 	buffer.Append("and now for something completely different...");
 
 	std::cout << buffer.Contents() << std::endl;

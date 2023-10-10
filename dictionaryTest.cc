@@ -48,7 +48,7 @@ main(int argc, const char *argv[])
 		abort();
 	}
 	#else
-	if (AllocNewArena(arena, ARENA_SIZE) == -1) {
+	if (arena.SetAlloc(ARENA_SIZE) == -1) {
 		abort();
 	}
 	#endif

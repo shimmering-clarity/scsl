@@ -19,13 +19,22 @@ set(HEADER_FILES
 	Arena.h
 	Buffer.h
 	Dictionary.h
+	Test.h
 	TLV.h)
+
+set(SOURCE_FILES
+	Arena.cc
+	Buffer.cc
+	Dictionary.cc
+	Test.cc
+	TLV.cc)
 
 add_library(klib STATIC
 	Arena.cc
 	Buffer.cc
 	Dictionary.cc
-	TLV.cc)
+	TLV.cc
+)
 install(TARGETS klib LIBRARY DESTINATION ${PREFIX}/lib)
 install(FILES ${HEADER_FILES} DESTINATION include/klib)
 install(FILES klibConfig.cmake DESTINATION share/klib/cmake)
@@ -45,11 +54,12 @@ add_executable(buffer_test bufferTest.cc)
 target_link_libraries(buffer_test klib)
 add_test(bufferTest buffer_test)
 
-include(CMakePack.txt)
-
 include(CMakePackageConfigHelpers)
 write_basic_package_version_file(
 	klibConfig.cmake
 	VERSION ${PACKAGE_VERSION}
 	COMPATIBILITY AnyNewerVersion
 )
+
+include(CMakePack.txt)
+include(CMakeDocs.txt)

@@ -4,9 +4,12 @@
 #include <iostream>
 
 #include "Arena.h"
+#include "Test.h"
 #include "TLV.h"
 
 #include "testFixtures.h"
+
+using namespace klib;
 
 
 static uint8_t		arenaBuffer[ARENA_SIZE];

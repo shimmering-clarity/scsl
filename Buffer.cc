@@ -4,14 +4,17 @@
 
 #include <cassert>
 #include <cstring>
-#include "Buffer.h"
+#include <ios>
 #include <iostream>
+#include <iomanip>
+
+#include "Buffer.h"
 
 namespace klib {
 
 
-constexpr size_t	defaultCapacity = 32;
-constexpr size_t	maxReasonableLine = 8192;
+constexpr size_t defaultCapacity = 32;
+constexpr size_t maxReasonableLine = 8192;
 
 
 static size_t
@@ -21,7 +24,7 @@ nearestPower(size_t x)
 		return 0;
 	}
 
-    std::cout << "x -> ";
+	std::cout << "x -> ";
 
 	x--;
 
@@ -32,48 +35,48 @@ nearestPower(size_t x)
 	x |= x >> 16;
 	x |= x >> 32;
 
-    std::cout << x + 1 << std::endl;
+	std::cout << x + 1 << std::endl;
 
-	return x+1;
+	return x + 1;
 }
 
 
 Buffer::Buffer()
     : contents(nullptr), length(0), capacity(0)
 {
-	this->Resize(defaultCapacity);			
+	this->Resize(defaultCapacity);
 }
 
 
 Buffer::Buffer(size_t initialCapacity)
     : contents(nullptr), length(0), capacity(0)
 {
-	this->Resize(initialCapacity);			
+	this->Resize(initialCapacity);
 }
 
 
 Buffer::Buffer(const char *data)
     : contents(nullptr), length(0), capacity(0)
 {
-	size_t	datalen = strnlen(data, maxReasonableLine);
+	size_t datalen = strnlen(data, maxReasonableLine);
 
-	this->Append((uint8_t *)data, datalen);
+	this->Append((uint8_t *) data, datalen);
 }
 
 
 bool
 Buffer::Append(const char *s)
 {
-	size_t	slen = strnlen(s, maxReasonableLine);
+	size_t slen = strnlen(s, maxReasonableLine);
 
-	return this->Append((uint8_t *)s, slen);
+	return this->Append((uint8_t *) s, slen);
 }
 
 bool
 Buffer::Append(uint8_t *data, size_t datalen)
 {
-	auto	resized = false;
-	auto	newCap = this->mustGrow(datalen);
+	auto resized = false;
+	auto newCap = this->mustGrow(datalen);
 
 	if (newCap > 0) {
 		this->Resize(newCap);
@@ -96,16 +99,16 @@ Buffer::Append(uint8_t c)
 bool
 Buffer::Insert(size_t index, const char *s)
 {
-	size_t	slen = strnlen(s, maxReasonableLine);
+	size_t slen = strnlen(s, maxReasonableLine);
 
-	return this->Insert(index, (uint8_t *)(s), slen);
+	return this->Insert(index, (uint8_t *) (s), slen);
 }
 
 
 bool
 Buffer::Insert(size_t index, uint8_t *data, size_t datalen)
 {
-	auto	resized = this->shiftRight(index, datalen);
+	auto resized = this->shiftRight(index, datalen);
 
 	memcpy(this->contents + index, data, datalen);
 	this->length += datalen;
@@ -140,7 +143,7 @@ void
 Buffer::Resize(size_t newCapacity)
 {
 	if (newCapacity < this->length) {
-		return;
+		newCapacity = nearestPower(this->length + newCapacity);
 	}
 
 	auto newContents = new uint8_t[newCapacity];
@@ -151,6 +154,7 @@ Buffer::Resize(size_t newCapacity)
 	}
 
 	delete this->contents;
+	this->contents = nullptr;
 	this->contents = newContents;
 	this->capacity = newCapacity;
 }
@@ -158,7 +162,7 @@ Buffer::Resize(size_t newCapacity)
 size_t
 Buffer::Trim()
 {
-	size_t	projectedCapacity = nearestPower(this->length);
+	size_t projectedCapacity = nearestPower(this->length);
 
 	assert(projectedCapacity >= length);
 
@@ -173,9 +177,9 @@ Buffer::Trim()
 void
 Buffer::Clear()
 {
-    if (this->length == 0) {
-        return;
-    }
+	if (this->length == 0) {
+		return;
+	}
 	memset(this->contents, 0, this->length);
 	this->length = 0;
 }
@@ -183,15 +187,23 @@ Buffer::Clear()
 void
 Buffer::Reclaim()
 {
+	std::cout << "clear" << std::endl;
 	this->Clear();
 
-    if (this->contents == nullptr) {
-        assert(this->length == 0);
-        assert(this->capacity == 0);
-        return;
-    }
+	std::cout << "nullptr check" << std::endl;
+	if (this->contents == nullptr) {
+		std::cout << "assert checks" << std::endl;
+		assert(this->length == 0);
+		assert(this->capacity == 0);
+		return;
+	}
+
+	std::cout << "delete " << this->Capacity() << "B" << std::endl;
+	this->HexDump(std::cout);
 	delete this->contents;
-    this->contents = nullptr;
+	std::cout << "reset contents" << std::endl;
+	this->contents = nullptr;
+	std::cout << "reset capacity" << std::endl;
 	this->capacity = 0;
 }
 
@@ -207,20 +219,56 @@ Buffer::mustGrow(size_t delta) const
 }
 
 
+void
+Buffer::HexDump(std::ostream &os)
+{
+#ifndef NDEBUG
+	size_t		index = 0;
+
+	os << std::hex;
+	os << std::setfill('0');
+
+	for (index = 0; index < this->length; index++) {
+		bool	eol = (index % 16) == 0;
+		if (eol && (index > 0)) {
+			os << std::endl;
+		}
+
+		if (eol) {
+			os << std::setw(8);
+			os << index << "  ";
+			os << std::setw(2);
+		}
+
+		os << (unsigned short)this->contents[index];
+
+		if ((index % 15) != 0 || (index == 0)) {
+			os << " ";
+		}
+	}
+
+	if ((index % 16) != 0) {
+		os << std::endl;
+	}
+
+	os << std::setw(0) << std::dec;
+#endif
+}
+
 bool
 Buffer::shiftRight(size_t offset, size_t delta)
 {
-	auto	resized = false;
-	auto	newCap = this->mustGrow(delta);
+	auto resized = false;
+	auto newCap = this->mustGrow(delta);
 
 	if (newCap > 0) {
 		this->Resize(newCap);
 		resized = true;
 	}
 
-	if (this->length == 0)	return 0;
+	if (this->length == 0) return 0;
 
-	memmove(this->contents+(offset+delta), this->contents+offset, this->length);
+	memmove(this->contents + (offset + delta), this->contents + offset, this->length);
 	return resized;
 }
 
@@ -232,13 +280,13 @@ Buffer::shiftLeft(size_t offset, size_t delta)
 //		this->contents[i] = this->contents[i+delta];
 //	}
 
-    memmove(this->contents+offset, this->contents+(offset+delta), this->length);
+	memmove(this->contents + offset, this->contents + (offset + delta), this->length);
 
 	return this->Trim() != 0;
 }
 
 
-uint8_t&
+uint8_t &
 Buffer::operator[](size_t index)
 {
 	return this->contents[index];

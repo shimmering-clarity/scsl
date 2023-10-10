@@ -5,6 +5,7 @@
 #ifndef KGE_BUFFER_H
 #define KGE_BUFFER_H
 
+#include <iostream>
 #include <cstdint>
 
 
@@ -38,6 +39,8 @@ public:
 	size_t	 Trim();
 	void	 Clear();
 	void	 Reclaim();
+
+	void	 HexDump(std::ostream &os);
 
 	uint8_t	&operator[](size_t index);
 private:
