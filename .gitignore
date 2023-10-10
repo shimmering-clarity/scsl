@@ -1,3 +1,7 @@
+.idea
+.vc
+.vscode
+
 *.a
 *.o
 *.bin
@@ -5,5 +9,7 @@ build
 core
 core.*
 cmake-build-*
+
+bufferTest
 dictionaryTest
 tlvTest
