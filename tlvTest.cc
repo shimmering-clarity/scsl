@@ -97,7 +97,6 @@ main(int argc, const char *argv[])
 	}
 	arenaStatic.Clear();
 
-	#if defined(__linux__)
 	Arena	arenaFile;
 
 	if (-1 == arenaFile.Create(ARENA_FILE, ARENA_SIZE, 0644)) {
@@ -105,7 +104,6 @@ main(int argc, const char *argv[])
 	} else if (!runSuite(arenaFile, "arenaFile")) {
 		abort();
 	}
-	#endif
 
 	if (-1 == arenaMem.SetAlloc(ARENA_SIZE)) {
 		abort();

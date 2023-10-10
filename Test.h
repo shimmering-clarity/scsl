@@ -27,21 +27,6 @@ namespace klib {
 inline void	TestAssert(bool condition, std::string message);
 
 
-/// AssertionFailed indicates that some invariant didn't hold.
-class AssertionFailed : public std::exception {
-public:
-	/// AssertionFailed is constructed with a message describing what
-	/// failed.
-	explicit AssertionFailed(std::string message);
-
-	/// what returns a message describing the exception.
-	char *what();
-
-private:
-	std::string msg;
-};
-
-
 } // namespace klib
 
 #endif //KLIB_TEST_H

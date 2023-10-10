@@ -25,6 +25,14 @@
 #define KLIB_KLIB_H
 
 
+#include <klib/Arena.h>
+#include <klib/Buffer.h>
+#include <klib/Dictionary.h>
+#include <klib/Exceptions.h>
+#include <klib/TLV.h>
+#include <klib/Test.h>
+
+
 /// klib is the top-level namespace containing all the code in this library.
 namespace klib {
 

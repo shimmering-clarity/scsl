@@ -22,14 +22,34 @@
 #include <cstddef>
 #include <cstdint>
 
+#include "Exceptions.h"
+
+
+#if defined(__WIN64__) || defined(__WIN32__) || defined(WIN32)
+
+#include <Windows.h>
+#include <fileapi.h>
+
+#endif
+
 
 namespace klib {
+
+/// DefaultFileMode is a sane set of default permissions that can be used for a
+/// new Arena.
+#if defined(__linux__)
+static constexpr mode_t		DefaultFileMode = 0644;
+#elif defined(__WIN64__) || defined(__WIN32__) || defined(WIN32)
+static constexpr DWORD DefaultFileMode =
+    (FILE_SHARE_DELETE | FILE_SHARE_READ | FILE_SHARE_WRITE);
+#endif
 
 
 /// \enum ArenaType
 ///
 /// ArenaType describes the type of \class Arena.
-enum class ArenaType : uint8_t {
+enum class ArenaType
+    : uint8_t {
 	/// Uninit is an unintialized arena.
 	Uninit,
 	/// Static is an arena backed by a static block of memory.
@@ -83,7 +103,7 @@ public:
 	/// \return Returns 0 on success and -1 on error.
 	int SetAlloc(size_t allocSize);
 
-#if defined(__linux__)
+
 	/// MemoryMap points the arena to a memory-mapped file. This is
 	/// currently only supported on Linux. If the arena is already backed,
 	/// then #Destroy will be called first.
@@ -91,8 +111,14 @@ public:
 	/// \param memFileDes File descriptor to map into memory.
 	/// \param memSize The size of memory to map.
 	/// \return Returns 0 on success and -1 on error.
-	int 	 MemoryMap(int memFileDes, size_t memSize); // Arena will own fd.
+#if defined(__linux__)
+	int 	 MemoryMap(int memFileDes, size_t memSize);
+#else
 
+	int MemoryMap(int memFileDes, size_t memSize)
+	{ throw NotImplemented("WIN32"); }
+
+#endif
 	/// Create creates a new file, truncating it if it already exists. On
 	/// Unix-based platforms, the arena will be backed by a memory via
 	/// #MemoryMap. On other platforms (e.g. Windows), the arena will read
@@ -102,8 +128,13 @@ public:
 	/// \param fileSize The size of the file to create.
 	/// \param mode The permissions to load.
 	/// \return Returns 0 on success and -1 on error.
+#if defined(__linux__)
 	int	 Create(const char *path, size_t fileSize, mode_t mode);
+#elif defined(__WIN64__) || defined(__WIN32__) || defined(WIN32)
 
+	int Create(const char *path, size_t fileSize, DWORD mode);
+
+#endif
 	/// Open reads a file into the arena; the file must already exist. On
 	/// Unix-based platforms, the arena will be backed by a memory via
 	/// #MemoryMap. On other platforms (e.g. Windows), the arena will read
@@ -113,27 +144,30 @@ public:
 	///
 	/// \param path The path to the file to be loaded.
 	/// \return Returns 0 on success and -1 on error.
+#if defined(__linux__)
 	int 	 Open(const char *path);
-#elif defined(__WIN64__) || defined(__WIN32__)
-	int	 Open(const char *path);
+#elif defined(__WIN64__) || defined(__WIN32__) || defined(WIN32)
+	int Open(const char *path);
 #endif
 
 	/// NewCursor returns a pointer to the start of the memory in the arena.
 	///
 	/// \return A pointer to the start of the arena memory.
-	uint8_t *NewCursor() const { return this->store; }
+	uint8_t *NewCursor() const
+	{ return this->store; }
 
 	/// End returns a pointer to the end of the arena memory.
 	///
 	/// \return A pointer to the end of the arena memory.
-	uint8_t *End() { return this->store + this->size; }
+	uint8_t *End()
+	{ return this->store + this->size; }
 
 	/// CursorInArena checks whether the cursor is still in the arena.
 	///
 	/// \param cursor A pointer that ostensibly points to the arena's
 	///    memory.
 	/// \return True if the cursor is still in the arena.
-	bool	 CursorInArena(const uint8_t *cursor);
+	bool CursorInArena(const uint8_t *cursor);
 
 	/// Returns the current size of the arena.
 	///
@@ -148,7 +182,8 @@ public:
 	{ return this->arenaType; }
 
 	/// Ready returns whether the arena is initialized.
-	bool Ready() const { return this->Type() != ArenaType::Uninit; };
+	bool Ready() const
+	{ return this->Type() != ArenaType::Uninit; };
 
 	/// Clear zeroizes the memory in the arena.
 	void Clear();
@@ -198,7 +233,7 @@ private:
 /// \param os
 /// \param arena
 /// \return
-std::ostream &operator<<(std::ostream& os, Arena &arena);
+std::ostream &operator<<(std::ostream &os, Arena &arena);
 
 
 } // namespace klib

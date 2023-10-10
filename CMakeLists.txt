@@ -24,6 +24,7 @@ set(HEADER_FILES
         Arena.h
         Buffer.h
         Dictionary.h
+        Exceptions.h
         Test.h
         TLV.h)
 
@@ -31,14 +32,13 @@ set(SOURCE_FILES
         Arena.cc
         Buffer.cc
         Dictionary.cc
+        Exceptions.cpp
         Test.cc
         TLV.cc)
 
-add_library(klib STATIC
-        Arena.cc
-        Buffer.cc
-        Dictionary.cc
-        TLV.cc)
+add_library(klib STATIC ${SOURCE_FILES} ${HEADER_FILES})
+add_executable(phonebook phonebook.cpp)
+target_link_libraries(phonebook klib)
 
 include(CTest)
 enable_testing()

@@ -2,6 +2,7 @@
 // Created by kyle on 2023-10-09.
 //
 
+#include "Exceptions.h"
 #include "Test.h"
 
 
@@ -25,17 +26,6 @@ TestAssert(bool condition, std::string message = "Assertion failed.")
 	}
 	assert(condition);
 #endif
-}
-
-
-AssertionFailed::AssertionFailed(std::string message) : msg(message)
-{
-}
-
-char *
-AssertionFailed::what() 
-{
-	return const_cast<char *>(this->msg.c_str());
 }
 
 

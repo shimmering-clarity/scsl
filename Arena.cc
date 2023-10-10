@@ -12,9 +12,11 @@
 #include <unistd.h>
 
 #define PROT_RW                (PROT_WRITE|PROT_READ)
-#elif defined(__WIN64__) || defined(__WIN32__)
+#elif defined(__WIN64__) || defined(__WIN32__) || defined(WIN32)
 #include <Windows.h>
+#include <winbase.h>
 #include <fileapi.h>
+#include <strsafe.h>
 #endif
 
 #include <ios>
@@ -27,7 +29,8 @@ namespace klib {
 
 Arena::Arena()
     : store(nullptr), size(0), fd(0), arenaType(ArenaType::Uninit)
-{}
+{
+}
 
 
 Arena::~Arena()
@@ -141,17 +144,52 @@ Arena::Create(const char *path, size_t fileSize, mode_t mode)
 
 	return this->Open(path);
 }
-#elif defined(__WIN64__) || defined(__WIN32__)
+#elif defined(__WIN64__) || defined(__WIN32__) || defined(WIN32)
+static void
+displayWinErr(LPTSTR lpszFunction)
+{
+	// Retrieve the system error message for the last-error code
+
+	LPVOID lpMsgBuf;
+	LPVOID lpDisplayBuf;
+	DWORD dw = GetLastError();
+
+	FormatMessage(
+	    FORMAT_MESSAGE_ALLOCATE_BUFFER |
+	    FORMAT_MESSAGE_FROM_SYSTEM |
+	    FORMAT_MESSAGE_IGNORE_INSERTS,
+	    NULL,
+	    dw,
+	    MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
+	    (LPTSTR) &lpMsgBuf,
+	    0, NULL );
+
+	// Display the error message and exit the process
+
+	lpDisplayBuf = (LPVOID)LocalAlloc(LMEM_ZEROINIT,
+					  (lstrlen((LPCTSTR)lpMsgBuf) + lstrlen((LPCTSTR)lpszFunction) + 40) * sizeof(TCHAR));
+	StringCchPrintf((LPTSTR)lpDisplayBuf,
+			LocalSize(lpDisplayBuf) / sizeof(TCHAR),
+			TEXT("%s failed with error %d: %s"),
+			lpszFunction, dw, lpMsgBuf);
+	MessageBox(NULL, (LPCTSTR)lpDisplayBuf, TEXT("Error"), MB_OK);
+
+	LocalFree(lpMsgBuf);
+	LocalFree(lpDisplayBuf);
+}
+
+
 int
 Arena::Open(const char *path)
 {
-	HANDLE 		fHandle;
-	size_t		fSize;
-	size_t		fRead = 0;
-	size_t		fRemaining;
-	auto		cursor = this->store;
-	OVERLAPPED	overlap;
+	HANDLE 		 fHandle;
+	DWORD 		 fRead = 0;
+	size_t		 fSize;
+	size_t		 fRemaining;
+	auto		*cursor = this->store;
+	OVERLAPPED	 overlap;
 
+	std::cout << "CreateFileA\n";
 	fHandle = CreateFileA(
 	    (LPSTR)path,
 	    GENERIC_READ,
@@ -161,10 +199,13 @@ Arena::Open(const char *path)
 	    FILE_ATTRIBUTE_NORMAL,
 	    NULL);
 	if (fHandle == INVALID_HANDLE_VALUE) {
+		displayWinErr("CreateFileA");
 		return -1;
 	}
 
+	std::cout << "GetFileSizeEx\n";
 	if (!GetFileSizeEx(fHandle, reinterpret_cast<PLARGE_INTEGER>(&fSize))) {
+		displayWinErr("GetFileSizeEx");
 		CloseHandle(fHandle);
 		return -1;
 	}
@@ -173,8 +214,12 @@ Arena::Open(const char *path)
 
 	fRemaining = fSize;
 	while (fRemaining != 0) {
+		std::cout << "ReadFile\n";
 		overlap.Offset = (fSize - fRemaining);
-		if (!ReadFile(fHandle, cursor, fSize, reinterpret_cast<LPDWORD>(&fRead), &overlap)) {
+		if (ReadFile(fHandle, cursor, fSize,
+			     &fRead,
+			     &overlap) != TRUE) {
+			displayWinErr("ReadFile");
 			CloseHandle(fHandle);
 			this->Destroy();
 			return -1;
@@ -187,8 +232,38 @@ Arena::Open(const char *path)
 	CloseHandle(fHandle);
 	return 0;
 }
-#endif
 
+
+int
+Arena::Create(const char *path, size_t fileSize, DWORD mode)
+{
+	HANDLE 		 fHandle;
+
+	std::cout << "Create::CreateFileA\n";
+	fHandle = CreateFileA(
+	    (LPSTR)path,
+	    GENERIC_READ|GENERIC_WRITE,
+	    mode,
+	    NULL,
+	    CREATE_ALWAYS,
+	    FILE_ATTRIBUTE_NORMAL,
+	    NULL);
+	if (fHandle == INVALID_HANDLE_VALUE) {
+		displayWinErr("Create::CreateFileA");
+		return -1;
+	}
+
+	std::cout << "SetFileValidData\n";
+	if (SetFileValidData(fHandle, fileSize) != fileSize) {
+		displayWinErr("SetFileValidData");
+		CloseHandle(fHandle);
+		return -1;
+	}
+
+	CloseHandle(fHandle);
+	return this->Open(path);
+}
+#endif
 
 bool
 Arena::CursorInArena(const uint8_t *cursor)
