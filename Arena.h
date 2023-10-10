@@ -116,7 +116,7 @@ public:
 #else
 
 	int MemoryMap(int memFileDes, size_t memSize)
-	{ throw NotImplemented("WIN32"); }
+	{ (void)memFileDes; (void)memSize; throw NotImplemented("WIN32"); }
 
 #endif
 	/// Create creates a new file, truncating it if it already exists. On

@@ -187,9 +187,8 @@ Arena::Open(const char *path)
 	size_t		 fSize;
 	size_t		 fRemaining;
 	auto		*cursor = this->store;
-	OVERLAPPED	 overlap;
+	OVERLAPPED	 overlap = {0};
 
-	std::cout << "CreateFileA\n";
 	fHandle = CreateFileA(
 	    (LPSTR)path,
 	    GENERIC_READ,
@@ -203,26 +202,36 @@ Arena::Open(const char *path)
 		return -1;
 	}
 
-	std::cout << "GetFileSizeEx\n";
-	if (!GetFileSizeEx(fHandle, reinterpret_cast<PLARGE_INTEGER>(&fSize))) {
+	if (SetFilePointer(fHandle, 0, 0, FILE_BEGIN) != 0) {
+		displayWinErr("SetFilePointer");
+		CloseHandle(fHandle);
+		return -1;
+	}
+
+	if (GetFileSizeEx(fHandle, reinterpret_cast<PLARGE_INTEGER>(&fSize)) != TRUE) {
 		displayWinErr("GetFileSizeEx");
 		CloseHandle(fHandle);
 		return -1;
 	}
 
 	this->SetAlloc(fSize);
+	cursor = this->NewCursor();
 
+	this->store[0] = 1;
 	fRemaining = fSize;
 	while (fRemaining != 0) {
-		std::cout << "ReadFile\n";
 		overlap.Offset = (fSize - fRemaining);
-		if (ReadFile(fHandle, cursor, fSize,
+		if (ReadFile(fHandle, cursor, fSize-1,
 			     &fRead,
 			     &overlap) != TRUE) {
-			displayWinErr("ReadFile");
-			CloseHandle(fHandle);
-			this->Destroy();
-			return -1;
+			auto errorCode = GetLastError();
+			if (errorCode != ERROR_HANDLE_EOF) {
+				displayWinErr("ReadFile");
+				CloseHandle(fHandle);
+				this->Destroy();
+				return -1;
+			}
+			break;
 		}
 
 		cursor += fRead;
@@ -239,7 +248,6 @@ Arena::Create(const char *path, size_t fileSize, DWORD mode)
 {
 	HANDLE 		 fHandle;
 
-	std::cout << "Create::CreateFileA\n";
 	fHandle = CreateFileA(
 	    (LPSTR)path,
 	    GENERIC_READ|GENERIC_WRITE,
@@ -253,7 +261,6 @@ Arena::Create(const char *path, size_t fileSize, DWORD mode)
 		return -1;
 	}
 
-	std::cout << "SetFileValidData\n";
 	if (SetFileValidData(fHandle, fileSize) != fileSize) {
 		displayWinErr("SetFileValidData");
 		CloseHandle(fHandle);
@@ -379,7 +386,7 @@ operator<<(std::ostream &os, Arena &arena)
 int
 Arena::Write(const char *path)
 {
-	FILE *arenaFile = NULL;
+	FILE *arenaFile = nullptr;
 	int retc = -1;
 
 #if defined(__posix__) || defined(__linux__)
