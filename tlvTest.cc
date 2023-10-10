@@ -99,7 +99,7 @@ main(int argc, const char *argv[])
 
 	Arena	arenaFile;
 
-	if (-1 == arenaFile.Create(ARENA_FILE, ARENA_SIZE, 0644)) {
+	if (-1 == arenaFile.Create(ARENA_FILE, ARENA_SIZE)) {
 		abort();
 	} else if (!runSuite(arenaFile, "arenaFile")) {
 		abort();

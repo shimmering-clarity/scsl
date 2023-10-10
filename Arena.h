@@ -35,15 +35,6 @@
 
 namespace klib {
 
-/// DefaultFileMode is a sane set of default permissions that can be used for a
-/// new Arena.
-#if defined(__linux__)
-static constexpr mode_t		DefaultFileMode = 0644;
-#elif defined(__WIN64__) || defined(__WIN32__) || defined(WIN32)
-static constexpr DWORD DefaultFileMode =
-    (FILE_SHARE_DELETE | FILE_SHARE_READ | FILE_SHARE_WRITE);
-#endif
-
 
 /// \enum ArenaType
 ///
@@ -126,10 +117,9 @@ public:
 	///
 	/// \param path The path to the file that should be created.
 	/// \param fileSize The size of the file to create.
-	/// \param mode The permissions to load.
 	/// \return Returns 0 on success and -1 on error.
 #if defined(__linux__)
-	int	 Create(const char *path, size_t fileSize, mode_t mode);
+	int	 Create(const char *path, size_t fileSize);
 #elif defined(__WIN64__) || defined(__WIN32__) || defined(WIN32)
 
 	int Create(const char *path, size_t fileSize, DWORD mode);
@@ -144,11 +134,7 @@ public:
 	///
 	/// \param path The path to the file to be loaded.
 	/// \return Returns 0 on success and -1 on error.
-#if defined(__linux__)
 	int 	 Open(const char *path);
-#elif defined(__WIN64__) || defined(__WIN32__) || defined(WIN32)
-	int Open(const char *path);
-#endif
 
 	/// NewCursor returns a pointer to the start of the memory in the arena.
 	///

@@ -123,25 +123,27 @@ Arena::Open(const char *path)
 
 
 int
-Arena::Create(const char *path, size_t fileSize, mode_t mode)
+Arena::Create(const char *path, size_t fileSize)
 {
+	FILE *fHandle = nullptr;
 	int newFileDes = 0;
 
 	if (this->size > 0) {
 		this->Destroy();
 	}
 
-	newFileDes = open(path, O_WRONLY | O_CREAT | O_TRUNC, mode);
-	if (newFileDes == -1) {
+
+	fHandle = fopen(path, "w");
+	if (fHandle == nullptr) {
 		return -1;
 	}
+	newFileDes = fileno(fHandle);
 
 	if (ftruncate(newFileDes, fileSize) == -1) {
 		return -1;
 	}
 
 	close(newFileDes);
-
 	return this->Open(path);
 }
 #elif defined(__WIN64__) || defined(__WIN32__) || defined(WIN32)

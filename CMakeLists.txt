@@ -34,9 +34,12 @@ set(SOURCE_FILES
         Dictionary.cc
         Exceptions.cpp
         Test.cc
-        TLV.cc)
+        TLV.cc
+        Commander.cpp
+        Commander.h)
 
 add_library(klib STATIC ${SOURCE_FILES} ${HEADER_FILES})
+
 add_executable(phonebook phonebook.cpp)
 target_link_libraries(phonebook klib)
 
@@ -67,8 +70,9 @@ add_custom_target(cloc
         WORKING_DIRECTORY ${PROJECT_SOURCE_DIR})
 
 configure_file(klib.pc.in klib.pc @ONLY)
-install(TARGETS klib LIBRARY DESTINATION ${PREFIX}/lib)
-install(FILES ${HEADER_FILES} DESTINATION include/{klib})
+install(TARGETS klib LIBRARY DESTINATION lib)
+install(TARGETS phonebook RUNTIME DESTINATION bin)
+install(FILES ${HEADER_FILES} DESTINATION include/klib)
 install(FILES klibConfig.cmake DESTINATION share/klib/cmake)
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/klib.pc DESTINATION lib/pkgconfig)
 install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/html DESTINATION share/doc/klib)

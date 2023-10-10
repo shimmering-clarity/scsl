@@ -64,7 +64,7 @@ Dictionary::Set(const char *key, uint8_t klen, const char *val, uint8_t vlen)
 }
 
 
-
+/// seek searches the Dictionary for the key.
 uint8_t	*
 Dictionary::seek(const char *key, uint8_t klen)
 {
@@ -91,6 +91,21 @@ bool
 Dictionary::Contains(const char *key, uint8_t klen)
 {
 	return this->seek(key, klen) != nullptr;
+}
+
+
+bool
+Dictionary::Delete(const char *key, uint8_t klen)
+{
+	auto	*cursor = this->seek(key, klen);
+
+	if (cursor == nullptr) {
+		return false;
+	}
+
+	TLV::DeleteRecord(this->arena, cursor);
+	TLV::DeleteRecord(this->arena, cursor);
+	return true;
 }
 
 
@@ -123,7 +138,6 @@ operator<<(std::ostream &os, const Dictionary &dictionary)
 	TLV::Record	 rec;
 
 	TLV::ReadFromMemory(rec, cursor);
-	os << "Dictionary KV pairs" << std::endl;
 	if (rec.Tag == TLV::TAG_EMPTY) {
 		os << "\t(NONE)" << std::endl;
 		return os;

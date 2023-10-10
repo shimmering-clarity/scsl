@@ -91,6 +91,13 @@ public:
 	/// \return True if the key is in the Dictionary, otherwise false.
 	bool Contains(const char *key, uint8_t klen);
 
+	/// Delete removes the key from the Dictionary.
+	///
+	/// \param key The key to look up.
+	/// \param klen The length of the key.
+	/// \return True if the key was removed, otherwise false.
+	bool Delete(const char *key, uint8_t klen);
+
 
 	/// DumpToFile is a wrapper aorund a call to Arena::Write on the
 	/// underlying Arena.
@@ -99,7 +106,7 @@ public:
 	/// \return 0 on success, -1 on failure.
 	int DumpToFile(const char *path);
 
-	/// operator<< writes the key pairs to the output stream.
+	/// operator<< writes the key pairs phonto the output stream.
 	///
 	/// \param os The output stream to write to.
 	/// \param dictionary The dictionary to write out.

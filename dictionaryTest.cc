@@ -45,7 +45,7 @@ main(int argc, const char *argv[])
 	std::cout << "TESTPROG: " << argv[0] << std::endl;
 
 	#if defined(__linux__)
-	if (arena.Create(ARENA_FILE, ARENA_SIZE, 0644) == -1) {
+	if (arena.Create(ARENA_FILE, ARENA_SIZE) == -1) {
 		abort();
 	}
 	#else
