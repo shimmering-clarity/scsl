@@ -188,7 +188,12 @@ private:
 /// Write an Arena out to the output stream.
 ///
 /// The resulting output looks something like
+/// ```
 /// Arena<allocated>@0x7fff91dfad70,store<128B>@0x0055d6c5881ec0.
+///         ^          ^                    ^     ^
+///         |          +- base memory       |     +- store memory
+///         +- arena type                   +- arena size
+/// ```
 ///
 /// \param os
 /// \param arena

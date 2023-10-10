@@ -180,8 +180,10 @@ Buffer::Resize(size_t newCapacity)
 		memcpy(newContents, this->contents, this->length);
 	}
 
-	delete this->contents;
-	this->contents = nullptr;
+	if (this->length > 0) {
+		delete[] this->contents;
+		this->contents = nullptr;
+	}
 	this->contents = newContents;
 	this->capacity = newCapacity;
 }
@@ -223,7 +225,7 @@ Buffer::Reclaim()
 		return;
 	}
 
-	delete this->contents;
+	delete[] this->contents;
 	this->contents = nullptr;
 	this->capacity = 0;
 }
@@ -289,6 +291,7 @@ Buffer::shiftRight(size_t offset, size_t delta)
 
 	if (this->length == 0) return 0;
 
+
 	memmove(this->contents + (offset + delta), this->contents + offset,
 		this->length);
 	return resized;
@@ -298,8 +301,21 @@ Buffer::shiftRight(size_t offset, size_t delta)
 bool
 Buffer::shiftLeft(size_t offset, size_t delta)
 {
-	memmove(this->contents + offset, this->contents + (offset + delta),
-		this->length);
+	if (delta == 0) {
+		return false;
+	}
+
+	if ((offset+delta) > this->length) {
+		abort();
+	}
+
+	for (auto i = offset; i <= (this->length-delta); i++) {
+		this->contents[i] = this->contents[i+delta];
+	}
+
+	for (auto i = this->length-delta; i < this->length; i++) {
+		this->contents[i] = 0;
+	}
 
 	if (this->AutoTrimIsEnabled()) {
 		return this->Trim() != 0;

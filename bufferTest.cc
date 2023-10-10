@@ -12,19 +12,27 @@ main(int argc, char *argv[])
 	(void) argv;
 
 	Buffer buffer("hlo, world");
+	Buffer helloWorld("hello, world!");
+	Buffer goodbyeWorld("goodbye, world");
+	Buffer goodbyeCruelWorld("goodbye, cruel world");
 
 	std::cout << buffer << std::endl;
 
 	buffer.Insert(1, (uint8_t *) "el", 2);
 	buffer.Append('!');
+	assert(buffer == helloWorld);
 
 	std::cout << buffer << std::endl;
 
 	buffer.Remove(buffer.Length() - 1);
+	std::cout << buffer << std::endl;
 	buffer.Remove(0, 5);
+	std::cout << buffer << std::endl;
 	buffer.Insert(0, 'g');
+	std::cout << buffer << std::endl;
 	buffer.Insert(1, (uint8_t *) "oodbye", 6);
 	std::cout << buffer << std::endl;
+	assert(buffer == goodbyeWorld);
 	buffer.Insert(9, (uint8_t *)"cruel ", 6);
 
 	std::cout << buffer << std::endl;

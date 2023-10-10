@@ -20,20 +20,39 @@
 /// ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS
 /// SOFTWARE.
 ///
-/// \mainpage klib documentation
-/// Hello, world.
-///
-/// \section Introduction
-///
-/// This is a collection of data structures and subroutines that I find
-/// useful in building things.
 
 #ifndef KLIB_KLIB_H
 #define KLIB_KLIB_H
 
 
 /// klib is the top-level namespace containing all the code in this library.
-namespace klib {}
+namespace klib {
+
+/// \mainpage klib documentation
+///
+/// \section Introduction
+///
+/// This is a collection of data structures and subroutines that I find
+/// useful in building things.
+///
+/// This library arose from two main use cases.
+///
+/// \subsection The modem
+///
+/// On the one hand, I was building a wireless modem for some Z80 computers I
+/// have. I needed to be able to store a phonebook of SSIDs and WPA keys, as
+/// well as short names to host:port descriptors. I had a limited amount of of
+/// persistent NVRAM storage and no SD card or other removeable media, so
+/// typical desktop-oriented serialization mechanisms weren't going to really
+/// work well. Furthermore, when working with microcontrollers, I prefer not to
+/// dynamically allocate memory as much as possible. This led to building out
+/// Arena, TLV::Record to store the records, and finally Dictionary to make use
+/// of both of them.
+///
+///
+
+
+}
 
 
 #endif // KLIB_KLIB_H

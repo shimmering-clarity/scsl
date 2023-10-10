@@ -4,6 +4,8 @@ project(klib LANGUAGES CXX
         DESCRIPTION "Kyle's C++ library")
 
 set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_VERBOSE_MAKEFILES TRUE)
+set(VERBOSE YES)
 
 if (MSVC)
     add_compile_options("/W4" "$<$<CONFIG:RELEASE>:/O2>")
