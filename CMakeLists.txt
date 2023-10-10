@@ -26,7 +26,8 @@ set(HEADER_FILES
         Dictionary.h
         Exceptions.h
         Test.h
-        TLV.h)
+        TLV.h
+        WinHelpers.h)
 
 set(SOURCE_FILES
         Arena.cc
@@ -36,7 +37,8 @@ set(SOURCE_FILES
         Test.cc
         TLV.cc
         Commander.cpp
-        Commander.h)
+        Commander.h
+        WinHelpers.cpp)
 
 add_library(klib STATIC ${SOURCE_FILES} ${HEADER_FILES})
 

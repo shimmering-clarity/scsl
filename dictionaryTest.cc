@@ -26,7 +26,7 @@ testSetKV(Dictionary &pb, const char *k, uint8_t kl, const char *v,
 	  uint8_t vl)
 {
 	bool	ok;
-	std::cout << "test Set " << k << "->" << v << std::endl;
+	std::cout << "test Set " << k << "->" << v << "\n";
 	ok = pb.Set(k, kl, v, vl) == 0;
 	std::cout << "\tSet complete\n";
 	return ok;
@@ -42,7 +42,7 @@ main(int argc, const char *argv[])
 	TLV::Record	value;
 	TLV::Record	expect;
 
-	std::cout << "TESTPROG: " << argv[0] << std::endl;
+	std::cout << "TESTPROG: " << argv[0] << "\n";
 
 	#if defined(__linux__)
 	if (arena.Create(ARENA_FILE, ARENA_SIZE) == -1) {
@@ -53,7 +53,7 @@ main(int argc, const char *argv[])
 		abort();
 	}
 	#endif
-	std::cout << arena << std::endl;
+	std::cout << arena << "\n";
 	TLV::SetRecord(expect, DICTIONARY_TAG_VAL, TEST_KVSTRLEN3, TEST_KVSTR3);
 
 	Dictionary	dict(arena);
@@ -73,17 +73,17 @@ main(int argc, const char *argv[])
 
 	assert(cmpRecord(value, expect));
 
-	std::cout << "test overwriting key" << std::endl;
+	std::cout << "test overwriting key" << "\n";
 	assert(testSetKV(dict, TEST_KVSTR2, TEST_KVSTRLEN2, TEST_KVSTR6,
 			 TEST_KVSTRLEN6));
 	std::cout << dict;
 	TLV::SetRecord(expect, DICTIONARY_TAG_VAL, TEST_KVSTRLEN6, TEST_KVSTR6);
-	std::cout << "\tlookup" << std::endl;
+	std::cout << "\tlookup" << "\n";
 	assert(dict.Lookup(TEST_KVSTR2, TEST_KVSTRLEN2, value));
-	std::cout << "\tcompare records" << std::endl;
+	std::cout << "\tcompare records" << "\n";
 	assert(cmpRecord(value, expect));
 
-	std::cout << "\tadd new key to dictionary" << std::endl;
+	std::cout << "\tadd new key to dictionary" << "\n";
 	assert(testSetKV(dict, TEST_KVSTR3, TEST_KVSTRLEN3, TEST_KVSTR5,
 			 TEST_KVSTRLEN5));
 	std::cout << dict;
@@ -92,7 +92,7 @@ main(int argc, const char *argv[])
 	assert(dict.Lookup(TEST_KVSTR4, TEST_KVSTRLEN4, value));
 	assert(cmpRecord(value, expect));
 
-	std::cout << "OK" <<std::endl;
+	std::cout << "OK" <<"\n";
 
 	// Dump the generated arena for inspection later.
 	#if defined(__linux__)

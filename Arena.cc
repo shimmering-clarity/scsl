@@ -13,10 +13,8 @@
 
 #define PROT_RW                (PROT_WRITE|PROT_READ)
 #elif defined(__WIN64__) || defined(__WIN32__) || defined(WIN32)
-#include <Windows.h>
-#include <winbase.h>
-#include <fileapi.h>
-#include <strsafe.h>
+#include "WinHelpers.h"
+#pragma comment(lib, "advapi32.lib")
 #endif
 
 #include <ios>
@@ -136,73 +134,35 @@ Arena::Create(const char *path, size_t fileSize)
 	return this->Open(path);
 }
 #elif defined(__WIN64__) || defined(__WIN32__) || defined(WIN32)
-static void
-displayWinErr(LPTSTR lpszFunction)
-{
-	// Retrieve the system error message for the last-error code
-
-	LPVOID lpMsgBuf;
-	LPVOID lpDisplayBuf;
-	DWORD dw = GetLastError();
-
-	FormatMessage(
-	    FORMAT_MESSAGE_ALLOCATE_BUFFER |
-	    FORMAT_MESSAGE_FROM_SYSTEM |
-	    FORMAT_MESSAGE_IGNORE_INSERTS,
-	    NULL,
-	    dw,
-	    MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
-	    (LPTSTR) &lpMsgBuf,
-	    0, NULL );
-
-	// Display the error message and exit the process
-
-	lpDisplayBuf = (LPVOID)LocalAlloc(LMEM_ZEROINIT,
-					  (lstrlen((LPCTSTR)lpMsgBuf) + lstrlen((LPCTSTR)lpszFunction) + 40) * sizeof(TCHAR));
-	StringCchPrintf((LPTSTR)lpDisplayBuf,
-			LocalSize(lpDisplayBuf) / sizeof(TCHAR),
-			TEXT("%s failed with error %d: %s"),
-			lpszFunction, dw, lpMsgBuf);
-	MessageBox(NULL, (LPCTSTR)lpDisplayBuf, TEXT("Error"), MB_OK);
-
-	LocalFree(lpMsgBuf);
-	LocalFree(lpDisplayBuf);
-}
-
-
 int
 Arena::Open(const char *path)
 {
-	HANDLE 		 fHandle;
-	DWORD 		 fRead = 0;
-	size_t		 fSize;
-	size_t		 fRemaining;
-	auto		*cursor = this->store;
-	OVERLAPPED	 overlap = {0};
+	HANDLE fHandle;
+	DWORD fRead = 0;
+	size_t fSize;
+	size_t fRemaining;
+	auto *cursor = this->store;
+	OVERLAPPED overlap = {0};
 
 	fHandle = CreateFileA(
-	    (LPSTR)path,
+	    (LPSTR) path,
 	    GENERIC_READ,
-	    (FILE_SHARE_DELETE|FILE_SHARE_READ|FILE_SHARE_WRITE),
+	    (FILE_SHARE_DELETE | FILE_SHARE_READ | FILE_SHARE_WRITE),
 	    NULL,
 	    OPEN_ALWAYS,
 	    FILE_ATTRIBUTE_NORMAL,
 	    NULL);
 	if (fHandle == INVALID_HANDLE_VALUE) {
-		displayWinErr("CreateFileA");
-		return -1;
+		return Windows::DisplayWinError("CreateFileA", NULL);
 	}
 
 	if (SetFilePointer(fHandle, 0, 0, FILE_BEGIN) != 0) {
-		displayWinErr("SetFilePointer");
-		CloseHandle(fHandle);
-		return -1;
+		return Windows::DisplayWinError("SetFilePointer", fHandle);
 	}
 
-	if (GetFileSizeEx(fHandle, reinterpret_cast<PLARGE_INTEGER>(&fSize)) != TRUE) {
-		displayWinErr("GetFileSizeEx");
-		CloseHandle(fHandle);
-		return -1;
+	if (GetFileSizeEx(fHandle, reinterpret_cast<PLARGE_INTEGER>(&fSize)) !=
+	    TRUE) {
+		return Windows::DisplayWinError("GetFileSizeEx", fHandle);
 	}
 
 	this->SetAlloc(fSize);
@@ -212,15 +172,14 @@ Arena::Open(const char *path)
 	fRemaining = fSize;
 	while (fRemaining != 0) {
 		overlap.Offset = (fSize - fRemaining);
-		if (ReadFile(fHandle, cursor, fSize-1,
+		if (ReadFile(fHandle, cursor, fSize - 1,
 			     &fRead,
 			     &overlap) != TRUE) {
 			auto errorCode = GetLastError();
 			if (errorCode != ERROR_HANDLE_EOF) {
-				displayWinErr("ReadFile");
-				CloseHandle(fHandle);
 				this->Destroy();
-				return -1;
+
+				return Windows::DisplayWinError("ReadFile", fHandle);
 			}
 			break;
 		}
@@ -235,32 +194,15 @@ Arena::Open(const char *path)
 
 
 int
-Arena::Create(const char *path, size_t fileSize, DWORD mode)
+Arena::Create(const char *path, size_t fileSize)
 {
-	HANDLE 		 fHandle;
-
-	fHandle = CreateFileA(
-	    (LPSTR)path,
-	    GENERIC_READ|GENERIC_WRITE,
-	    mode,
-	    NULL,
-	    CREATE_ALWAYS,
-	    FILE_ATTRIBUTE_NORMAL,
-	    NULL);
-	if (fHandle == INVALID_HANDLE_VALUE) {
-		displayWinErr("Create::CreateFileA");
-		return -1;
+	auto	errorCode = Windows::CreateFixedSizeFile(path, fileSize);
+	if (errorCode != 0) {
+		return errorCode;
 	}
-
-	if (SetFileValidData(fHandle, fileSize) != fileSize) {
-		displayWinErr("SetFileValidData");
-		CloseHandle(fHandle);
-		return -1;
-	}
-
-	CloseHandle(fHandle);
 	return this->Open(path);
 }
+
 #endif
 
 bool
@@ -308,18 +250,18 @@ Arena::Destroy()
 			delete this->store;
 			break;
 #if defined(__linux__)
-		case ArenaType::MemoryMapped:
-			if (munmap(this->store, this->size) == -1) {
-				abort();
-				return;
-			}
+			case ArenaType::MemoryMapped:
+				if (munmap(this->store, this->size) == -1) {
+					abort();
+					return;
+				}
 
-			if (close(this->fd) == -1) {
-				abort();
-			}
+				if (close(this->fd) == -1) {
+					abort();
+				}
 
-			this->fd = 0;
-			break;
+				this->fd = 0;
+				break;
 #endif
 		default:
 #if defined(NDEBUG)
@@ -342,7 +284,7 @@ operator<<(std::ostream &os, Arena &arena)
 	auto cursor = arena.NewCursor();
 	char cursorString[33] = {0};
 	snprintf(cursorString, 32, "%#016llx",
-			(long long unsigned int)cursor);
+		 (long long unsigned int) cursor);
 
 	os << "Arena<";
 	switch (arena.Type()) {
@@ -356,9 +298,9 @@ operator<<(std::ostream &os, Arena &arena)
 			os << "allocated";
 			break;
 #if defined(__linux__)
-		case ArenaType::MemoryMapped:
-			os << "mmap/file";
-			break;
+			case ArenaType::MemoryMapped:
+				os << "mmap/file";
+				break;
 #endif
 		default:
 			os << "unknown (this is a bug)";
@@ -384,7 +326,7 @@ Arena::Write(const char *path)
 	arenaFile = fopen(path, "w");
 	if (arenaFile == nullptr) {
 #else
-		if (fopen_s(&arenaFile, path, "w") != 0) {
+	if (fopen_s(&arenaFile, path, "w") != 0) {
 #endif
 		return -1;
 	}
@@ -404,14 +346,14 @@ Arena::Write(const char *path)
 uint8_t &
 Arena::operator[](size_t index)
 {
-		if (index > this->size) {
+	if (index > this->size) {
 #if defined(DESKTOP_BUILD) and !defined(KLIB_NO_ASSERT)
-			throw std::range_error("index out of range");
+		throw std::range_error("index out of range");
 #else
-			abort();
+		abort();
 #endif
-		}
-		return this->store[index];
+	}
+	return this->store[index];
 }
 
 
