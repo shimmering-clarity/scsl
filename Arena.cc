@@ -268,7 +268,8 @@ operator<<(std::ostream &os, Arena &arena)
 {
 	auto cursor = arena.Store();
 	char cursorString[33] = {0};
-	snprintf(cursorString, 32, "%#016llx", cursor);
+	snprintf(cursorString, 32, "%#016llx",
+			(long long unsigned int)cursor);
 
 	os << "Arena<";
 	switch (arena.Type()) {

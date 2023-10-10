@@ -4,7 +4,7 @@ find_package(Doxygen)
 if (${DOXYGEN_FOUND})
 
 doxygen_add_docs(klib_docs
-	${HEADER_FILES} ${SOURCE_FILES}
-	USE_STAMP_FILE)
+	${HEADER_FILES} ${SOURCE_FILES})
+#	USE_STAMP_FILE)
 
 endif ()

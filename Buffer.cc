@@ -1,6 +1,24 @@
-//
-// Created by kyle on 2023-10-09.
-//
+///
+/// \file Buffer.cc
+/// \author K. Isom <kyle@imap.cc>
+/// \date 2023-10-09
+///
+/// \section COPYRIGHT
+/// Copyright 2023 K. Isom <kyle@imap.cc>
+///
+/// Permission to use, copy, modify, and/or distribute this software for
+/// any purpose with or without fee is hereby granted, provided that the
+/// above copyright notice and this permission notice appear in all copies.
+///
+/// THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL
+/// WARRANTIES WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED
+/// WARRANTIES OF MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR
+/// BE LIABLE FOR ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES
+/// OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS,
+/// WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION,
+/// ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS
+/// SOFTWARE.
+///
 
 #include <cassert>
 #include <cstring>
@@ -24,8 +42,6 @@ nearestPower(size_t x)
 		return 0;
 	}
 
-	std::cout << "x -> ";
-
 	x--;
 
 	x |= x >> 1;
@@ -35,32 +51,37 @@ nearestPower(size_t x)
 	x |= x >> 16;
 	x |= x >> 32;
 
-	std::cout << x + 1 << std::endl;
-
 	return x + 1;
 }
 
 
 Buffer::Buffer()
-    : contents(nullptr), length(0), capacity(0)
+    : contents(nullptr), length(0), capacity(0), autoTrim(true)
 {
 	this->Resize(defaultCapacity);
 }
 
 
 Buffer::Buffer(size_t initialCapacity)
-    : contents(nullptr), length(0), capacity(0)
+    : contents(nullptr), length(0), capacity(0), autoTrim(true)
 {
 	this->Resize(initialCapacity);
 }
 
 
 Buffer::Buffer(const char *data)
-    : contents(nullptr), length(0), capacity(0)
+    : contents(nullptr), length(0), capacity(0), autoTrim(true)
 {
 	size_t datalen = strnlen(data, maxReasonableLine);
 
 	this->Append((uint8_t *) data, datalen);
+}
+
+
+Buffer::Buffer(const std::string s)
+    : contents(nullptr), length(0), capacity(0), autoTrim(true)
+{
+	this->Append(s);
 }
 
 
@@ -72,8 +93,16 @@ Buffer::Append(const char *s)
 	return this->Append((uint8_t *) s, slen);
 }
 
+
 bool
-Buffer::Append(uint8_t *data, size_t datalen)
+Buffer::Append(const std::string s)
+{
+	return this->Append((const uint8_t *) s.c_str(), s.size());
+}
+
+
+bool
+Buffer::Append(const uint8_t *data, const size_t datalen)
 {
 	auto resized = false;
 	auto newCap = this->mustGrow(datalen);
@@ -89,15 +118,16 @@ Buffer::Append(uint8_t *data, size_t datalen)
 	return resized;
 }
 
+
 bool
-Buffer::Append(uint8_t c)
+Buffer::Append(const uint8_t c)
 {
 	return this->Append(&c, 1);
 }
 
 
 bool
-Buffer::Insert(size_t index, const char *s)
+Buffer::Insert(const size_t index, const char *s)
 {
 	size_t slen = strnlen(s, maxReasonableLine);
 
@@ -106,7 +136,14 @@ Buffer::Insert(size_t index, const char *s)
 
 
 bool
-Buffer::Insert(size_t index, uint8_t *data, size_t datalen)
+Buffer::Insert(const size_t index, const std::string s)
+{
+	return this->Insert(index, (const uint8_t *) s.c_str(), s.size());
+}
+
+
+bool
+Buffer::Insert(const size_t index, const uint8_t *data, const size_t datalen)
 {
 	auto resized = this->shiftRight(index, datalen);
 
@@ -115,15 +152,16 @@ Buffer::Insert(size_t index, uint8_t *data, size_t datalen)
 	return resized;
 }
 
+
 bool
-Buffer::Insert(size_t index, uint8_t c)
+Buffer::Insert(const size_t index, const uint8_t c)
 {
 	return this->Insert(index, &c, 1);
 }
 
 
 bool
-Buffer::Remove(size_t index, size_t count)
+Buffer::Remove(const size_t index, const size_t count)
 {
 	auto resized = this->shiftLeft(index, count);
 
@@ -180,6 +218,7 @@ Buffer::Clear()
 	if (this->length == 0) {
 		return;
 	}
+
 	memset(this->contents, 0, this->length);
 	this->length = 0;
 }
@@ -187,23 +226,16 @@ Buffer::Clear()
 void
 Buffer::Reclaim()
 {
-	std::cout << "clear" << std::endl;
 	this->Clear();
 
-	std::cout << "nullptr check" << std::endl;
 	if (this->contents == nullptr) {
-		std::cout << "assert checks" << std::endl;
 		assert(this->length == 0);
 		assert(this->capacity == 0);
 		return;
 	}
 
-	std::cout << "delete " << this->Capacity() << "B" << std::endl;
-	this->HexDump(std::cout);
 	delete this->contents;
-	std::cout << "reset contents" << std::endl;
 	this->contents = nullptr;
-	std::cout << "reset capacity" << std::endl;
 	this->capacity = 0;
 }
 
@@ -223,13 +255,13 @@ void
 Buffer::HexDump(std::ostream &os)
 {
 #ifndef NDEBUG
-	size_t		index = 0;
+	size_t index = 0;
 
 	os << std::hex;
 	os << std::setfill('0');
 
 	for (index = 0; index < this->length; index++) {
-		bool	eol = (index % 16) == 0;
+		bool eol = (index % 16) == 0;
 		if (eol && (index > 0)) {
 			os << std::endl;
 		}
@@ -240,7 +272,7 @@ Buffer::HexDump(std::ostream &os)
 			os << std::setw(2);
 		}
 
-		os << (unsigned short)this->contents[index];
+		os << (unsigned short) this->contents[index];
 
 		if ((index % 15) != 0 || (index == 0)) {
 			os << " ";
@@ -268,7 +300,8 @@ Buffer::shiftRight(size_t offset, size_t delta)
 
 	if (this->length == 0) return 0;
 
-	memmove(this->contents + (offset + delta), this->contents + offset, this->length);
+	memmove(this->contents + (offset + delta), this->contents + offset,
+		this->length);
 	return resized;
 }
 
@@ -276,20 +309,43 @@ Buffer::shiftRight(size_t offset, size_t delta)
 bool
 Buffer::shiftLeft(size_t offset, size_t delta)
 {
-//	for (size_t i = offset; i < this->length; i++) {
-//		this->contents[i] = this->contents[i+delta];
-//	}
+	memmove(this->contents + offset, this->contents + (offset + delta),
+		this->length);
 
-	memmove(this->contents + offset, this->contents + (offset + delta), this->length);
-
-	return this->Trim() != 0;
+	if (this->AutoTrimIsEnabled()) {
+		return this->Trim() != 0;
+	}
+	return false;
 }
 
 
 uint8_t &
 Buffer::operator[](size_t index)
 {
+	if (index > this->length) {
+		throw std::range_error("array index out of bounds");
+	}
 	return this->contents[index];
+}
+
+
+bool
+operator==(const Buffer &lhs, const Buffer &rhs)
+{
+	if (lhs.length != rhs.length) {
+		return false;
+	}
+
+	return memcmp(lhs.contents, rhs.contents, rhs.length) == 0;
+}
+
+
+std::ostream &
+operator<<(std::ostream &os, const Buffer &buf)
+{
+//	std::string s((const char *)buf.Contents(), buf.Length());
+	os << const_cast<uint8_t *>(buf.Contents());
+	return os;
 }
 
 

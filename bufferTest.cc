@@ -1,6 +1,8 @@
+#include <cassert>
 #include <iostream>
 
 #include "Buffer.h"
+using namespace klib;
 
 
 int
@@ -9,35 +11,26 @@ main(int argc, char *argv[])
 	(void) argc;
 	(void) argv;
 
-	klib::Buffer buffer("hlo, world");
+	Buffer buffer("hlo, world");
 
-	std::cout << buffer.Contents() << std::endl;
+	std::cout << buffer << std::endl;
 
 	buffer.Insert(1, (uint8_t *) "el", 2);
 	buffer.Append('!');
 
-	std::cout << buffer.Contents() << std::endl;
+	std::cout << buffer << std::endl;
 
-	std::cout << "remove end" << std::endl;
 	buffer.Remove(buffer.Length() - 1);
-
-	std::cout << "remove start" << std::endl;
 	buffer.Remove(0, 5);
-
-	std::cout << "insert char" << std::endl;
 	buffer.Insert(0, 'g');
-
-	std::cout << "insert chunk" << std::endl;
 	buffer.Insert(1, (uint8_t *) "oodbye", 6);
-	std::cout << "cruel" << std::endl;
+	std::cout << buffer << std::endl;
 	buffer.Insert(9, (uint8_t *)"cruel ", 6);
-	std::cout << buffer.Contents() << std::endl;
+
+	std::cout << buffer << std::endl;
 	buffer.HexDump(std::cout);
 
-	std::cout << "reclaim" << std::endl;
 	buffer.Reclaim();
-
-	std::cout << "append" << std::endl;
 	buffer.Append("and now for something completely different...");
 
 	std::cout << buffer.Contents() << std::endl;
@@ -47,6 +40,12 @@ main(int argc, char *argv[])
 	buffer.Trim();
 	std::cout << "Length: " << buffer.Length() << ", capacity " << buffer.Capacity() << std::endl;
 
+	Buffer	buffer2("and now for something completely different...");
+	assert(buffer == buffer2);
+
+	buffer2.Remove(buffer2.Length()-3, 3);
+	std::cout << buffer << std::endl;
+	assert(buffer != buffer2);
 
 	return 0;
 }

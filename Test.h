@@ -19,7 +19,7 @@ class AssertionFailed : public std::exception {
 public:
 	explicit AssertionFailed(std::string message);
 
-	char *what() const noexcept override;
+	char *what();
 
 public:
 	std::string msg;

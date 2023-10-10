@@ -33,7 +33,7 @@ AssertionFailed::AssertionFailed(std::string message) : msg(message)
 }
 
 char *
-AssertionFailed::what() const noexcept
+AssertionFailed::what() 
 {
 	return const_cast<char *>(this->msg.c_str());
 }

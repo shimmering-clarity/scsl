@@ -1,8 +1,28 @@
-/// @file Arena.h
-/// @author K. Isom
-/// @brief Memory management using an arena.
-/// @section DESCRIPTION
+///
+/// \file Arena.h
+/// \author K. Isom
+/// \date 2023-10-06
+/// \brief Memory management using an arena.
+///
+/// \section COPYRIGHT
+/// Copyright 2023 K. Isom <kyle@imap.cc>
+///
+/// Permission to use, copy, modify, and/or distribute this software for
+/// any purpose with or without fee is hereby granted, provided that the
+/// above copyright notice and this permission notice appear in all copies.
+///
+/// THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL
+/// WARRANTIES WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED
+/// WARRANTIES OF MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR
+/// BE LIABLE FOR ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES
+/// OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS,
+/// WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION,
+/// ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS
+/// SOFTWARE.
+///
+/// \section DESCRIPTION
 /// Arena defines a memory management backend for pre-allocating memory.
+
 
 #ifndef KIMODEM_ARENA_H
 #define KIMODEM_ARENA_H
@@ -17,13 +37,20 @@
 namespace klib {
 
 
+/// \enum ArenaType describes the type of #Arena.
 enum ArenaType : uint8_t {
+	/// ARENA_UNINIT is an unintialized arena.
 	ARENA_UNINIT,
+	/// ARENA_STATIC is an arena backed by a static block of memory.
 	ARENA_STATIC,
+	/// ARENA_ALLOC is an arena backed by allocated memory.
 	ARENA_ALLOC,
+	/// ARENA_MMAP is an arena backed by a memory-mapped file.
 	ARENA_MMAP,
 };
 
+
+/// Arena is the class that implements a memory arena.
 class Arena {
 public:
 	Arena();
