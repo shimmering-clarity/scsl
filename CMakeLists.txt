@@ -1,7 +1,8 @@
 cmake_minimum_required(VERSION 3.25)
-project(klib CXX)
+project(klib LANGUAGES CXX VERSION 0.0.1)
 
 set(CMAKE_CXX_STANDARD 14)
+
 if(MSVC)
 	add_compile_options("/W4" "$<$<CONFIG:RELEASE>:/O2>")
 else()
@@ -29,12 +30,26 @@ install(TARGETS klib LIBRARY DESTINATION ${PREFIX}/lib)
 install(FILES ${HEADER_FILES} DESTINATION include/klib)
 install(FILES klibConfig.cmake DESTINATION share/klib/cmake)
 
+include(CTest)
+enable_testing()
+
 add_executable(tlv_test tlvTest.cc)
 target_link_libraries(tlv_test klib)
+add_test(tlvTest tlv_test)
 
 add_executable(dictionary_test dictionaryTest.cc)
 target_link_libraries(dictionary_test klib)
+add_test(dictionaryTest dictionary_test)
 
 add_executable(buffer_test bufferTest.cc)
 target_link_libraries(buffer_test klib)
+add_test(bufferTest buffer_test)
 
+include(CMakePack.txt)
+
+include(CMakePackageConfigHelpers)
+write_basic_package_version_file(
+	klibConfig.cmake
+	VERSION ${PACKAGE_VERSION}
+	COMPATIBILITY AnyNewerVersion
+)
