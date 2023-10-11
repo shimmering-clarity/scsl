@@ -83,6 +83,7 @@ write_basic_package_version_file(
         COMPATIBILITY AnyNewerVersion
 )
 
+if (${CMAKE_CURRENT_SOURCE_DIR} STREQUAL ${CMAKE_CURRENT_BINARY_DIR})
 add_custom_target(cloc
         COMMAND cloc ${SOURCE_FILES} ${HEADER_FILES}
         WORKING_DIRECTORY ${PROJECT_SOURCE_DIR})
@@ -96,3 +97,4 @@ install(FILES ${CMAKE_CURRENT_BINARY_DIR}/klib.pc DESTINATION lib/pkgconfig)
 
 include(CMakePack.txt)
 include(CMakeDocs.txt)
+endif()

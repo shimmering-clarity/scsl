@@ -33,3 +33,4 @@ set(CPACK_SOURCE_IGNORE_FILES
 
 include (CPack)
 add_custom_target(package_docs DEPENDS klib_docs package package_source)
+
