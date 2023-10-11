@@ -7,7 +7,10 @@ set(DOXYGEN_GENERATE_LATEX YES)
 #set(DOXYGEN_EXTRACT_ALL YES)
 
 doxygen_add_docs(klib_docs
-	${HEADER_FILES} ${SOURCE_FILES})
-#	USE_STAMP_FILE)
+	${HEADER_FILES} ${SOURCE_FILES}
+	USE_STAMP_FILE)
+add_dependencies(klib klib_docs)
+install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/html DESTINATION share/doc/klib)
+install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/man DESTINATION share)
 
 endif ()
