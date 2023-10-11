@@ -115,10 +115,10 @@ public:
 #if defined(__linux__)
 	int	 Create(const char *path, size_t fileSize);
 #elif defined(__WIN64__) || defined(__WIN32__) || defined(WIN32)
-
 	int Create(const char *path, size_t fileSize);
 
 #endif
+
 	/// Open reads a file into the arena; the file must already exist. On
 	/// Unix-based platforms, the arena will be backed by a memory via
 	/// #MemoryMap. On other platforms (e.g. Windows), the arena will read

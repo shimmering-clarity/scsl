@@ -38,11 +38,11 @@ set(SOURCE_FILES
         TLV.cc
         Commander.cpp
         Commander.h
-        WinHelpers.cpp)
+        WinHelpers.cc)
 
 add_library(klib STATIC ${SOURCE_FILES} ${HEADER_FILES})
 
-add_executable(phonebook phonebook.cpp)
+add_executable(phonebook phonebook.cc)
 target_link_libraries(phonebook klib)
 
 include(CTest)

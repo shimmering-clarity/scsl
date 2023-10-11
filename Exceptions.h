@@ -12,9 +12,16 @@
 namespace klib {
 
 
+/// NotImplemented is an exception reserved for unsupported platforms.
+///
+/// It is used to mark functionality included for compatibility, and useful for
+/// debugging.
 class NotImplemented : public std::exception {
 public:
+	/// NotImplemented exceptions are constructed with a platform name.
 	explicit NotImplemented(const char *pl) : platform((char *)pl) {}
+
+	/// what returns a message naming the platform.
 	char *what() {
 		return this->platform;
 	}

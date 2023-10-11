@@ -45,7 +45,7 @@ namespace klib {
 ///
 /// This library arose from two main use cases.
 ///
-/// \subsection The modem
+/// \subsection kimodem The modem
 ///
 /// On the one hand, I was building a wireless modem for some Z80 computers I
 /// have. I needed to be able to store a phonebook of SSIDs and WPA keys, as
@@ -60,7 +60,7 @@ namespace klib {
 /// Closely related to this, I've been working on building an ARM-based handheld
 /// computer, for which I would also need a memory arena.
 ///
-/// \subsection The text editors
+/// \subsection textedit The text editors
 ///
 /// Some time ago, I wrote a console text editor of my own; then later, started
 /// working on a graphical editor. For this, I needed some data structures to
