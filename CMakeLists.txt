@@ -10,7 +10,15 @@ set(VERBOSE YES)
 if (MSVC)
     add_compile_options("/W4" "$<$<CONFIG:RELEASE>:/O2>")
 else ()
-    add_compile_options("-Wall" "-Wextra" "-Werror" "$<$<CONFIG:RELEASE>:-O3>")
+    # compile options:
+    #   -Wall                   Default to all errors.
+    #   -Wextra                 And a few extra.
+    #   -Werror                 And require them to be fixed to build.
+    #   -Wno-unused-function    This is a library. Not every function is used here.
+    #   -Wno-unused-parameter   Some functions have parameters defined for compatibility,
+    #                           and aren't used in the implementation.
+
+    add_compile_options("-Wall" "-Wextra" "-Werror" "-Wno-unused-function" "-Wno-unused-parameter" "$<$<CONFIG:RELEASE>:-O2>")
     if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
         add_compile_options("-stdlib=libc++")
     else ()
@@ -33,10 +41,10 @@ set(SOURCE_FILES
         Arena.cc
         Buffer.cc
         Dictionary.cc
-        Exceptions.cpp
+        Exceptions.cc
         Test.cc
         TLV.cc
-        Commander.cpp
+        Commander.cc
         Commander.h
         WinHelpers.cc)
 

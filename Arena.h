@@ -96,7 +96,7 @@ public:
 	/// \param memFileDes File descriptor to map into memory.
 	/// \param memSize The size of memory to map.
 	/// \return Returns 0 on success and -1 on error.
-#if defined(__linux__)
+#if defined(__posix__) || defined(__linux__) || defined(__APPLE__)
 	int 	 MemoryMap(int memFileDes, size_t memSize);
 #else
 
@@ -112,7 +112,7 @@ public:
 	/// \param path The path to the file that should be created.
 	/// \param fileSize The size of the file to create.
 	/// \return Returns 0 on success and -1 on error.
-#if defined(__linux__)
+#if defined(__posix__) || defined(__linux__) || defined(__APPLE__)
 	int	 Create(const char *path, size_t fileSize);
 #elif defined(__WIN64__) || defined(__WIN32__) || defined(WIN32)
 	int Create(const char *path, size_t fileSize);

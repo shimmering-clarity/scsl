@@ -275,6 +275,8 @@ Buffer::HexDump(std::ostream &os)
 	}
 
 	os << std::setw(0) << std::dec;
+#else
+  (void)os;
 #endif
 }
 

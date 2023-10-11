@@ -3,8 +3,7 @@
 #include <cstdlib>
 #include <cstring>
 
-#if defined(__linux__)
-
+#if defined(__posix__) || defined(__linux__) || defined(__APPLE__)
 #include <sys/mman.h>
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -66,8 +65,7 @@ Arena::SetAlloc(size_t allocSize)
 }
 
 
-#if defined(__linux__)
-
+#if defined(__posix__) || defined(__linux__) || defined(__APPLE__)
 int
 Arena::MemoryMap(int memFileDes, size_t memSize)
 {
@@ -205,6 +203,7 @@ Arena::Create(const char *path, size_t fileSize)
 
 #endif
 
+
 bool
 Arena::CursorInArena(const uint8_t *cursor)
 {
@@ -249,7 +248,7 @@ Arena::Destroy()
 		case ArenaType::Alloc:
 			delete this->store;
 			break;
-#if defined(__linux__)
+#if defined(__posix__) || defined(__linux__) || defined(__APPLE__)
 			case ArenaType::MemoryMapped:
 				if (munmap(this->store, this->size) == -1) {
 					abort();
@@ -265,7 +264,7 @@ Arena::Destroy()
 #endif
 		default:
 #if defined(NDEBUG)
-			return -1;
+			return;
 #else
 			abort();
 #endif
@@ -297,7 +296,7 @@ operator<<(std::ostream &os, Arena &arena)
 		case ArenaType::Alloc:
 			os << "allocated";
 			break;
-#if defined(__linux__)
+#if defined(__posix__) || defined(__linux__) || defined(__APPLE__)
 			case ArenaType::MemoryMapped:
 				os << "mmap/file";
 				break;
@@ -322,7 +321,7 @@ Arena::Write(const char *path)
 	FILE *arenaFile = nullptr;
 	int retc = -1;
 
-#if defined(__posix__) || defined(__linux__)
+#if defined(__posix__) || defined(__linux__) || defined(__APPLE__)
 	arenaFile = fopen(path, "w");
 	if (arenaFile == nullptr) {
 #else

@@ -12,8 +12,8 @@ AssertionFailed::AssertionFailed(std::string message) : msg(message)
 {
 }
 
-char *
-AssertionFailed::what()
+const char *
+AssertionFailed::what()  const throw()
 {
 	return const_cast<char *>(this->msg.c_str());
 }

@@ -22,7 +22,7 @@ public:
 	explicit NotImplemented(const char *pl) : platform((char *)pl) {}
 
 	/// what returns a message naming the platform.
-	char *what() {
+	const char *what() const throw() {
 		return this->platform;
 	}
 private:
@@ -38,7 +38,7 @@ public:
 	explicit AssertionFailed(std::string message);
 
 	/// what returns a message describing the exception.
-	char *what();
+	const char *what() const throw();
 
 private:
 	std::string msg;

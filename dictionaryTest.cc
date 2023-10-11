@@ -1,31 +1,33 @@
-#include <cassert>
 #include <iostream>
 
 #include "Arena.h"
 #include "Dictionary.h"
+#include "Test.h"
 #include "testFixtures.h"
+
+
 using namespace klib;
 
 
-constexpr char		TEST_KVSTR1[] = "foo";
-constexpr uint8_t	TEST_KVSTRLEN1 = 3;
-constexpr char		TEST_KVSTR2[] = "baz";
-constexpr uint8_t	TEST_KVSTRLEN2 = 3;
-constexpr char		TEST_KVSTR3[] = "quux";
-constexpr uint8_t	TEST_KVSTRLEN3 = 4;
-constexpr char		TEST_KVSTR4[] = "spam";
-constexpr uint8_t	TEST_KVSTRLEN4 = 4;
-constexpr char		TEST_KVSTR5[] = "xyzzx";
-constexpr uint8_t	TEST_KVSTRLEN5 = 5;
-constexpr char		TEST_KVSTR6[] = "corvid";
-constexpr uint8_t	TEST_KVSTRLEN6 = 6;
+constexpr char TEST_KVSTR1[] = "foo";
+constexpr uint8_t TEST_KVSTRLEN1 = 3;
+constexpr char TEST_KVSTR2[] = "baz";
+constexpr uint8_t TEST_KVSTRLEN2 = 3;
+constexpr char TEST_KVSTR3[] = "quux";
+constexpr uint8_t TEST_KVSTRLEN3 = 4;
+constexpr char TEST_KVSTR4[] = "spam";
+constexpr uint8_t TEST_KVSTRLEN4 = 4;
+constexpr char TEST_KVSTR5[] = "xyzzx";
+constexpr uint8_t TEST_KVSTRLEN5 = 5;
+constexpr char TEST_KVSTR6[] = "corvid";
+constexpr uint8_t TEST_KVSTRLEN6 = 6;
 
 
 static bool
 testSetKV(Dictionary &pb, const char *k, uint8_t kl, const char *v,
 	  uint8_t vl)
 {
-	bool	ok;
+	bool ok;
 	std::cout << "test Set " << k << "->" << v << "\n";
 	ok = pb.Set(k, kl, v, vl) == 0;
 	std::cout << "\tSet complete\n";
@@ -36,69 +38,70 @@ testSetKV(Dictionary &pb, const char *k, uint8_t kl, const char *v,
 int
 main(int argc, const char *argv[])
 {
-	(void)argc; (void)argv;
+	(void) argc;
+	(void) argv;
 
-	Arena		arena;
-	TLV::Record	value;
-	TLV::Record	expect;
+	Arena arena;
+	TLV::Record value;
+	TLV::Record expect;
 
 	std::cout << "TESTPROG: " << argv[0] << "\n";
 
-	#if defined(__linux__)
+#if defined(__linux__)
 	if (arena.Create(ARENA_FILE, ARENA_SIZE) == -1) {
 		abort();
 	}
-	#else
+#else
 	if (arena.SetAlloc(ARENA_SIZE) == -1) {
 		abort();
 	}
-	#endif
+#endif
 	std::cout << arena << "\n";
 	TLV::SetRecord(expect, DICTIONARY_TAG_VAL, TEST_KVSTRLEN3, TEST_KVSTR3);
 
-	Dictionary	dict(arena);
-	assert(!dict.Contains(TEST_KVSTR2, TEST_KVSTRLEN2));
+	Dictionary dict(arena);
+	TestAssert(!dict.Contains(TEST_KVSTR2, TEST_KVSTRLEN2));
 
-	assert(testSetKV(dict, TEST_KVSTR1, TEST_KVSTRLEN1, TEST_KVSTR3,
-			 TEST_KVSTRLEN3));
+	TestAssert(testSetKV(dict, TEST_KVSTR1, TEST_KVSTRLEN1, TEST_KVSTR3,
+			     TEST_KVSTRLEN3));
 	std::cout << dict;
-	assert(testSetKV(dict, TEST_KVSTR2, TEST_KVSTRLEN2, TEST_KVSTR3,
-			 TEST_KVSTRLEN3));
+	TestAssert(testSetKV(dict, TEST_KVSTR2, TEST_KVSTRLEN2, TEST_KVSTR3,
+			     TEST_KVSTRLEN3));
 	std::cout << dict;
-	assert(dict.Contains(TEST_KVSTR2, TEST_KVSTRLEN2));
-	assert(testSetKV(dict, TEST_KVSTR4, TEST_KVSTRLEN4, TEST_KVSTR5,
-			 TEST_KVSTRLEN5));
+	TestAssert(dict.Contains(TEST_KVSTR2, TEST_KVSTRLEN2));
+	TestAssert(testSetKV(dict, TEST_KVSTR4, TEST_KVSTRLEN4, TEST_KVSTR5,
+			     TEST_KVSTRLEN5));
 	std::cout << dict;
-	assert(dict.Lookup(TEST_KVSTR2, TEST_KVSTRLEN2, value));
+	TestAssert(dict.Lookup(TEST_KVSTR2, TEST_KVSTRLEN2, value));
 
-	assert(cmpRecord(value, expect));
+	TestAssert(cmpRecord(value, expect));
 
 	std::cout << "test overwriting key" << "\n";
-	assert(testSetKV(dict, TEST_KVSTR2, TEST_KVSTRLEN2, TEST_KVSTR6,
-			 TEST_KVSTRLEN6));
+	TestAssert(testSetKV(dict, TEST_KVSTR2, TEST_KVSTRLEN2, TEST_KVSTR6,
+			     TEST_KVSTRLEN6));
 	std::cout << dict;
 	TLV::SetRecord(expect, DICTIONARY_TAG_VAL, TEST_KVSTRLEN6, TEST_KVSTR6);
 	std::cout << "\tlookup" << "\n";
-	assert(dict.Lookup(TEST_KVSTR2, TEST_KVSTRLEN2, value));
+	TestAssert(dict.Lookup(TEST_KVSTR2, TEST_KVSTRLEN2, value));
 	std::cout << "\tcompare records" << "\n";
-	assert(cmpRecord(value, expect));
+	TestAssert(cmpRecord(value, expect));
 
 	std::cout << "\tadd new key to dictionary" << "\n";
-	assert(testSetKV(dict, TEST_KVSTR3, TEST_KVSTRLEN3, TEST_KVSTR5,
-			 TEST_KVSTRLEN5));
+	TestAssert(testSetKV(dict, TEST_KVSTR3, TEST_KVSTRLEN3, TEST_KVSTR5,
+			     TEST_KVSTRLEN5));
 	std::cout << dict;
 
 	TLV::SetRecord(expect, DICTIONARY_TAG_VAL, TEST_KVSTRLEN5, TEST_KVSTR5);
-	assert(dict.Lookup(TEST_KVSTR4, TEST_KVSTRLEN4, value));
-	assert(cmpRecord(value, expect));
+	TestAssert(dict.Lookup(TEST_KVSTR4, TEST_KVSTRLEN4, value));
+	TestAssert(cmpRecord(value, expect));
 
-	std::cout << "OK" <<"\n";
+	std::cout << "OK" << "\n";
 
 	// Dump the generated arena for inspection later.
-	#if defined(__linux__)
-	#else
+#if defined(__linux__)
+#else
 	dict.DumpToFile(ARENA_FILE);
-	#endif
+#endif
 
 	arena.Clear();
 	std::cout << dict;

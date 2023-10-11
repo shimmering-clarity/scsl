@@ -5,13 +5,12 @@
 #include "Exceptions.h"
 #include "Test.h"
 
-
-#include <iostream>
 #include <cassert>
+#include <iostream>
+#include <sstream>
 
 
 namespace klib {
-
 
 void
 TestAssert(bool condition, std::string message = "Assertion failed.")
@@ -24,6 +23,27 @@ TestAssert(bool condition, std::string message = "Assertion failed.")
 	if (!condition) {
 		std::cerr << message << std::endl;
 	}
+	assert(condition);
+#endif
+}
+
+
+void
+TestAssert(bool condition)
+{
+#if defined(NDEBUG)
+	if (condition) {
+		return;
+	}
+#if defined(KLIB_NO_ASSERT)
+	std::cerr << "Assertion failed!\n";
+#else
+	std::stringstream msg;
+
+	msg << "assertion failed at " << __FILE__ << ":" << __LINE__;
+	throw AssertionFailed(msg.str());
+#endif
+#else
 	assert(condition);
 #endif
 }
