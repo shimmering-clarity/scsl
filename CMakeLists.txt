@@ -48,7 +48,15 @@ set(SOURCE_FILES
         Commander.h
         WinHelpers.cc)
 
-add_library(klib STATIC ${SOURCE_FILES} ${HEADER_FILES})
+if (APPLE)
+add_library(klib
+        STATIC
+        ${SOURCE_FILES} ${HEADER_FILES})
+else ()
+add_library(klib
+        STATIC
+        ${SOURCE_FILES} ${HEADER_FILES})
+endif()
 
 add_executable(phonebook phonebook.cc)
 target_link_libraries(phonebook klib)
