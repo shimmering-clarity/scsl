@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.25)
 project(klib LANGUAGES CXX
-        VERSION 0.0.1
+        VERSION 0.1.0
         DESCRIPTION "Kyle's C++ library")
 
 set(CMAKE_CXX_STANDARD 14)
@@ -25,27 +25,29 @@ else ()
         # nothing special for gcc at the moment
     endif ()
 endif ()
-add_compile_options("-DDESKTOP_BUILD")
+add_compile_definitions(DKLIB_DESKTOP_BUILD)
+add_compile_definitions(KLIB_VERSION=${PROJECT_VERSION})
 
-set(HEADER_FILES
-        klib.h
+set(HEADER_FILES klib.h
         Arena.h
         Buffer.h
         Dictionary.h
         Exceptions.h
-        Test.h
+        StringUtil.h
         TLV.h
+        Test.h
         WinHelpers.h)
 
 set(SOURCE_FILES
         Arena.cc
         Buffer.cc
-        Dictionary.cc
-        Exceptions.cc
-        Test.cc
-        TLV.cc
         Commander.cc
         Commander.h
+        Dictionary.cc
+        Exceptions.cc
+        StringUtil.cc
+        TLV.cc
+        Test.cc
         WinHelpers.cc)
 
 if (APPLE)
@@ -75,6 +77,10 @@ add_test(dictionaryTest dictionary_test)
 add_executable(buffer_test bufferTest.cc)
 target_link_libraries(buffer_test klib)
 add_test(bufferTest buffer_test)
+
+add_executable(stringutil_test stringutil_test.cc)
+target_link_libraries(stringutil_test klib)
+add_test(stringutilTest stringutil_test)
 
 include(CMakePackageConfigHelpers)
 write_basic_package_version_file(

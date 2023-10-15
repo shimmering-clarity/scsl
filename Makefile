@@ -5,7 +5,7 @@ SOURCES :=	$(wildcard *.cc)
 OBJS :=		Arena.o Dictionary.o TLV.o
 
 CXX :=		clang++
-CXXFLAGS :=	-g -std=c++14 -Werror -Wall -DDESKTOP_BUILD
+CXXFLAGS :=	-g -std=c++14 -Werror -Wall -DKLIB_DESKTOP_BUILD
 
 .PHONY: all 
 all: $(TARGET) $(TESTS) tags run-tests

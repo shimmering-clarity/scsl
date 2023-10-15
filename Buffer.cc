@@ -330,7 +330,7 @@ uint8_t &
 Buffer::operator[](size_t index)
 {
 	if (index > this->length) {
-#if defined(DESKTOP_BUILD) and !defined(KLIB_NO_ASSERT)
+#if defined(KLIB_DESKTOP_BUILD) and !defined(KLIB_NO_ASSERT)
 		throw std::range_error("array index out of bounds");
 #else
 		abort();

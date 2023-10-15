@@ -2,7 +2,7 @@
 #include <cstdlib>
 #include "Dictionary.h"
 
-#if defined(DESKTOP_BUILD)
+#if defined(KLIB_DESKTOP_BUILD)
 #include <iostream>
 #endif
 
@@ -133,7 +133,7 @@ Dictionary::spaceAvailable(uint8_t klen, uint8_t vlen)
 std::ostream &
 operator<<(std::ostream &os, const Dictionary &dictionary)
 {
-#if defined(DESKTOP_BUILD)
+#if defined(KLIB_DESKTOP_BUILD)
 	uint8_t 	*cursor = (dictionary.arena).NewCursor();
 	TLV::Record	 rec;
 

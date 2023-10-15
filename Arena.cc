@@ -346,7 +346,7 @@ uint8_t &
 Arena::operator[](size_t index)
 {
 	if (index > this->size) {
-#if defined(DESKTOP_BUILD) and !defined(KLIB_NO_ASSERT)
+#if defined(KLIB_DESKTOP_BUILD) and !defined(KLIB_NO_ASSERT)
 		throw std::range_error("index out of range");
 #else
 		abort();
