@@ -5,7 +5,7 @@
 #include "Exceptions.h"
 
 
-namespace klib {
+namespace scsl {
 
 
 AssertionFailed::AssertionFailed(std::string message) : msg(message)

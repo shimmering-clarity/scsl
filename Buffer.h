@@ -16,7 +16,7 @@
 #include <cstdint>
 
 
-namespace klib {
+namespace scsl {
 
 /// Buffer is a basic line buffer.
 ///
@@ -211,7 +211,7 @@ std::ostream &operator<<(std::ostream &os, const Buffer &buf);
 /// differ.
 inline bool operator!=(const Buffer &lhs, const Buffer &rhs) { return !(lhs == rhs); };
 
-} // namespace klib
+} // namespace scsl
 
 
 #endif // KGE_BUFFER_H

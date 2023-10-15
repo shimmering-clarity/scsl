@@ -27,7 +27,7 @@
 
 #include "StringUtil.h"
 #include "Test.h"
-using namespace klib;
+using namespace scsl;
 
 
 static void
@@ -114,4 +114,6 @@ main()
 		  std::vector<std::string>{"abc", "def:ghij:klm"});
 	TestSplit("abc:def:ghij:klm", ":", 1,
 		  std::vector<std::string>{"abc:def:ghij:klm"});
+	TestSplit("abc::def:ghi", ":", 0,
+		  std::vector<std::string>{"abc", "", "def", "ghi"});
 }

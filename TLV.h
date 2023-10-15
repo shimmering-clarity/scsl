@@ -20,7 +20,7 @@
 #include "Arena.h"
 
 
-namespace klib {
+namespace scsl {
 namespace TLV {
 
 #ifndef TLV_MAX_LEN
@@ -123,7 +123,7 @@ uint8_t *SkipRecord(Record &rec, uint8_t *cursor);
 
 
 } // namespace TLV
-} // namespace klib
+} // namespace scsl
 
 
 #endif

@@ -9,7 +9,7 @@
 
 #include "testFixtures.h"
 
-using namespace klib;
+using namespace scsl;
 
 
 static uint8_t		arenaBuffer[ARENA_SIZE];
@@ -40,7 +40,7 @@ tlvTestSuite(Arena &backend)
 	std::cout << "\tFindTag 1" << "\n";
 	cursor = TLV::FindTag(backend, cursor, rec4);
 	assert(cursor != nullptr); 
-	assert(cursor != backend.NewCursor());
+	assert(cursor != backend.Start());
 	assert(cmpRecord(rec1, rec4));
 
 	std::cout << "\tFindTag 2" << "\n";

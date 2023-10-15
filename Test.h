@@ -4,13 +4,13 @@
 /// \date 2023-10-09
 /// \brief Test.h implements basic testing tools.
 ///
-#ifndef KLIB_TEST_H
-#define KLIB_TEST_H
+#ifndef SCSL_TEST_H
+#define SCSL_TEST_H
 
 #include <string>
 
 
-namespace klib {
+namespace scsl {
 
 
 /// TestAssert is a variant on the assert macro. This variant is intended to be
@@ -29,7 +29,7 @@ void	TestAssert(bool condition);
 /// If NDEBUG is set, TestAssert will throw an exception if condition is false.
 /// Otherwise, it calls assert after printing the message.
 ///
-/// In addition to NDEBUG, KLIB_NO_ASSERT will suppress assertions.
+/// In addition to NDEBUG, SCSL_NO_ASSERT will suppress assertions.
 ///
 /// \throws AssertionFailed
 ///
@@ -38,6 +38,6 @@ void	TestAssert(bool condition);
 void	TestAssert(bool condition, std::string message);
 
 
-} // namespace klib
+} // namespace scsl
 
-#endif //KLIB_TEST_H
+#endif //SCSL_TEST_H

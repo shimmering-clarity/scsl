@@ -7,7 +7,7 @@
 #include "WinHelpers.h"
 
 
-namespace klib {
+namespace scsl {
 namespace Windows {
 
 
@@ -136,7 +136,7 @@ CreateFixedSizeFile(const char *path, size_t size)
 
 
 } // namespace Windows
-} // namespace klib
+} // namespace scsl
 
 
 #endif

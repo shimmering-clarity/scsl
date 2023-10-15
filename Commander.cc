@@ -1,5 +1,5 @@
 ///
-/// \file Commander.cpp
+/// \file Commander.cc
 /// \author kyle 
 /// \date 2023-10-10
 ///
@@ -7,7 +7,7 @@
 #include <iostream>
 #include "Commander.h"
 
-namespace klib {
+namespace scsl {
 
 
 Subcommand::Status
@@ -57,4 +57,4 @@ Commander::Run(std::string command, int argc, char **argv)
 }
 
 
-} // klib
+} // scsl

@@ -1,5 +1,5 @@
-#ifndef KLIB_TESTFIXTURES_H
-#define KLIB_TESTFIXTURES_H
+#ifndef SCSL_TESTFIXTURES_H
+#define SCSL_TESTFIXTURES_H
 
 
 #include <string.h>
@@ -22,7 +22,7 @@
 #define TEST_STRLEN4	35
 
 
-namespace klib {
+namespace scsl {
 
 
 static bool
@@ -44,7 +44,7 @@ cmpRecord(TLV::Record &a, TLV::Record &b)
 }
 
 
-} // namespace klib
+} // namespace scsl
 
 
-#endif // KLIB_TESTFIXTURES_H
+#endif // SCSL_TESTFIXTURES_H

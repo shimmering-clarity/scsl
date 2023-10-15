@@ -10,12 +10,12 @@
 #include <sstream>
 
 
-namespace klib {
+namespace scsl {
 
 void
 TestAssert(bool condition, std::string message)
 {
-#if defined(NDEBUG) || defined(KLIB_NO_ASSERT)
+#if defined(NDEBUG) || defined(SCSL_NO_ASSERT)
 	if (!condition) {
 		throw AssertionFailed(message);
 	}
@@ -35,7 +35,7 @@ TestAssert(bool condition)
 	if (condition) {
 		return;
 	}
-#if defined(KLIB_NO_ASSERT)
+#if defined(SCSL_NO_ASSERT)
 	std::cerr << "Assertion failed!\n";
 #else
 	std::stringstream msg;
@@ -49,4 +49,4 @@ TestAssert(bool condition)
 }
 
 
-} // namespace klib
+} // namespace scsl

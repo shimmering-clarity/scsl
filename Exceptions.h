@@ -2,14 +2,14 @@
 // Created by kyle on 2023-10-10.
 //
 
-#ifndef KLIB_EXCEPTIONS_H
-#define KLIB_EXCEPTIONS_H
+#ifndef SCSL_EXCEPTIONS_H
+#define SCSL_EXCEPTIONS_H
 
 
 #include <exception>
 #include <string>
 
-namespace klib {
+namespace scsl {
 
 
 /// NotImplemented is an exception reserved for unsupported platforms.
@@ -45,7 +45,7 @@ private:
 };
 
 
-} // namespace klib
+} // namespace scsl
 
 
-#endif //KLIB_EXCEPTIONS_H
+#endif //SCSL_EXCEPTIONS_H

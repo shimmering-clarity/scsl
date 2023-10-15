@@ -1,13 +1,13 @@
 #include <cstring>
 #include "TLV.h"
 
-using namespace klib;
+using namespace scsl;
 
 
 #define REC_SIZE(x)	((std::size_t)x.Len + 2)
 
 
-namespace klib {
+namespace scsl {
 namespace TLV {
 
 
@@ -103,7 +103,7 @@ LocateTag(Arena &arena, uint8_t *cursor, Record &rec)
 	uint8_t tag, len;
 
 	if (cursor == nullptr) {
-		cursor = arena.NewCursor();
+		cursor = arena.Start();
 	}
 
 	while ((tag = cursor[0]) != rec.Tag) {
@@ -155,7 +155,7 @@ DeleteRecord(Arena &arena, uint8_t *cursor)
 	}
 
 	uint8_t len = cursor[1] + 2;
-	uint8_t *stop = arena.NewCursor() + arena.Size();
+	uint8_t *stop = arena.Start() + arena.Size();
 
 	stop -= len;
 
@@ -173,4 +173,4 @@ DeleteRecord(Arena &arena, uint8_t *cursor)
 
 
 } // namespace TLV
-} // namespace klib
+} // namespace scsl

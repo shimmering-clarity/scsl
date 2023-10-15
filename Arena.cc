@@ -21,7 +21,7 @@
 #include "Arena.h"
 
 
-namespace klib {
+namespace scsl {
 
 
 Arena::Arena()
@@ -280,7 +280,7 @@ Arena::Destroy()
 std::ostream &
 operator<<(std::ostream &os, Arena &arena)
 {
-	auto cursor = arena.NewCursor();
+	auto cursor = arena.Start();
 	char cursorString[33] = {0};
 	snprintf(cursorString, 32, "%#016llx",
 		 (long long unsigned int) cursor);
@@ -346,7 +346,7 @@ uint8_t &
 Arena::operator[](size_t index)
 {
 	if (index > this->size) {
-#if defined(KLIB_DESKTOP_BUILD) and !defined(KLIB_NO_ASSERT)
+#if defined(SCSL_DESKTOP_BUILD) and !defined(SCSL_NO_ASSERT)
 		throw std::range_error("index out of range");
 #else
 		abort();
@@ -356,4 +356,4 @@ Arena::operator[](size_t index)
 }
 
 
-} // namespace klib
+} // namespace scsl

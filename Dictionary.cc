@@ -2,12 +2,12 @@
 #include <cstdlib>
 #include "Dictionary.h"
 
-#if defined(KLIB_DESKTOP_BUILD)
+#if defined(SCSL_DESKTOP_BUILD)
 #include <iostream>
 #endif
 
 
-namespace klib {
+namespace scsl {
 
 
 bool
@@ -124,7 +124,7 @@ Dictionary::spaceAvailable(uint8_t klen, uint8_t vlen)
 	required += klen + 2;
 	required += vlen + 2;
 
-	remaining = (uintptr_t)cursor - (uintptr_t)arena.NewCursor();
+	remaining = (uintptr_t)cursor - (uintptr_t) arena.Start();
 	remaining = arena.Size() - remaining;
 	return ((size_t)remaining >= required);
 }
@@ -133,8 +133,8 @@ Dictionary::spaceAvailable(uint8_t klen, uint8_t vlen)
 std::ostream &
 operator<<(std::ostream &os, const Dictionary &dictionary)
 {
-#if defined(KLIB_DESKTOP_BUILD)
-	uint8_t 	*cursor = (dictionary.arena).NewCursor();
+#if defined(SCSL_DESKTOP_BUILD)
+	uint8_t 	*cursor = (dictionary.arena).Start();
 	TLV::Record	 rec;
 
 	TLV::ReadFromMemory(rec, cursor);
@@ -164,4 +164,4 @@ Dictionary::DumpToFile(const char *path)
 }
 
 
-} // namespace klib
+} // namespace scsl

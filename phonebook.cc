@@ -9,7 +9,7 @@ using namespace std;
 #include "Arena.h"
 #include "Commander.h"
 #include "Dictionary.h"
-using namespace klib;
+using namespace scsl;
 
 static const char	*defaultPhonebook = "pb.dat";
 static char		*pbFile = (char *)defaultPhonebook;

@@ -19,10 +19,10 @@
 #include <vector>
 
 
-#ifndef KLIB_COMMANDER_H
-#define KLIB_COMMANDER_H
+#ifndef SCSL_COMMANDER_H
+#define SCSL_COMMANDER_H
 
-namespace klib {
+namespace scsl {
 
 
 /// CommanderFunc describes a function that can be run in Commander.
@@ -104,7 +104,7 @@ private:
 	std::map<std::string, Subcommand *>	cmap;
 };
 
-} // klib
+} // scsl
 
 
-#endif //KLIB_COMMANDER_H
+#endif //SCSL_COMMANDER_H

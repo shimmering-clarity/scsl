@@ -1,8 +1,8 @@
 ///
-/// \file klib.h
+/// \file scsl.h
 /// \author kyle 
 /// \created 2023-10-10
-/// \brief klib is my collection of C++ data structures and code.
+/// \brief scsl is my collection of C++ data structures and code.
 ///
 /// \section COPYRIGHT
 /// Copyright 2023 K. Isom <kyle@imap.cc>
@@ -21,8 +21,8 @@
 /// SOFTWARE.
 ///
 
-#ifndef KLIB_KLIB_H
-#define KLIB_KLIB_H
+#ifndef SCSL_SCSL_H
+#define SCSL_SCSL_H
 
 
 #include <klib/Arena.h>
@@ -33,10 +33,10 @@
 #include <klib/Test.h>
 
 
-/// klib is the top-level namespace containing all the code in this library.
-namespace klib {
+/// scsl is the top-level namespace containing all the code in this library.
+namespace scsl {
 
-/// \mainpage klib documentation
+/// \mainpage scsl documentation
 ///
 /// \section Introduction
 ///
@@ -71,4 +71,4 @@ namespace klib {
 }
 
 
-#endif // KLIB_KLIB_H
+#endif // SCSL_SCSL_H

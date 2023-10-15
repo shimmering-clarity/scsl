@@ -6,7 +6,7 @@
 #include "testFixtures.h"
 
 
-using namespace klib;
+using namespace scsl;
 
 
 constexpr char TEST_KVSTR1[] = "foo";

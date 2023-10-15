@@ -1,12 +1,12 @@
 ///
-/// \file klib.h
+/// \file scsl.h
 /// \author kyle
 /// \date 2023-10-06
 ///
 
 
-#ifndef KLIB_DICTIONARY_H
-#define KLIB_DICTIONARY_H
+#ifndef SCSL_DICTIONARY_H
+#define SCSL_DICTIONARY_H
 
 
 #include "Arena.h"
@@ -17,7 +17,7 @@ static constexpr uint8_t	DICTIONARY_TAG_KEY = 1;
 static constexpr uint8_t	DICTIONARY_TAG_VAL = 2;
 
 
-namespace klib {
+namespace scsl {
 
 
 /*
@@ -124,6 +124,6 @@ private:
 };
 
 
-} // namespace klib
+} // namespace scsl
 
 #endif

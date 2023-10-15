@@ -33,7 +33,7 @@
 #endif
 
 
-namespace klib {
+namespace scsl {
 
 
 /// \enum ArenaType
@@ -55,7 +55,7 @@ enum class ArenaType
 /// Arena is the class that implements a memory arena.
 ///
 /// The Arena uses the concept of a cursor to point to memory in the arena. The
-/// #NewCursor and #End methods return pointers to the start and end of the
+/// #Start and #End methods return pointers to the start and end of the
 /// arena memory.
 ///
 /// The arena should be initialized with one of the Set methods (SetStatic,
@@ -130,10 +130,10 @@ public:
 	/// \return Returns 0 on success and -1 on error.
 	int 	 Open(const char *path);
 
-	/// NewCursor returns a pointer to the start of the memory in the arena.
+	/// Start returns a pointer to the start of the memory in the arena.
 	///
 	/// \return A pointer to the start of the arena memory.
-	uint8_t *NewCursor() const
+	uint8_t *Start() const
 	{ return this->store; }
 
 	/// End returns a pointer to the end of the arena memory.
@@ -216,7 +216,7 @@ private:
 std::ostream &operator<<(std::ostream &os, Arena &arena);
 
 
-} // namespace klib
+} // namespace scsl
 
 
 #endif

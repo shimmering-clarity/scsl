@@ -31,9 +31,9 @@
 #define STRINGUTIL_H
 
 
-namespace klib {
-/// namespace U contains utilities.
+namespace scsl {
 
+/// namespace U contains utilities.
 namespace U {
 
 /// namespace S contains string-related functions.
@@ -83,21 +83,25 @@ std::vector<std::string>	SplitKeyValuePair(std::string line, std::string delimit
 /// \return The key and value.
 std::vector<std::string>	SplitKeyValuePair(std::string line, char delimiter);
 
-
-std::vector<std::string>	Split(std::string, std::string delimiter);
-std::vector<std::string>	Split(std::string, char delimiter);
-
+/// Split a string into parts based on the delimiter.
+///
+/// \param delimiter The string that delimits the parts of the string.
+/// \param maxCount The maximum number of parts to split. If 0, there is no limit
+///	   	    to the number of parts.
+/// \return A vector containing all the parts of the string.
 std::vector<std::string>	SplitN(std::string, std::string delimiter, size_t maxCount=0);
+
 //std::vector<std::string>	SplitN(std::string, char delimiter, size_t size_t maxCount=0);
 
 
+/// Return a string represention of a string vector in the form [size]{"foo", "bar", ...}.
 std::ostream &VectorToString(std::ostream &os, const std::vector<std::string> &svec);
-std::string	VectorToString(const std::vector<std::string> &svec);
+std::string   VectorToString(const std::vector<std::string> &svec);
 
 
 } // namespace S
 } // namespace U
-} // namespace klib
+} // namespace scsl
 
 
 #endif // STRINGUTIL_H

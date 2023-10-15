@@ -2,8 +2,8 @@
 // Created by kyle on 2023-10-10.
 //
 
-#ifndef KLIB_WINHELPERS_H
-#define KLIB_WINHELPERS_H
+#ifndef SCSL_WINHELPERS_H
+#define SCSL_WINHELPERS_H
 
 #if defined(__WIN64__) || defined(__WIN32__) || defined(WIN32)
 
@@ -12,7 +12,7 @@
 #include <fileapi.h>
 #include <strsafe.h>
 
-namespace klib {
+namespace scsl {
 namespace Windows {
 
 
@@ -32,8 +32,8 @@ int CreateFixedSizeFile(const char *path, size_t size);
 
 
 } // namespace Windows
-} // namespace klib
+} // namespace scsl
 
 #endif // Windows-only guards.
 
-#endif //KLIB_WINHELPERS_H
+#endif //SCSL_WINHELPERS_H

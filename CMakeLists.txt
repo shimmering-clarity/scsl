@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.25)
-project(klib LANGUAGES CXX
+project(scsl LANGUAGES CXX
         VERSION 0.1.0
-        DESCRIPTION "Kyle's C++ library")
+        DESCRIPTION "Shimmering Clarity Standard Library")
 
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_VERBOSE_MAKEFILES TRUE)
@@ -25,10 +25,10 @@ else ()
         # nothing special for gcc at the moment
     endif ()
 endif ()
-add_compile_definitions(DKLIB_DESKTOP_BUILD)
-add_compile_definitions(KLIB_VERSION=${PROJECT_VERSION})
+add_compile_definitions(SCSL_DESKTOP_BUILD)
+add_compile_definitions(SCSL_VERSION=${PROJECT_VERSION})
 
-set(HEADER_FILES klib.h
+set(HEADER_FILES scsl.h
         Arena.h
         Buffer.h
         Dictionary.h
@@ -51,55 +51,59 @@ set(SOURCE_FILES
         WinHelpers.cc)
 
 if (APPLE)
-add_library(klib
+add_library(scsl
         STATIC
         ${SOURCE_FILES} ${HEADER_FILES})
 else ()
-add_library(klib
+add_library(scsl
         STATIC
         ${SOURCE_FILES} ${HEADER_FILES})
 endif()
 
 add_executable(phonebook phonebook.cc)
-target_link_libraries(phonebook klib)
+target_link_libraries(phonebook scsl)
 
 include(CTest)
 enable_testing()
 
 add_executable(tlv_test tlvTest.cc)
-target_link_libraries(tlv_test klib)
+target_link_libraries(tlv_test scsl)
 add_test(tlvTest tlv_test)
 
 add_executable(dictionary_test dictionaryTest.cc)
-target_link_libraries(dictionary_test klib)
+target_link_libraries(dictionary_test scsl)
 add_test(dictionaryTest dictionary_test)
 
 add_executable(buffer_test bufferTest.cc)
-target_link_libraries(buffer_test klib)
+target_link_libraries(buffer_test scsl)
 add_test(bufferTest buffer_test)
 
 add_executable(stringutil_test stringutil_test.cc)
-target_link_libraries(stringutil_test klib)
+target_link_libraries(stringutil_test scsl)
 add_test(stringutilTest stringutil_test)
 
 include(CMakePackageConfigHelpers)
 write_basic_package_version_file(
-        klibConfig.cmake
+        scslConfig.cmake
         VERSION ${PACKAGE_VERSION}
         COMPATIBILITY AnyNewerVersion
 )
 
-if (${CMAKE_CURRENT_SOURCE_DIR} STREQUAL ${CMAKE_CURRENT_BINARY_DIR})
+if (NOT ${CMAKE_CURRENT_SOURCE_DIR} STREQUAL ${CMAKE_CURRENT_BINARY_DIR})
 add_custom_target(cloc
         COMMAND cloc ${SOURCE_FILES} ${HEADER_FILES}
         WORKING_DIRECTORY ${PROJECT_SOURCE_DIR})
+add_custom_target(deploy-docs
+        COMMAND rsync --progress -auvz ${CMAKE_CURRENT_BINARY_DIR}/html/* docs.shimmering-clarity.net:sites/cc/
+        DEPENDS scsl_docs
+)
 
-configure_file(klib.pc.in klib.pc @ONLY)
-install(TARGETS klib LIBRARY DESTINATION lib)
+configure_file(scsl.pc.in scsl.pc @ONLY)
+install(TARGETS scsl LIBRARY DESTINATION lib)
 install(TARGETS phonebook RUNTIME DESTINATION bin)
-install(FILES ${HEADER_FILES} DESTINATION include/klib)
-install(FILES klibConfig.cmake DESTINATION share/klib/cmake)
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/klib.pc DESTINATION lib/pkgconfig)
+install(FILES ${HEADER_FILES} DESTINATION include/scsl)
+install(FILES scslConfig.cmake DESTINATION share/scsl/cmake)
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/scsl.pc DESTINATION lib/pkgconfig)
 
 include(CMakePack.txt)
 include(CMakeDocs.txt)

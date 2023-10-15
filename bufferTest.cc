@@ -2,7 +2,7 @@
 #include <iostream>
 
 #include "Buffer.h"
-using namespace klib;
+using namespace scsl;
 
 
 int

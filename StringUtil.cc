@@ -4,7 +4,7 @@
 #include "StringUtil.h"
 
 
-namespace klib {
+namespace scsl {
 /// namespace U contains utilities.
 namespace U {
 
@@ -162,4 +162,4 @@ VectorToString(const std::vector<std::string> &svec)
 
 } // namespace S
 } // namespace U
-} // namespace klib
+} // namespace scsl
