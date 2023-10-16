@@ -45,12 +45,6 @@ namespace scsl {
  */
 /// Dictionary implements a key-value store on top of Arena and TLV::Record.
 ///
-/// phonebook of SSIDs and WPA keys on a microcontroller. This phonebook had to
-/// be stored in persistent NVRAM storage, preëmpting the use of std::map or
-/// similar. The hardware in use was also not conducive to more expensive
-/// options. It was originally named Phonebook until it was adapted to a more
-/// general-purpose data structure.
-///
 /// Keys and vales are stored as sequential pairs of TLV records; they are
 /// expected to contain string values but this isn't necessarily the case. The
 /// tag values default to a tag of DICTIONARY_TAG_KEY, and values to a tag of
