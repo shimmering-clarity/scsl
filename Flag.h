@@ -26,49 +26,56 @@
 #include <cstdint>
 #include <functional>
 #include <map>
-#include <optional>
+#include <string>
 #include <variant>
 #include <vector>
 
 
-namespace klib {
+namespace scsl {
 
 
-
+/// FlagType indicates the value held in a FlagValue.
 enum class FlagType : uint8_t {
-	Unknown		= 0,
-	Boolean		= 1,
-	Integer		= 2,
-	UnsignedInteger	= 3,
-	String		= 4,
+	Unknown         = 0,
+	Boolean         = 1,
+	Integer         = 2, ///< int32_t
+	UnsignedInteger = 3, ///< uint32_t
+	SizeT           = 4, ///< size_t
+	String          = 5,
 };
 
 
 enum class ParseStatus : uint8_t {
-	OK		= 0,
-	EndOfFlags	= 1,
-	NotRegistered	= 2,	
-	NotEnoughArgs	= 3,
+	Unknown	      = 0,
+	OK            = 1,
+	EndOfFlags    = 2,
+	NotRegistered = 3,
+	NotEnoughArgs = 4,
 };
 
-
-typedef std::variant<
-	std::string *,
-	bool *,
-	int64_t *,
-	uint64_t *> FlagValue;
+std::string
+ParseStatusToString(ParseStatus status);
 
 
-struct Flag {
-	Flag(FlagType fType, std::string fName, std::string fDescription);
+typedef union {
+	unsigned int u;
+	int          i;
+	std::size_t  size;
+	std::string  *s;
+	bool         b;
+} FlagValue;
 
-	FlagType	Type;
-	bool		WasSet;
-	std::string	Name;
-	std::string	Description;
-	FlagValue	Value;
-};
-typedef std::optional<FlagValue>	OptFlagValue;
+
+typedef struct {
+	FlagType    Type;
+	bool        WasSet;
+	std::string Name;
+	std::string Description;
+	FlagValue   Value;
+} Flag;
+
+Flag *
+NewFlag(FlagType fType, std::string fName, std::string fDescription);
 
 
 class Flags {
@@ -76,36 +83,52 @@ public:
 	Flags(std::string fName);
 	Flags(std::string fName, std::string fDescription);
 
-	bool	Register(std::string fName, 
-			 FlagType fType,
-			 std::string fDescription);
-	Flag	*Lookup(std::string fName);
-	OptFlagValue
-		 ValueOf(std::string fName);
+	bool Register(std::string fName,
+		      FlagType fType,
+		      std::string fDescription);
+	bool Register(std::string fName,
+		      bool defaultValue,
+		      std::string fDescription);
+	bool Register(std::string fName,
+		      int defaultValue,
+		      std::string fDescription);
+	bool Register(std::string fName,
+		      unsigned int defaultValue,
+		      std::string fDescription);
+	bool Register(std::string fName,
+		      size_t defaultValue,
+		      std::string fDescription);
+	bool Register(std::string fName,
+		      std::string defaultValue,
+		      std::string fDescription);
+	size_t Size();
+	Flag *Lookup(std::string fName);
+	bool ValueOf(std::string fName, FlagValue &value);
 
-	int	 Parse(int argc, char **argv);
+	ParseStatus Parse(int argc, char **argv);
 
-	void	 Usage(std::ostream &os, int exitCode);
+	void Usage(std::ostream &os, int exitCode);
 
-	size_t	 			NumArgs();
-	std::vector<std::string>	Args();
-	std::string			Arg(int index);
+	size_t NumArgs();
+	std::vector<std::string> Args();
+	std::string Arg(int index);
 
-	bool	GetBool(std::string name, bool &flagValue);
-	// bool	GetUnsignedInteger(std::string name, uint64_t &flagValue)
-	// bool	GetInteger(std::string name, int64_t &flagValue)
-	// bool	GetString(std::string name, std::string &flagValue)
+	bool GetBool(std::string fName, bool &flagValue);
+	bool GetUnsignedInteger(std::string fName, unsigned int &flagValue);
+	bool GetInteger(std::string fName, int &flagValue);
+	bool GetString(std::string fName, std::string &flagValue);
+	bool GetSizeT(std::string fName, std::size_t &flagValue);
 
 
 private:
-	ParseStatus		parseArg(int argc, char **argv, int &index);
+	ParseStatus parseArg(int argc, char **argv, int &index);
+	Flag *checkGetArg(std::string fName, FlagType eType);
 
-	std::string			name;
-	std::string			description;
-	std::vector<std::string>	args;
-	std::map<std::string, Flag *>	flags;
+	std::string                   name;
+	std::string                   description;
+	std::vector<std::string>      args;
+	std::map<std::string, Flag *> flags;
 };
 
 
-
-} // namespace klib
+} // namespace scsl

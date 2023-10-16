@@ -29,7 +29,7 @@ void	TestAssert(bool condition);
 /// If NDEBUG is set, TestAssert will throw an exception if condition is false.
 /// Otherwise, it calls assert after printing the message.
 ///
-/// In addition to NDEBUG, SCSL_NO_ASSERT will suppress assertions.
+/// In addition to NDEBUG, SCSL_NOEXCEPT will suppress assertions.
 ///
 /// \throws AssertionFailed
 ///

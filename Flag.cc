@@ -30,18 +30,45 @@
 #include <vector>
 
 #include "Flag.h"
+#include "StringUtil.h"
 
 
-namespace klib {
+namespace scsl {
 
 
-static const std::regex	isFlag("^-[a-zA-Z0-9]+$", 
+static const std::regex	isFlag("^--?[a-zA-Z0-9][a-zA-Z0-9-_]*$",
 			       std::regex_constants::nosubs);
 
-
-Flag::Flag(FlagType fType, std::string fName, std::string fDescription)
-    : Type(fType), WasSet(false), Name(fName), Description(fDescription)
+std::string
+ParseStatusToString(ParseStatus status)
 {
+	switch (status) {
+	case ParseStatus::OK:
+		return "OK";
+	case ParseStatus::EndOfFlags:
+		return "end of flags";
+	case ParseStatus::NotRegistered:
+		return "flag not registered";
+	case ParseStatus::NotEnoughArgs:
+		return "not enough args passed to flags";
+	default:
+		return "unknown/unspecified parse error";
+	}
+}
+
+
+Flag *
+NewFlag(FlagType fType, std::string fName, std::string fDescription)
+{
+	auto flag = new Flag;
+
+	flag->Type = fType;
+	flag->WasSet = false;
+	flag->Name = fName;
+	flag->Description = fDescription;
+	flag->Value = FlagValue{};
+
+	return flag;
 }
 
 
@@ -68,13 +95,76 @@ Flags::Register(std::string fName, FlagType fType, std::string fDescription)
 		return false;
 	}
 
-	auto flag = new Flag;
-	flag->Type = fType;
-	flag->WasSet = false;
-	flag->name = name;
-	this->desription = fDescription;
+	auto flag = NewFlag(fType, fName, fDescription);
 	this->flags[fName] = flag;
 	return true;
+}
+
+
+bool
+Flags::Register(std::string fName, bool defaultValue, std::string fDescription)
+{
+	if (!this->Register(fName, FlagType::Boolean, fDescription)) {
+		return false;
+	}
+
+	this->flags[fName]->Value.b = defaultValue;
+	return true;
+}
+
+
+bool
+Flags::Register(std::string fName, int defaultValue, std::string fDescription)
+{
+	if (!this->Register(fName, FlagType::Integer, fDescription)) {
+		return false;
+	}
+
+	this->flags[fName]->Value.i = defaultValue;
+	return true;
+}
+
+
+bool
+Flags::Register(std::string fName, unsigned int defaultValue, std::string fDescription)
+{
+	if (!this->Register(fName, FlagType::UnsignedInteger, fDescription)) {
+		return false;
+	}
+
+	this->flags[fName]->Value.u = defaultValue;
+	return true;
+}
+
+
+bool
+Flags::Register(std::string fName, size_t defaultValue, std::string fDescription)
+{
+	if (!this->Register(fName, FlagType::SizeT, fDescription)) {
+		return false;
+	}
+
+	this->flags[fName]->Value.size = defaultValue;
+	return true;
+}
+
+
+bool
+Flags::Register(std::string fName, std::string defaultValue, std::string fDescription)
+{
+	if (!this->Register(fName, FlagType::String, fDescription)) {
+		return false;
+	}
+
+	this->flags[fName]->Value.s = new std::string(defaultValue);
+	return true;
+}
+
+
+size_t
+Flags::Size()
+{
+	return this->flags.size();
 }
 
 
@@ -85,18 +175,19 @@ Flags::Lookup(std::string fName)
 		return nullptr;
 	}
 
-
+	return this->flags[fName];
 }
 
 
-OptFlagValue
-Flags::ValueOf(std::string fName)
+bool
+Flags::ValueOf(std::string fName, FlagValue &value)
 {
 	if (this->flags.count(fName)) {
-		return std::nullopt;
+		return false;
 	}
 
-	return OptFlagValue(this->flags[fName]->Value);
+	value = this->flags[fName]->Value;
+	return true;
 }
 
 
@@ -105,6 +196,8 @@ ParseStatus
 Flags::parseArg(int argc, char **argv, int &index)
 {
 	std::string	arg(argv[index]);
+
+	U::S::TrimWhitespace(arg);
 
 	index++;
 	if (!std::regex_search(arg, isFlag)) {
@@ -116,15 +209,33 @@ Flags::parseArg(int argc, char **argv, int &index)
 	}
 
 	auto flag = flags[arg];
-	if (flag->Type == FlagType::Boolean) {
+	switch (flag->Type) {
+	case FlagType::Boolean:
 		flag->WasSet = true;
 		flag->Value.b = true;
 		return ParseStatus::OK;
-	}
-
-	switch (flag->Type) {
+	case FlagType::Integer:
+		flag->WasSet = true;
+		flag->Value.i = std::stoi(argv[++index], 0, 0);
+		return ParseStatus::OK;
+	case FlagType::UnsignedInteger:
+		flag->WasSet = true;
+		flag->Value.u = static_cast<unsigned int>(std::stoi(argv[index++], 0, 0));
+		return ParseStatus::OK;
+	case FlagType::String:
+		flag->WasSet = true;
+		flag->Value.s = new std::string(argv[index++]);
+		return ParseStatus::OK;
+	case FlagType::SizeT:
+		flag->WasSet = true;
+		flag->Value.size = static_cast<size_t>(std::stoull(argv[index++]));
+		return ParseStatus::OK;
 	default:
-		throw std::runtime_error("not handled");
+#if defined(NDEBUG) or defined(SCSL_NOEXCEPT)
+		return ParseStatus::Unknown;
+#else
+		throw std::runtime_error("unhandled type");
+#endif
 	}
 
 	return ParseStatus::OK;
@@ -148,12 +259,16 @@ Flags::Parse(int argc, char **argv)
 				index++;
 			}
 			continue;
-		case ParseStatus::EndOfFlags:
 		case ParseStatus::NotEnoughArgs:
+		case ParseStatus::NotRegistered:
 			// fall through //
 			return result;
 		default:
-			throw runtime_error("unhandled parse state");
+#if defined(NDEBUG) or defined(SCSL_NOEXCEPT)
+			return ParseStatus::Unknown;
+#else
+			throw std::runtime_error("unhandled parse state");
+#endif
 		}
 
 	}
@@ -176,16 +291,80 @@ Flags::Args()
 }
 
 
-bool
-Flags::GetBool(std::string name, bool &flagValue)
+Flag *
+Flags::checkGetArg(std::string fName, FlagType eType)
 {
-	if (this->flags[name] == 0) {
-		return false;
+	if (this->flags[fName] == 0) {
+		return nullptr;
 	}
 
-	return std::get<bool>(this->flags[name]->Value);
+	auto flag = this->flags[fName];
+	if (flag == nullptr) {
+		return nullptr;
+	}
+
+	if (flag->Type != eType) {
+		return nullptr;
+	}
+
+	return flag;
 }
 
 
-} // namespace klib
+bool
+Flags::GetBool(std::string fName, bool &flagValue)
+{
+	auto	flag = this->checkGetArg(fName, FlagType::Boolean);
+
+	flagValue = flag->Value.b;
+	return flag->WasSet;
+}
+
+
+bool
+Flags::GetInteger(std::string fName, int &flagValue)
+{
+	auto	flag = this->checkGetArg(fName, FlagType::Integer);
+
+	flagValue = flag->Value.i;
+	return flag->WasSet;
+}
+
+
+bool
+Flags::GetUnsignedInteger(std::string fName, unsigned int &flagValue)
+{
+	auto	flag = this->checkGetArg(fName, FlagType::UnsignedInteger);
+
+	flagValue = flag->Value.u;
+	return flag->WasSet;
+}
+
+
+
+bool
+Flags::GetSizeT(std::string fName, std::size_t &flagValue)
+{
+	auto	flag = this->checkGetArg(fName, FlagType::SizeT);
+
+	flagValue = flag->Value.size;
+	return flag->WasSet;
+}
+
+
+bool
+Flags::GetString(std::string fName, std::string &flagValue)
+{
+	auto	flag = this->checkGetArg(fName, FlagType::String);
+
+	if (flag->Value.s == nullptr) {
+		return false;
+	}
+
+	flagValue = *(flag->Value.s);
+	return flag->WasSet;
+}
+
+
+} // namespace scsl
 

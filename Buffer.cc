@@ -330,7 +330,7 @@ uint8_t &
 Buffer::operator[](size_t index)
 {
 	if (index > this->length) {
-#if defined(SCSL_DESKTOP_BUILD) and !defined(SCSL_NO_ASSERT)
+#if defined(SCSL_DESKTOP_BUILD) and !defined(SCSL_NOEXCEPT)
 		throw std::range_error("array index out of bounds");
 #else
 		abort();

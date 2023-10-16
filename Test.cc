@@ -15,7 +15,7 @@ namespace scsl {
 void
 TestAssert(bool condition, std::string message)
 {
-#if defined(NDEBUG) || defined(SCSL_NO_ASSERT)
+#if defined(NDEBUG) || defined(SCSL_NOEXCEPT)
 	if (!condition) {
 		throw AssertionFailed(message);
 	}
@@ -35,7 +35,7 @@ TestAssert(bool condition)
 	if (condition) {
 		return;
 	}
-#if defined(SCSL_NO_ASSERT)
+#if defined(SCSL_NOEXCEPT)
 	std::cerr << "Assertion failed!\n";
 #else
 	std::stringstream msg;

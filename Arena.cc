@@ -346,7 +346,7 @@ uint8_t &
 Arena::operator[](size_t index)
 {
 	if (index > this->size) {
-#if defined(SCSL_DESKTOP_BUILD) and !defined(SCSL_NO_ASSERT)
+#if defined(SCSL_DESKTOP_BUILD) and !defined(SCSL_NOEXCEPT)
 		throw std::range_error("index out of range");
 #else
 		abort();

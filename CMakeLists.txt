@@ -1,6 +1,6 @@
-cmake_minimum_required(VERSION 3.25)
+cmake_minimum_required(VERSION 3.22)
 project(scsl LANGUAGES CXX
-        VERSION 0.1.0
+        VERSION 0.1.1
         DESCRIPTION "Shimmering Clarity Standard Library")
 
 set(CMAKE_CXX_STANDARD 14)
@@ -33,6 +33,7 @@ set(HEADER_FILES scsl.h
         Buffer.h
         Dictionary.h
         Exceptions.h
+        Flag.h
         StringUtil.h
         TLV.h
         Test.h
@@ -45,6 +46,7 @@ set(SOURCE_FILES
         Commander.h
         Dictionary.cc
         Exceptions.cc
+        Flag.cc
         StringUtil.cc
         TLV.cc
         Test.cc
@@ -66,6 +68,10 @@ target_link_libraries(phonebook scsl)
 include(CTest)
 enable_testing()
 
+add_executable(buffer_test bufferTest.cc)
+target_link_libraries(buffer_test scsl)
+add_test(bufferTest buffer_test)
+
 add_executable(tlv_test tlvTest.cc)
 target_link_libraries(tlv_test scsl)
 add_test(tlvTest tlv_test)
@@ -74,9 +80,9 @@ add_executable(dictionary_test dictionaryTest.cc)
 target_link_libraries(dictionary_test scsl)
 add_test(dictionaryTest dictionary_test)
 
-add_executable(buffer_test bufferTest.cc)
-target_link_libraries(buffer_test scsl)
-add_test(bufferTest buffer_test)
+add_executable(flag_test flagTest.cc)
+target_link_libraries(flag_test scsl)
+add_test(flagTest flag_test)
 
 add_executable(stringutil_test stringutil_test.cc)
 target_link_libraries(stringutil_test scsl)
@@ -94,7 +100,7 @@ add_custom_target(cloc
         COMMAND cloc ${SOURCE_FILES} ${HEADER_FILES}
         WORKING_DIRECTORY ${PROJECT_SOURCE_DIR})
 add_custom_target(deploy-docs
-        COMMAND rsync --progress -auvz ${CMAKE_CURRENT_BINARY_DIR}/html/* docs.shimmering-clarity.net:sites/cc/
+        COMMAND rsync --delete-after --progress -auvz ${CMAKE_CURRENT_BINARY_DIR}/html/* docs.shimmering-clarity.net:sites/cc/${PROJECT_NAME}/
         DEPENDS scsl_docs
 )
 
