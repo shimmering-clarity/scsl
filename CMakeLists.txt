@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.22)
 project(scsl LANGUAGES CXX
-        VERSION 0.2.2
+        VERSION 0.2.3
         DESCRIPTION "Shimmering Clarity Standard Library")
 
 set(CMAKE_CXX_STANDARD 14)
