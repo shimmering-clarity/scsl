@@ -1,10 +1,25 @@
 ///
 /// \file Arena.h
-/// \author K. Isom
+/// \author K. Isom <kyle@imap.cc>
 /// \date 2023-10-06
 /// \brief Memory management using an arena.
 ///
 /// Arena defines a memory management backend for pre-allocating memory.
+///
+/// Copyright 2023 K. Isom <kyle@imap.cc>
+///
+/// Permission to use, copy, modify, and/or distribute this software for
+/// any purpose with or without fee is hereby granted, provided that
+/// the above copyright notice and this permission notice appear in all /// copies.
+///
+/// THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL
+/// WARRANTIES WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED
+/// WARRANTIES OF MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE
+/// AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL
+/// DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA
+/// OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER
+/// TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
+/// PERFORMANCE OF THIS SOFTWARE.
 ///
 /// \section PLATFORM SUPPORT
 ///
@@ -17,10 +32,10 @@
 #define KIMODEM_ARENA_H
 
 
-#include <iostream>
-#include <sys/stat.h>
 #include <cstddef>
 #include <cstdint>
+#include <iostream>
+#include <sys/stat.h>
 
 #include "Exceptions.h"
 
@@ -112,12 +127,7 @@ public:
 	/// \param path The path to the file that should be created.
 	/// \param fileSize The size of the file to create.
 	/// \return Returns 0 on success and -1 on error.
-#if defined(__posix__) || defined(__linux__) || defined(__APPLE__)
 	int	 Create(const char *path, size_t fileSize);
-#elif defined(__WIN64__) || defined(__WIN32__) || defined(WIN32)
-	int Create(const char *path, size_t fileSize);
-
-#endif
 
 	/// Open reads a file into the arena; the file must already exist. On
 	/// Unix-based platforms, the arena will be backed by a memory via

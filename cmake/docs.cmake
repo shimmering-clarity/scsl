@@ -4,7 +4,7 @@ find_package(Doxygen)
 if (${DOXYGEN_FOUND})
 set(DOXYGEN_GENERATE_MAN YES)
 set(DOXYGEN_GENERATE_LATEX YES)
-#set(DOXYGEN_EXTRACT_ALL YES)
+set(DOXYGEN_EXTRACT_ALL YES)
 message(STATUS "Doxygen found, building docs.")
 
 doxygen_add_docs(scsl_docs

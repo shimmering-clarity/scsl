@@ -1,10 +1,13 @@
 ///
 /// \file scsl.h
-/// \author kyle 
-/// \created 2023-10-10
+/// \author kyle (kyle@imap.cc)
+/// \date 2023-10-10
 /// \brief scsl is my collection of C++ data structures and code.
 ///
+/// scsl.h is a utility header that includes all of SCSL.
+///
 /// \section COPYRIGHT
+///
 /// Copyright 2023 K. Isom <kyle@imap.cc>
 ///
 /// Permission to use, copy, modify, and/or distribute this software for
@@ -25,12 +28,15 @@
 #define SCSL_SCSL_H
 
 
-#include <klib/Arena.h>
-#include <klib/Buffer.h>
-#include <klib/Dictionary.h>
-#include <klib/Exceptions.h>
-#include <klib/TLV.h>
-#include <klib/Test.h>
+#include <scsl/Arena.h>
+#include <scsl/Buffer.h>
+#include <scsl/Commander.h>
+#include <scsl/Dictionary.h>
+#include <scsl/Exceptions.h>
+#include <scsl/Flag.h>
+#include <scsl/StringUtil.h>
+#include <scsl/TLV.h>
+#include <scsl/Test.h>
 
 
 /// scsl is the top-level namespace containing all the code in this library.

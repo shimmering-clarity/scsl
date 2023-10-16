@@ -48,13 +48,16 @@ tlvTestSuite(Arena &backend)
 	assert(cursor != nullptr);
 	assert(cmpRecord(rec3, rec4));
 
+	std::cout << "\tSetRecord 1\n";
 	TLV::SetRecord(rec4, 3, TEST_STRLEN3, TEST_STR3);
 	assert(TLV::WriteToMemory(backend, nullptr, rec4));
 
+	std::cout << "FindTag 3\n";
 	rec4.Tag = 2;
 	cursor = TLV::FindTag(backend, nullptr, rec4);
 	assert(cursor != nullptr);
 
+	std::cout << "DeleteRecord\n";
 	TLV::DeleteRecord(backend, cursor);
 	assert(cursor[0] == 3);
 }

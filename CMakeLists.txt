@@ -1,64 +1,61 @@
 cmake_minimum_required(VERSION 3.22)
 project(scsl LANGUAGES CXX
-        VERSION 0.1.1
+        VERSION 0.2.2
         DESCRIPTION "Shimmering Clarity Standard Library")
 
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_VERBOSE_MAKEFILES TRUE)
 set(VERBOSE YES)
 
-if (MSVC)
-    add_compile_options("/W4" "$<$<CONFIG:RELEASE>:/O2>")
+# compile options:
+#   -Wall                   Default to all errors.
+#   -Wextra                 And a few extra.
+#   -Werror                 And require them to be fixed to build.
+#   -Wno-unused-function    This is a library. Not every function is used here.
+#   -Wno-unused-parameter   Some functions have parameters defined for compatibility,
+#                           and aren't used in the implementation.
+add_compile_options(
+        "-static"
+        "-Wall"
+        "-Wextra"
+        "-Werror"
+        "-Wno-unused-function"
+        "-Wno-unused-parameter"
+        "-g"
+        "$<$<CONFIG:RELEASE>:-O2>"
+)
+if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
+    add_compile_options("-stdlib=libc++")
 else ()
-    # compile options:
-    #   -Wall                   Default to all errors.
-    #   -Wextra                 And a few extra.
-    #   -Werror                 And require them to be fixed to build.
-    #   -Wno-unused-function    This is a library. Not every function is used here.
-    #   -Wno-unused-parameter   Some functions have parameters defined for compatibility,
-    #                           and aren't used in the implementation.
-
-    add_compile_options(
-            "-static"
-            "-Wall"
-            "-Wextra"
-            "-Werror"
-            "-Wno-unused-function"
-            "-Wno-unused-parameter"
-            "$<$<CONFIG:RELEASE>:-O2>"
-    )
-    if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
-        add_compile_options("-stdlib=libc++")
-    else ()
-        # nothing special for gcc at the moment
-    endif ()
+    # nothing special for gcc at the moment
 endif ()
+
 add_compile_definitions(SCSL_DESKTOP_BUILD)
 add_compile_definitions(SCSL_VERSION=${PROJECT_VERSION})
 
 set(HEADER_FILES scsl.h
         Arena.h
         Buffer.h
+        Commander.h
         Dictionary.h
         Exceptions.h
         Flag.h
         StringUtil.h
         TLV.h
         Test.h
-        WinHelpers.h)
+)
 
 set(SOURCE_FILES
         Arena.cc
         Buffer.cc
         Commander.cc
-        Commander.h
         Dictionary.cc
         Exceptions.cc
         Flag.cc
         StringUtil.cc
         TLV.cc
         Test.cc
-        WinHelpers.cc)
+)
 
 if (APPLE)
 add_library(scsl
@@ -119,6 +116,6 @@ install(FILES ${HEADER_FILES} DESTINATION include/scsl)
 install(FILES scslConfig.cmake DESTINATION share/scsl/cmake)
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/scsl.pc DESTINATION lib/pkgconfig)
 
-include(CMakePack.txt)
-include(CMakeDocs.txt)
+include(cmake/packaging.cmake)
+include(cmake/docs.cmake)
 endif()

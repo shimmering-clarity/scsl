@@ -1,39 +1,59 @@
-TARGET :=	klib.a
-TESTS :=	tlv_test dictionary_test
-HEADERS :=	$(wildcard *.h)
-SOURCES :=	$(wildcard *.cc)
-OBJS :=		Arena.o Dictionary.o TLV.o
+HEADERS :=	scsl.h				\
+		Arena.h				\
+		Buffer.h			\
+		Commander.h			\
+		Dictionary.h			\
+		Exceptions.h			\
+		Flag.h				\
+		StringUtil.h			\
+		Test.h				\
+		TLV.h				\
+		WinHelpers.h
 
+SOURCES :=	Arena.cc			\
+		Buffer.cc			\
+		Commander.cc			\
+		Dictionary.cc			\
+		Exceptions.cc			\
+		Flag.cc				\
+		StringUtil.cc			\
+		Test.cc				\
+		TLV.cc				\
+		WinHelpers.cc
+
+BUILD :=	DEBUG
+OBJS :=		$(patsubst %.cc,%.o,$(SOURCES))
+LIBS :=		libscsl.a
+
+TARGETS :=	$(LIBS) phonebook
+TESTS :=	bufferTest dictionaryTest flagTest tlvTest
 CXX :=		clang++
-CXXFLAGS :=	-g -std=c++14 -Werror -Wall -DSCSL_DESKTOP_BUILD
+CXXFLAGS :=	-std=c++14 -Werror -Wall -Wextra -DSCSL_DESKTOP_BUILD	\
+			-DSCSL_BUILD_TYPE=${BUILD}
+ifeq ($(BUILD),DEBUG)
+CXXFLAGS +=	-g -fsanitize=address
+else
+CXXFLAGS +=	-O2
+endif
 
 .PHONY: all 
-all: $(TARGET) $(TESTS) tags run-tests
+all: $(TARGETS) $(TESTS) tags run-tests
 
 tags: $(HEADERS) $(SOURCES)
 	ctags $(HEADERS) $(SOURCES)
 
-$(TARGET): $(OBJS)
+libscsl.a: $(OBJS)
 	$(AR) rcs $@ $(OBJS)
-
-tlv_test: tlvTest.o $(TARGET)
-	$(CXX) -o $@ $(CXXFLAGS) tlvTest.o $(TARGET)
-
-dictionary_test: dictionaryTest.o $(TARGET)
-	$(CXX) -o $@ $(CXXFLAGS) dictionaryTest.o $(TARGET)
 
 .PHONY: print-%
 print-%: ; @echo '$(subst ','\'',$*=$($*))'
 
 klib.a: $(OBJS)
 
-%.o: %.cc
-	$(CXX) -o $@ -c $(CXXFLAGS) $<
-
 .PHONY: clean
 clean:
 	# build outputs
-	rm -f $(TARGET) $(TESTS) *.o 
+	rm -f $(TARGETS) $(TESTS) *.o
 
 	# test miscellaneous
 	rm -f core core.* tags arena_test.bin
@@ -45,3 +65,22 @@ run-tests: $(TESTS)
 		echo "./$${testbin}" ;		\
 		./$${testbin}; 			\
 	done
+
+phonebook: phonebook.o $(LIBS)
+	$(CXX) -o $@ $(CXXFLAGS) $@.o $(LIBS)
+
+bufferTest: bufferTest.o $(LIBS)
+	$(CXX) -o $@ $(CXXFLAGS) $@.o $(LIBS)
+
+dictionaryTest: dictionaryTest.o $(LIBS)
+	$(CXX) -o $@ $(CXXFLAGS) $@.o $(LIBS)
+
+flagTest: flagTest.o $(LIBS)
+	$(CXX) -o $@ $(CXXFLAGS) $@.o $(LIBS)
+
+tlvTest: tlvTest.o $(LIBS)
+	$(CXX) -o $@ $(CXXFLAGS) $@.o $(LIBS)
+
+%.o: %.cc
+	$(CXX) -o $@ -c $(CXXFLAGS) $<
+

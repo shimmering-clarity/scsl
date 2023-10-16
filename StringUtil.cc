@@ -1,3 +1,26 @@
+///
+/// \file StringUtil.cc
+/// \author K. Isom <kyle@imap.cc>
+/// \date 2023-10-12
+/// \brief Utilities for working with strings.
+///
+/// Copyright 2023 K. Isom <kyle@imap.cc>
+///
+/// Permission to use, copy, modify, and/or distribute this software for
+/// any purpose with or without fee is hereby granted, provided that
+/// the above copyright notice and this permission notice appear in all /// copies.
+///
+/// THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL
+/// WARRANTIES WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED
+/// WARRANTIES OF MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE
+/// AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL
+/// DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA
+/// OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER
+/// TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
+/// PERFORMANCE OF THIS SOFTWARE.
+///
+
+#include <cassert>
 #include <iostream>
 #include <sstream>
 
@@ -12,21 +35,20 @@ namespace U {
 namespace S {
 
 
-/*
 std::vector<std::string>
 SplitKeyValuePair(std::string line, std::string delimiter)
 {
-	std::string key;
-	std::string val;
+	auto pair = SplitN(line, delimiter, 2);
 
-	auto pos = line.find(delimiter);
-	if (pos == std::string::npos) {
-		key = line;
-		val = "";
-	} else {
-		key = line.substr(0, pos);
-		val = line.substr(pos + 1, line.size() - pos - 2);
+	if (pair.size() == 0) {
+		return {"", ""};
+	} else if (pair.size() == 1) {
+		return {pair[0], ""};
 	}
+
+	assert(pair.size() == 2);
+	auto key = pair[0];
+	auto val = pair[1];
 
 	TrimWhitespace(key);
 	TrimWhitespace(val);
@@ -37,23 +59,11 @@ SplitKeyValuePair(std::string line, std::string delimiter)
 std::vector<std::string>
 SplitKeyValuePair(std::string line, char delimiter)
 {
-	std::string key;
-	std::string val;
+	std::string sDelim;
 
-	auto pos = line.find(delimiter);
-	if (pos == std::string::npos) {
-		key = line;
-		val = "";
-	} else {
-		key = line.substr(0, pos);
-		val = line.substr(pos + 1, line.size() - pos - 2);
-	}
-
-	TrimWhitespace(key);
-	TrimWhitespace(val);
-	return {key, val};
+	sDelim.push_back(delimiter);
+	return SplitKeyValuePair(line, sDelim);
 }
-*/
 
 
 void
@@ -132,6 +142,66 @@ SplitN(std::string s, std::string delim, size_t maxCount)
 }
 
 
+std::vector<std::string>
+WrapText(std::string line, size_t lineLength)
+{
+	std::vector<std::string> wrapped;
+	auto                     parts = SplitN(line, " ", 0);
+
+	for (auto &part: parts) {
+		TrimWhitespace(part);
+
+	}
+
+	std::string wLine;
+	for (auto   word: parts) {
+		if (word.size() == 0) {
+			continue;
+		}
+
+		if ((wLine.size() + word.size() + 1) > lineLength) {
+			wrapped.push_back(wLine);
+			wLine.clear();
+		}
+
+		if (wLine.size() > 0) {
+			wLine += " ";
+		}
+		wLine += word;
+	}
+
+	if (wLine.size() > 0) {
+		wrapped.push_back(wLine);
+	}
+
+	return wrapped;
+}
+
+
+void
+WriteTabIndented(std::ostream &os, std::vector<std::string> lines,
+		 int tabStop, bool indentFirst)
+{
+	std::string indent(tabStop, '\t');
+
+	for (size_t i = 0; i < lines.size(); i++) {
+		if (i > 0 || indentFirst) {
+			os << indent;
+		}
+		os << lines[i] << "\n";
+	}
+}
+
+
+void
+WriteTabIndented(std::ostream &os, std::string line, size_t maxLength,
+		 int tabStop, bool indentFirst)
+{
+	auto lines = WrapText(line, maxLength);
+	WriteTabIndented(os, lines, tabStop, indentFirst);
+}
+
+
 std::ostream &
 VectorToString(std::ostream &os, const std::vector<std::string> &svec)
 {
@@ -141,7 +211,7 @@ VectorToString(std::ostream &os, const std::vector<std::string> &svec)
 	os << "{";
 
 	for (size_t i = 0; i < svec.size(); i++) {
-		if (i > 0) os << ", ";
+		if (i > 0) { os << ", "; }
 		os << svec[i];
 	}
 
@@ -153,7 +223,7 @@ VectorToString(std::ostream &os, const std::vector<std::string> &svec)
 std::string
 VectorToString(const std::vector<std::string> &svec)
 {
-	std::stringstream	ss;
+	std::stringstream ss;
 
 	VectorToString(ss, svec);
 	return ss.str();

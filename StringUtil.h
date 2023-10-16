@@ -1,10 +1,9 @@
 ///
 /// \file StringUtil.h
-/// \author kyle (kyle@midgard)
-/// \created 2023-10-14
-/// \brief StringUtil contains string utilities.
+/// \author K. Isom <kyle@imap.cc>
+/// \date 2023-10-14
+/// \brief Utilities for working with strings.
 ///
-/// \section COPYRIGHT
 /// Copyright 2023 K. Isom <kyle@imap.cc>
 ///
 /// Permission to use, copy, modify, and/or distribute this software for
@@ -85,17 +84,44 @@ std::vector<std::string>	SplitKeyValuePair(std::string line, char delimiter);
 
 /// Split a string into parts based on the delimiter.
 ///
+/// \param s The string that should be split.
 /// \param delimiter The string that delimits the parts of the string.
-/// \param maxCount The maximum number of parts to split. If 0, there is no limit
-///	   	    to the number of parts.
+/// \param maxCount The maximum number of parts to split. If 0, there is no
+///	   	    limit to the number of parts.
 /// \return A vector containing all the parts of the string.
 std::vector<std::string>	SplitN(std::string, std::string delimiter, size_t maxCount=0);
 
-//std::vector<std::string>	SplitN(std::string, char delimiter, size_t size_t maxCount=0);
+/// WrapText is a very simple wrapping function that breaks the line into
+/// lines of at most lineLength characters. It does this by breaking the
+/// line into individual words (splitting on whitespace).
+std::vector<std::string>	WrapText(std::string line, size_t lineLength);
+
+/// Write out a vector of lines indented with tabs.
+///
+/// \param os The output stream to write to.
+/// \param lines The lines of text to write.
+/// \param tabStop The number of tabs to indent.
+/// \param indentFirst Whether the first line should be indented.
+void	WriteTabIndented(std::ostream &os, std::vector<std::string> lines,
+		 	 int tabStop, bool indentFirst);
+
+/// Wrap a line, then output it to a stream.
+///
+/// \param os The output stream to write to.
+/// \param line The line to wrap and output.
+/// \param maxLength The maximum length of each section of text.
+/// \param tabStop The number of tabs to indent.
+/// \param indentFirst Whether the first line should be indented.
+void	WriteTabIndented(std::ostream &os, std::string line, size_t maxLength,
+		         int tabStop, bool indentFirst);
 
 
-/// Return a string represention of a string vector in the form [size]{"foo", "bar", ...}.
+/// Write a string vector to the output stream in the same format as
+/// VectorToString.
 std::ostream &VectorToString(std::ostream &os, const std::vector<std::string> &svec);
+
+/// Return a string represention of a string vector in the form
+/// [size]{"foo", "bar", ...}.
 std::string   VectorToString(const std::vector<std::string> &svec);
 
 

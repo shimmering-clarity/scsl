@@ -1,10 +1,9 @@
 ///
 /// \file stringutil_test.cc
 /// \author kyle 
-/// \created 10/14/23
+/// \date 10/14/23
 /// \brief Ensure the stringutil functions work.
 ///
-/// \section COPYRIGHT
 /// Copyright 2023 K. Isom <kyle@imap.cc>
 ///
 /// Permission to use, copy, modify, and/or distribute this software for
@@ -27,24 +26,26 @@
 
 #include "StringUtil.h"
 #include "Test.h"
+
+
 using namespace scsl;
 
 
 static void
 TestTrimming(std::string line, std::string lExpected, std::string rExpected, std::string expected)
 {
-	std::string	result;
-	std::string 	message;
+	std::string result;
+	std::string message;
 
-	result = U::S::TrimLeadingWhitespaceDup(line);
+	result  = U::S::TrimLeadingWhitespaceDup(line);
 	message = "TrimLeadingDup(\"" + line + "\"): '" + result + "'";
 	TestAssert(result == lExpected, message);
 
-	result = U::S::TrimTrailingWhitespaceDup(line);
+	result  = U::S::TrimTrailingWhitespaceDup(line);
 	message = "TrimTrailingDup(\"" + line + "\"): '" + result + "'";
 	TestAssert(result == rExpected, message);
 
-	result = U::S::TrimWhitespaceDup(line);
+	result  = U::S::TrimWhitespaceDup(line);
 	message = "TrimDup(\"" + line + "\"): '" + result + "'";
 	TestAssert(result == expected, message);
 
@@ -68,7 +69,7 @@ TestTrimming(std::string line, std::string lExpected, std::string rExpected, std
 static std::string
 vec2string(std::vector<std::string> v)
 {
-	std::stringstream	ss;
+	std::stringstream ss;
 
 	ss << "(";
 	ss << v.size();
@@ -76,7 +77,7 @@ vec2string(std::vector<std::string> v)
 	ss << "{";
 
 	for (size_t i = 0; i < v.size(); i++) {
-		if (i > 0) ss << ", ";
+		if (i > 0) { ss << ", "; }
 		ss << v[i];
 	}
 
@@ -100,6 +101,36 @@ TestSplit(std::string line, std::string delim, size_t maxCount, std::vector<std:
 }
 
 
+static void
+TestWrapping()
+{
+	std::string testLine = "A much longer line, something that can be tested with WrapText. ";
+	testLine += "Does it handle puncuation? I hope so.";
+
+	std::vector<std::string> expected{
+	    "A much longer",
+	    "line, something",
+	    "that can be",
+	    "tested with",
+	    "WrapText. Does",
+	    "it handle",
+	    "puncuation? I",
+	    "hope so.",
+	};
+
+	auto wrapped = U::S::WrapText(testLine, 16);
+	TestAssert(wrapped.size() == expected.size(),
+		   U::S::VectorToString(wrapped) + " != " + U::S::VectorToString(expected));
+
+	for (size_t i = 0; i < wrapped.size(); i++) {
+		TestAssert(wrapped[i] == expected[i],
+			   "\"" + wrapped[i] + "\" != \"" + expected[i] + "\"");
+	}
+
+	U::S::WriteTabIndented(std::cout, wrapped, 4, true);
+}
+
+
 int
 main()
 {
@@ -116,4 +147,6 @@ main()
 		  std::vector<std::string>{"abc:def:ghij:klm"});
 	TestSplit("abc::def:ghi", ":", 0,
 		  std::vector<std::string>{"abc", "", "def", "ghi"});
+
+	TestWrapping();
 }

@@ -1,9 +1,35 @@
+///
+/// \file TLV.cc
+/// \author K. Isom <kyle@imap.cc>
+/// \date 2023-10-06
+/// \brief Tag-Length-Value records built on Arena.
+///
+/// Copyright 2023 K. Isom <kyle@imap.cc>
+///
+/// Permission to use, copy, modify, and/or distribute this software for
+/// any purpose with or without fee is hereby granted, provided that
+/// the above copyright notice and this permission notice appear in all /// copies.
+///
+/// THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL
+/// WARRANTIES WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED
+/// WARRANTIES OF MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE
+/// AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL
+/// DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA
+/// OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER
+/// TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
+/// PERFORMANCE OF THIS SOFTWARE.
+///
+
+#include <cassert>
 #include <cstring>
+
 #include "TLV.h"
 
 using namespace scsl;
 
 
+/// REC_SIZE calculates the total length of a TLV record, including the
+/// two byte header.
 #define REC_SIZE(x)	((std::size_t)x.Len + 2)
 
 
@@ -90,6 +116,7 @@ FindTag(Arena &arena, uint8_t *cursor, Record &rec)
 {
 	cursor = LocateTag(arena, cursor, rec);
 	if (rec.Tag != TAG_EMPTY) {
+		std::cout << "skipping record\n";
 		cursor = SkipRecord(rec, cursor);
 	}
 
@@ -102,13 +129,22 @@ LocateTag(Arena &arena, uint8_t *cursor, Record &rec)
 {
 	uint8_t tag, len;
 
+	if (!arena.CursorInArena(cursor)) {
+		cursor = nullptr;
+	}
+
 	if (cursor == nullptr) {
+		std::cout << "move cursor to arena start\n";
 		cursor = arena.Start();
 	}
 
 	while ((tag = cursor[0]) != rec.Tag) {
+		assert(arena.CursorInArena(cursor));
+		std::cout << "cursor is in arena\n";
 		len = cursor[1];
+		std::cout << "record length" << len << "\n";
 		if (!spaceAvailable(arena, cursor, len)) {
+			std::cout << "no space available\n";
 			return nullptr;
 		}
 		cursor += len;

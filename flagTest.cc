@@ -20,18 +20,19 @@ main(int argc, char *argv[])
 	int          testInteger  = 0;
 	std::string  testString;
 
-	auto flags = new Flags("flag_test", "this is a test of the flag functionality.");
+	auto flags = new Flags("flag_test", "this is a test of the flag functionality. This line is particularly long to make sure the wrapping works.");
 	flags->Register("-b", FlagType::Boolean, "test boolean");
 	flags->Register("-s", FlagType::String, "test string");
-	flags->Register("-u", (unsigned int)42, "test unsigned integer");
+	flags->Register("-u", (unsigned int)42, "test unsigned integer with a long description line. This should trigger multiline text-wrapping.");
 	flags->Register("-i", -42, "test integer");
 	flags->Register("-size", FlagType::SizeT, "test size_t");
 	TestAssert(flags->Size() == 5, "flags weren't registered");
 
 	auto status = flags->Parse(argc, argv);
 
-	if (status != ParseStatus::OK) {
-		std::cerr << "failed to parse flags: " << ParseStatusToString(status) << "\n";
+	if (status != Flags::ParseStatus::OK) {
+		std::cerr << "failed to parse flags: "
+			  << Flags::ParseStatusToString(status) << "\n";
 		exit(1);
 	}
 
@@ -55,5 +56,6 @@ main(int argc, char *argv[])
 	std::cout << "(string) test flag was set: " << wasSet << "\n";
 	std::cout << "(string) test flag value: " << testString << "\n";
 
+	delete flags;
 	return 0;
 }

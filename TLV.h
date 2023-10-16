@@ -14,14 +14,15 @@
 #ifndef KIMODEM_TLV_H
 #define KIMODEM_TLV_H
 
-#include <cstdint>
 #include <array>
+#include <cstdint>
 
 #include "Arena.h"
 
 
 namespace scsl {
 namespace TLV {
+
 
 #ifndef TLV_MAX_LEN
 static constexpr size_t TLV_MAX_LEN = 253;
