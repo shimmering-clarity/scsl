@@ -18,7 +18,15 @@ else ()
     #   -Wno-unused-parameter   Some functions have parameters defined for compatibility,
     #                           and aren't used in the implementation.
 
-    add_compile_options("-Wall" "-Wextra" "-Werror" "-Wno-unused-function" "-Wno-unused-parameter" "$<$<CONFIG:RELEASE>:-O2>")
+    add_compile_options(
+            "-static"
+            "-Wall"
+            "-Wextra"
+            "-Werror"
+            "-Wno-unused-function"
+            "-Wno-unused-parameter"
+            "$<$<CONFIG:RELEASE>:-O2>"
+    )
     if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
         add_compile_options("-stdlib=libc++")
     else ()
