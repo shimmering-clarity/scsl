@@ -55,7 +55,7 @@ namespace scsl {
 ///
 /// On the one hand, I was building a wireless modem for some Z80 computers I
 /// have. I needed to be able to store a phonebook of SSIDs and WPA keys, as
-/// well as short names to host:port descriptors. I had a limited amount of of
+/// well as short names to host:port descriptors. I had a limited amount of
 /// persistent NVRAM storage and no SD card or other removeable media, so
 /// typical desktop-oriented serialization mechanisms weren't going to really
 /// work well. Furthermore, when working with microcontrollers, I prefer not to
