@@ -92,41 +92,43 @@ Flag	*NewFlag(std::string fName, FlagType fType, std::string fDescription);
 ///
 /// A short example program is below:
 ///
+/// ```c++
 /// int
 /// main(int argc, char *argv[])
 /// {
-///	std::string server = "service.example.com";
-///	unsigned int port  = 1234;
-///
+/// 	std::string  server = "service.example.com";
+/// 	unsigned int port   = 1234;
+/// 
 /// 	auto flags = new scsl::Flags("example-client",
-///         "This interacts with the example.com service.");
+/// 				     "This interacts with the example.com service.");
 /// 	flags->Register("-p", port, "server port");
 /// 	flags->Register("-s", server, "hostname to connect to");
-///
+/// 
 /// 	auto status = flags->Parse(argc, argv);
 /// 	if (status != ParseStatus::OK) {
 /// 		std::cerr << "failed to parse flags: "
-///                       << scsl::Flags::ParseStatusToString(status)
-///                       << "\n";
+/// 			  << scsl::Flags::ParseStatusToString(status)
+/// 			  << "\n";
 /// 		exit(1);
 /// 	}
-///
+/// 
 /// 	auto wasSet = flags->GetString("-s", server);
-///	if (wasSet) {
-///		std::cout << "hostname override: " << server << "\n";
-///	}
-///
+/// 	if (wasSet) {
+/// 		std::cout << "hostname override: " << server << "\n";
+/// 	}
+/// 
 /// 	wasSet = flags->GetUnsignedInteger("-p", port);
-///	if (wasSet) {
-///		std::cout << "port override: " << port << "\n";
-///	}
-///
+/// 	if (wasSet) {
+/// 		std::cout << "port override: " << port << "\n";
+/// 	}
+/// 
 /// 	std::cout << "connecting to " << server << ":" << port << "\n";
 /// 	for (size_t i = 0; i < flags.NumArgs(); i++) {
 /// 		std::cout << "\tExecuting command " << flags.Arg(i) << "\n";
 /// 	}
-///	return 0;
+/// 	return 0;
 /// }
+/// ```
 ///
 class Flags {
 public:
