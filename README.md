@@ -5,10 +5,10 @@ scsl is a collection of software I found myself needing to use repeatedly.
 Full [Doxygen documentation](https://docs.shimmering-clarity.net/scsl/)
 is available.
 
- \section Introduction
+## Introduction
 
- This is a collection of C++ code that I find useful in building things. 
- It arose from two main use cases.
+This is a collection of C++ code that I find useful in building things. 
+It arose from two main use cases.
 
  ### The modem
 
