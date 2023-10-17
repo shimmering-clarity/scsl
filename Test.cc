@@ -23,6 +23,7 @@
 #include "Exceptions.h"
 #include "Test.h"
 
+#include <cassert>
 #include <iostream>
 #include <sstream>
 

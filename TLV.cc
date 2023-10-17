@@ -116,8 +116,10 @@ FindTag(Arena &arena, uint8_t *cursor, Record &rec)
 {
 	cursor = LocateTag(arena, cursor, rec);
 	if (rec.Tag != TAG_EMPTY) {
-		std::cout << "skipping record\n";
 		cursor = SkipRecord(rec, cursor);
+		if (!arena.CursorInArena(cursor)) {
+			cursor = nullptr;
+		}
 	}
 
 	return cursor;
@@ -134,21 +136,22 @@ LocateTag(Arena &arena, uint8_t *cursor, Record &rec)
 	}
 
 	if (cursor == nullptr) {
-		std::cout << "move cursor to arena start\n";
 		cursor = arena.Start();
 	}
 
-	while ((tag = cursor[0]) != rec.Tag) {
+	while (((tag = cursor[0]) != rec.Tag) &&
+		(arena.CursorInArena(cursor))) {
 		assert(arena.CursorInArena(cursor));
-		std::cout << "cursor is in arena\n";
 		len = cursor[1];
-		std::cout << "record length" << len << "\n";
 		if (!spaceAvailable(arena, cursor, len)) {
-			std::cout << "no space available\n";
 			return nullptr;
 		}
 		cursor += len;
 		cursor += 2;
+	}
+
+	if (!arena.CursorInArena(cursor)) {
+		return nullptr;
 	}
 
 	if (tag != rec.Tag) {
