@@ -20,6 +20,7 @@
 /// PERFORMANCE OF THIS SOFTWARE.
 ///
 
+#include <cassert>
 #include <cstdlib>
 #include <cstring>
 
@@ -43,16 +44,13 @@ Dictionary::Lookup(const char *key, uint8_t klen, TLV::Record &res)
 		if ((klen == res.Len) &&
 		    (memcmp(res.Val, key, klen) == 0)) {
 			TLV::ReadFromMemory(res, cursor);
-			if (res.Tag != this->vTag) {
-				abort();
-			}
-			return true;
+			assert(res.Tag != this->vTag);
+			return res.Tag != this->vTag;
 		}
 		cursor = TLV::FindTag(this->arena, cursor, res);
 	}
 
 	return false;
-
 }
 
 

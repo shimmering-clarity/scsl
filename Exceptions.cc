@@ -26,17 +26,14 @@
 namespace scsl {
 
 
-AssertionFailed::AssertionFailed(std::string message) : msg(message)
-{
-}
+AssertionFailed::AssertionFailed(std::string message) : msg(message) {}
+
 
 const char *
 AssertionFailed::what()  const throw()
 {
 	return const_cast<char *>(this->msg.c_str());
 }
-
-
 
 
 }
