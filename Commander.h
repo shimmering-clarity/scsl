@@ -28,6 +28,7 @@
 /// PERFORMANCE OF THIS SOFTWARE.
 ///
 
+#include <cstdint>
 #include <functional>
 #include <map>
 #include <string>
@@ -51,7 +52,7 @@ using CommanderFunc = std::function<bool (int, char **)>;
 class Subcommand {
 public:
 	/// Status describes the results of running a Subcommand.
-	enum class Status : std::uint8_t {
+	enum class Status : int8_t {
 		/// The subcommand executed correctly.
 		OK = 0,
 		/// Not enough arguments were supplied to the subcommand.
