@@ -83,7 +83,6 @@ Arena::SetAlloc(size_t allocSize)
 }
 
 
-#if defined(__posix__) || defined(__linux__) || defined(__APPLE__)
 int
 Arena::MemoryMap(int memFileDes, size_t memSize)
 {
@@ -93,9 +92,9 @@ Arena::MemoryMap(int memFileDes, size_t memSize)
 
 	this->arenaType = ArenaType::MemoryMapped;
 	this->size = memSize;
-	this->store = (uint8_t *) mmap(NULL, memSize, PROT_RW, MAP_SHARED,
-				       memFileDes, 0);
-	if ((void *) this->store == MAP_FAILED) {
+	this->store = static_cast<uint8_t *>(mmap(nullptr, memSize, PROT_RW, MAP_SHARED,
+				       memFileDes, 0));
+	if (static_cast<void *>(this->store) == MAP_FAILED) {
 		return -1;
 	}
 	this->fd = memFileDes;
@@ -121,105 +120,34 @@ Arena::Open(const char *path)
 		return -1;
 	}
 
-	return this->MemoryMap(this->fd, (size_t) st.st_size);
+	return this->MemoryMap(this->fd, static_cast<size_t>(st.st_size));
 }
 
 
 int
 Arena::Create(const char *path, size_t fileSize)
 {
-	FILE *fHandle = nullptr;
-	int newFileDes = 0;
-
 	if (this->size > 0) {
 		this->Destroy();
 	}
 
 
-	fHandle = fopen(path, "w");
+	auto *fHandle = fopen(path, "w");
 	if (fHandle == nullptr) {
 		return -1;
 	}
-	newFileDes = fileno(fHandle);
 
-	if (ftruncate(newFileDes, fileSize) == -1) {
+	auto newFileDes = fileno(fHandle);
+
+	if (ftruncate(newFileDes, static_cast<off_t>(fileSize)) == -1) {
+		close(newFileDes);
+		fclose(fHandle);
 		return -1;
 	}
 
 	close(newFileDes);
 	return this->Open(path);
 }
-#elif defined(__WIN64__) || defined(__WIN32__) || defined(WIN32)
-int
-Arena::Open(const char *path)
-{
-	HANDLE fHandle;
-	DWORD fRead = 0;
-	size_t fSize;
-	size_t fRemaining;
-	auto *cursor = this->store;
-	OVERLAPPED overlap = {0};
-
-	fHandle = CreateFileA(
-	    (LPSTR) path,
-	    GENERIC_READ,
-	    (FILE_SHARE_DELETE | FILE_SHARE_READ | FILE_SHARE_WRITE),
-	    NULL,
-	    OPEN_ALWAYS,
-	    FILE_ATTRIBUTE_NORMAL,
-	    NULL);
-	if (fHandle == INVALID_HANDLE_VALUE) {
-		return Windows::DisplayWinError("CreateFileA", NULL);
-	}
-
-	if (SetFilePointer(fHandle, 0, 0, FILE_BEGIN) != 0) {
-		return Windows::DisplayWinError("SetFilePointer", fHandle);
-	}
-
-	if (GetFileSizeEx(fHandle, reinterpret_cast<PLARGE_INTEGER>(&fSize)) !=
-	    TRUE) {
-		return Windows::DisplayWinError("GetFileSizeEx", fHandle);
-	}
-
-	this->SetAlloc(fSize);
-	cursor = this->NewCursor();
-
-	this->store[0] = 1;
-	fRemaining = fSize;
-	while (fRemaining != 0) {
-		overlap.Offset = (fSize - fRemaining);
-		if (ReadFile(fHandle, cursor, fSize - 1,
-			     &fRead,
-			     &overlap) != TRUE) {
-			auto errorCode = GetLastError();
-			if (errorCode != ERROR_HANDLE_EOF) {
-				this->Destroy();
-
-				return Windows::DisplayWinError("ReadFile", fHandle);
-			}
-			break;
-		}
-
-		cursor += fRead;
-		fRemaining -= fRead;
-	}
-
-	CloseHandle(fHandle);
-	return 0;
-}
-
-
-int
-Arena::Create(const char *path, size_t fileSize)
-{
-	auto	errorCode = Windows::CreateFixedSizeFile(path, fileSize);
-	if (errorCode != 0) {
-		return errorCode;
-	}
-	return this->Open(path);
-}
-
-#endif
 
 
 bool
