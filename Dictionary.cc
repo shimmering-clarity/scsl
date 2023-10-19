@@ -44,8 +44,8 @@ Dictionary::Lookup(const char *key, uint8_t klen, TLV::Record &res)
 		if ((klen == res.Len) &&
 		    (memcmp(res.Val, key, klen) == 0)) {
 			TLV::ReadFromMemory(res, cursor);
-			assert(res.Tag != this->vTag);
-			return res.Tag != this->vTag;
+			assert(res.Tag == this->vTag);
+			return res.Tag == this->vTag;
 		}
 		cursor = TLV::FindTag(this->arena, cursor, res);
 	}
