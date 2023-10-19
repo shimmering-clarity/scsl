@@ -1,5 +1,9 @@
 # scsl : The Shimmering Clarity Standard C++ Library
 
+[![CircleCI](https://dl.circleci.com/status-badge/img/gh/shimmering-clarity/emsha/tree/master.svg?style=svg)](https://dl.circleci.com/status-badge/redirect/gh/shimmering-clarity/emsha/tree/master)
+
+[![image](https://scan.coverity.com/projects/29251/badge.svg)](https://scan.coverity.com/projects/shimmering-clarity-scsl)
+
 scsl is a collection of software I found myself needing to use repeatedly.
 
 Full [Doxygen documentation](https://docs.shimmering-clarity.net/scsl/)

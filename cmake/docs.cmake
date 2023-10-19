@@ -9,8 +9,8 @@ message(STATUS "Doxygen found, building docs.")
 
 doxygen_add_docs(scsl_docs
 	${HEADER_FILES}
+	ALL
 	USE_STAMP_FILE)
-add_dependencies(scsl scsl_docs)
 install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/html DESTINATION share/doc/scsl)
 install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/man DESTINATION share)
 
