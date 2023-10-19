@@ -37,7 +37,7 @@
 #include <iostream>
 #include <sys/stat.h>
 
-#include "Exceptions.h"
+#include "sctest/Exceptions.h"
 
 
 #if defined(__WIN64__) || defined(__WIN32__) || defined(WIN32)

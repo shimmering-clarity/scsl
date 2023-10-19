@@ -88,4 +88,4 @@ Quaternion_SelfTest()
 
 
 } // namespace geom
-} // namespace math
+} // namespace scmp

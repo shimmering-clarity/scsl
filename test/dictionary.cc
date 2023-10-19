@@ -7,6 +7,7 @@
 
 
 using namespace scsl;
+using namespace sctest;
 
 
 constexpr char TEST_KVSTR1[] = "foo";
@@ -60,40 +61,40 @@ main(int argc, const char *argv[])
 	TLV::SetRecord(expect, DICTIONARY_TAG_VAL, TEST_KVSTRLEN3, TEST_KVSTR3);
 
 	Dictionary dict(arena);
-	TestAssert(!dict.Contains(TEST_KVSTR2, TEST_KVSTRLEN2));
+	Assert(!dict.Contains(TEST_KVSTR2, TEST_KVSTRLEN2));
 
-	TestAssert(testSetKV(dict, TEST_KVSTR1, TEST_KVSTRLEN1, TEST_KVSTR3,
-			     TEST_KVSTRLEN3));
+	Assert(testSetKV(dict, TEST_KVSTR1, TEST_KVSTRLEN1, TEST_KVSTR3,
+			 TEST_KVSTRLEN3));
 	std::cout << dict;
-	TestAssert(testSetKV(dict, TEST_KVSTR2, TEST_KVSTRLEN2, TEST_KVSTR3,
-			     TEST_KVSTRLEN3));
+	Assert(testSetKV(dict, TEST_KVSTR2, TEST_KVSTRLEN2, TEST_KVSTR3,
+			 TEST_KVSTRLEN3));
 	std::cout << dict;
-	TestAssert(dict.Contains(TEST_KVSTR2, TEST_KVSTRLEN2));
-	TestAssert(testSetKV(dict, TEST_KVSTR4, TEST_KVSTRLEN4, TEST_KVSTR5,
-			     TEST_KVSTRLEN5));
+	Assert(dict.Contains(TEST_KVSTR2, TEST_KVSTRLEN2));
+	Assert(testSetKV(dict, TEST_KVSTR4, TEST_KVSTRLEN4, TEST_KVSTR5,
+			 TEST_KVSTRLEN5));
 	std::cout << dict;
-	TestAssert(dict.Lookup(TEST_KVSTR2, TEST_KVSTRLEN2, value));
+	Assert(dict.Lookup(TEST_KVSTR2, TEST_KVSTRLEN2, value));
 
-	TestAssert(cmpRecord(value, expect));
+	Assert(cmpRecord(value, expect));
 
 	std::cout << "test overwriting key" << "\n";
-	TestAssert(testSetKV(dict, TEST_KVSTR2, TEST_KVSTRLEN2, TEST_KVSTR6,
-			     TEST_KVSTRLEN6));
+	Assert(testSetKV(dict, TEST_KVSTR2, TEST_KVSTRLEN2, TEST_KVSTR6,
+			 TEST_KVSTRLEN6));
 	std::cout << dict;
 	TLV::SetRecord(expect, DICTIONARY_TAG_VAL, TEST_KVSTRLEN6, TEST_KVSTR6);
 	std::cout << "\tlookup" << "\n";
-	TestAssert(dict.Lookup(TEST_KVSTR2, TEST_KVSTRLEN2, value));
+	Assert(dict.Lookup(TEST_KVSTR2, TEST_KVSTRLEN2, value));
 	std::cout << "\tcompare records" << "\n";
-	TestAssert(cmpRecord(value, expect));
+	Assert(cmpRecord(value, expect));
 
 	std::cout << "\tadd new key to dictionary" << "\n";
-	TestAssert(testSetKV(dict, TEST_KVSTR3, TEST_KVSTRLEN3, TEST_KVSTR5,
-			     TEST_KVSTRLEN5));
+	Assert(testSetKV(dict, TEST_KVSTR3, TEST_KVSTRLEN3, TEST_KVSTR5,
+			 TEST_KVSTRLEN5));
 	std::cout << dict;
 
 	TLV::SetRecord(expect, DICTIONARY_TAG_VAL, TEST_KVSTRLEN5, TEST_KVSTR5);
-	TestAssert(dict.Lookup(TEST_KVSTR4, TEST_KVSTRLEN4, value));
-	TestAssert(cmpRecord(value, expect));
+	Assert(dict.Lookup(TEST_KVSTR4, TEST_KVSTRLEN4, value));
+	Assert(cmpRecord(value, expect));
 
 	std::cout << "OK" << "\n";
 

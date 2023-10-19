@@ -20,10 +20,10 @@
 /// PERFORMANCE OF THIS SOFTWARE.
 ///
 
-#include <scsl/Exceptions.h>
+#include <sctest/Exceptions.h>
 
 
-namespace scsl {
+namespace sctest {
 
 
 AssertionFailed::AssertionFailed(std::string message) : msg(message) {}
@@ -36,4 +36,4 @@ AssertionFailed::what()  const throw()
 }
 
 
-}
+} // namespace sctest

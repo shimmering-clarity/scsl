@@ -21,8 +21,8 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-#ifndef __SCTEST_REPORT_H
-#define __SCTEST_REPORT_H
+#ifndef SCTEST_REPORT_H
+#define SCTEST_REPORT_H
 
 #include <chrono>
 

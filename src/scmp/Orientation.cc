@@ -37,4 +37,4 @@ Heading3d(Vector3d vec)
 
 
 } // namespace geom
-} // namespace math
+} // namespace scmp

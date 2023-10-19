@@ -26,7 +26,7 @@ main(int argc, char *argv[])
 	flags->Register("-u", (unsigned int)42, "test unsigned integer with a long description line. This should trigger multiline text-wrapping.");
 	flags->Register("-i", -42, "test integer");
 	flags->Register("-size", FlagType::SizeT, "test size_t");
-	TestAssert(flags->Size() == 5, "flags weren't registered");
+	sctest::Assert(flags->Size() == 5, "flags weren't registered");
 
 	auto status = flags->Parse(argc, argv);
 

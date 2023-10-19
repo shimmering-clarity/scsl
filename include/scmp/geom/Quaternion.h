@@ -19,7 +19,7 @@ namespace scmp {
 namespace geom {
 
 
-/// @brief Quaternions provide a representation of orientation and rotations
+/// @brief Quaternions provide a representation of Orientation and rotations
 /// in three dimensions.
 ///
 /// Quaternions encode rotations in three-dimensional space. While technically
@@ -441,7 +441,7 @@ quaternion(Vector<T, 3> axis, T angle)
 /// return a quaternion.
 ///
 /// @param euler A vector Euler angle in ZYX sequence.
-/// @return A Quaternion representation of the orientation represented
+/// @return A Quaternion representation of the Orientation represented
 ///         by the Euler angles.
 /// @relatesalso Quaternion
 Quaternionf	quaternionf_from_euler(Vector3f euler);
@@ -451,7 +451,7 @@ Quaternionf	quaternionf_from_euler(Vector3f euler);
 /// return a quaternion.
 ///
 /// @param euler A vector Euler angle in ZYX sequence.
-/// @return A Quaternion representation of the orientation represented
+/// @return A Quaternion representation of the Orientation represented
 ///         by the Euler angles.
 /// @relatesalso Quaternion
 Quaterniond	quaterniond_from_euler(Vector3d euler);

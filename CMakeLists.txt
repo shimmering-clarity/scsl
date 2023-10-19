@@ -39,7 +39,7 @@ set(HEADER_FILES
         include/scsl/Buffer.h
         include/scsl/Commander.h
         include/scsl/Dictionary.h
-        include/scsl/Exceptions.h
+        include/sctest/Exceptions.h
         include/scsl/Flag.h
         include/scsl/StringUtil.h
         include/scsl/TLV.h
@@ -53,6 +53,7 @@ set(HEADER_FILES
 
         include/sctest/Assert.h
         include/sctest/Report.h
+        include/scmp/filter/Madgwick.h
 )
 
 include_directories(include)
@@ -62,7 +63,7 @@ set(SOURCE_FILES
         src/sl/Buffer.cc
         src/sl/Commander.cc
         src/sl/Dictionary.cc
-        src/sl/Exceptions.cc
+        src/test/Exceptions.cc
         src/sl/Flag.cc
         src/sl/StringUtil.cc
         src/sl/TLV.cc
@@ -102,12 +103,21 @@ macro(generate_test name)
     add_test(test_${name} test_${name})
 endmacro()
 
+# core standard library
 generate_test(buffer)
 generate_test(tlv)
 generate_test(dictionary)
 generate_test(flag)
 generate_test(stringutil)
 
+# math and physics
+generate_test(coord2d)
+generate_test(madgwick)
+generate_test(orientation)
+generate_test(quaternion)
+generate_test(vector)
+
+# test tooling
 generate_test(simple_suite_example)
 
 include(CMakePackageConfigHelpers)

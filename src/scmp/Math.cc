@@ -144,5 +144,5 @@ DefaultEpsilon(float &epsilon)
 }
 
 
-} // namespace math
+} // namespace scmp
 

@@ -1,5 +1,5 @@
 /**
- * orientation.h concerns itself with computing the orientation of some
+ * orientation.h concerns itself with computing the Orientation of some
  * vector with respect to a reference plane that is assumed to be the
  * of the Earth.
  */
@@ -61,28 +61,28 @@ static const Vector3f Basis3f[] = {
 
 
 /// Heading2f returns a compass heading for a Vector2f.
-/// @param vec A vector orientation.
+/// @param vec A vector Orientation.
 /// @return The compass heading of the vector in radians.
 float	Heading2f(Vector2f vec);
 
 /// Heading2d returns a compass heading for a Vector2d.
-/// @param vec A vector orientation.
+/// @param vec A vector Orientation.
 /// @return The compass heading of the vector in radians.
 double	Heading2d(Vector2d vec);
 
 /// Heading3f returns a compass heading for a Vector2f.
-/// @param vec A vector orientation.
+/// @param vec A vector Orientation.
 /// @return The compass heading of the vector in radians.
 float	Heading3f(Vector3f vec);
 
 /// Heading3d returns a compass heading for a Vector2f.
-/// @param vec A vector orientation.
+/// @param vec A vector Orientation.
 /// @return The compass heading of the vector in radians.
 double	Heading3d(Vector3d vec);
 
 
 } // namespace geom
-} // namespace math
+} // namespace scmp
 
 
 #endif // __WRMATH_ORIENTATION_H

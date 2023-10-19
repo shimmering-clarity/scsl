@@ -20,7 +20,7 @@
 /// PERFORMANCE OF THIS SOFTWARE.
 ///
 
-#include <scsl/Exceptions.h>
+#include "sctest/Exceptions.h"
 #include <sctest/Assert.h>
 
 #include <cassert>
@@ -28,10 +28,10 @@
 #include <sstream>
 
 
-namespace scsl {
+namespace sctest {
 
 void
-TestAssert(bool condition, std::string message)
+Assert(bool condition, std::string message)
 {
 #if defined(NDEBUG) || defined(SCSL_NOEXCEPT)
 	if (!condition) {
@@ -47,7 +47,7 @@ TestAssert(bool condition, std::string message)
 
 
 void
-TestAssert(bool condition)
+Assert(bool condition)
 {
 #if defined(NDEBUG)
 	if (condition) {
@@ -67,4 +67,4 @@ TestAssert(bool condition)
 }
 
 
-} // namespace scsl
+} // namespace sctest

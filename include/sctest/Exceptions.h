@@ -19,6 +19,7 @@
 /// TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
 /// PERFORMANCE OF THIS SOFTWARE.
 ///
+
 #ifndef SCSL_EXCEPTIONS_H
 #define SCSL_EXCEPTIONS_H
 
@@ -27,7 +28,7 @@
 #include <string>
 
 
-namespace scsl {
+namespace sctest {
 
 
 /// NotImplemented is an exception reserved for unsupported platforms.
@@ -63,7 +64,7 @@ private:
 };
 
 
-} // namespace scsl
+} // namespace sctest
 
 
-#endif //SCSL_EXCEPTIONS_H
+#endif // SCSL_EXCEPTIONS_H

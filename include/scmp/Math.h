@@ -71,7 +71,7 @@ WithinTolerance(T a, T b, T epsilon)
 }
 
 
-} // namespace math
+} // namespace scmp
 
 
 #endif //SCCCL_MATH_H

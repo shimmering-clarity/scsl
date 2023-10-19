@@ -6,7 +6,7 @@
 // Namespace: math::vectors.
 //
 // vectors.h defines the Vector2D class and associated functions in the
-// namespace math::vectors.
+// namespace scmp::vectors.
 //
 // Copyright 2017 Kyle Isom <kyle@imap.cc>
 //
@@ -415,7 +415,7 @@ typedef Vector<double, 4>	Vector4d;
 
 
 } // namespace geom
-} // namespace math
+} // namespace scmp
 
 
 

@@ -39,30 +39,30 @@ TestTrimming(std::string line, std::string lExpected, std::string rExpected, std
 
 	result  = U::S::TrimLeadingWhitespaceDup(line);
 	message = "TrimLeadingDup(\"" + line + "\"): '" + result + "'";
-	TestAssert(result == lExpected, message);
+	sctest::Assert(result == lExpected, message);
 
 	result  = U::S::TrimTrailingWhitespaceDup(line);
 	message = "TrimTrailingDup(\"" + line + "\"): '" + result + "'";
-	TestAssert(result == rExpected, message);
+	sctest::Assert(result == rExpected, message);
 
 	result  = U::S::TrimWhitespaceDup(line);
 	message = "TrimDup(\"" + line + "\"): '" + result + "'";
-	TestAssert(result == expected, message);
+	sctest::Assert(result == expected, message);
 
 	result = line;
 	U::S::TrimLeadingWhitespace(result);
 	message = "TrimLeadingDup(\"" + line + "\"): '" + result + "'";
-	TestAssert(result == lExpected, message);
+	sctest::Assert(result == lExpected, message);
 
 	result = line;
 	U::S::TrimTrailingWhitespace(result);
 	message = "TrimTrailingDup(\"" + line + "\"): '" + result + "'";
-	TestAssert(result == rExpected, message);
+	sctest::Assert(result == rExpected, message);
 
 	result = line;
 	U::S::TrimWhitespace(result);
 	message = "TrimDup(\"" + line + "\"): '" + result + "'";
-	TestAssert(result == expected, message);
+	sctest::Assert(result == expected, message);
 }
 
 
@@ -96,7 +96,7 @@ TestSplit(std::string line, std::string delim, size_t maxCount, std::vector<std:
 	std::cout << "\texpect: " << vec2string(expected) << "\n";
 	auto result = U::S::SplitN(line, delim, maxCount);
 	std::cout << "\tresult: " << U::S::VectorToString(result) << "\n";
-	TestAssert(result == expected, U::S::VectorToString(result));
+	sctest::Assert(result == expected, U::S::VectorToString(result));
 	std::cout << "OK!\n";
 }
 
@@ -119,12 +119,12 @@ TestWrapping()
 	};
 
 	auto wrapped = U::S::WrapText(testLine, 16);
-	TestAssert(wrapped.size() == expected.size(),
-		   U::S::VectorToString(wrapped) + " != " + U::S::VectorToString(expected));
+	sctest::Assert(wrapped.size() == expected.size(),
+		       U::S::VectorToString(wrapped) + " != " + U::S::VectorToString(expected));
 
 	for (size_t i = 0; i < wrapped.size(); i++) {
-		TestAssert(wrapped[i] == expected[i],
-			   "\"" + wrapped[i] + "\" != \"" + expected[i] + "\"");
+		sctest::Assert(wrapped[i] == expected[i],
+			       "\"" + wrapped[i] + "\" != \"" + expected[i] + "\"");
 	}
 
 	U::S::WriteTabIndented(std::cout, wrapped, 4, true);
