@@ -44,6 +44,13 @@ set(HEADER_FILES
         include/scsl/StringUtil.h
         include/scsl/TLV.h
 
+        include/scmp/Math.h
+        include/scmp/Motion2D.h
+        include/scmp/geom/Coord2D.h
+        include/scmp/geom/Orientation.h
+        include/scmp/geom/Quaternion.h
+        include/scmp/geom/Vector.h
+
         include/sctest/Assert.h
         include/sctest/Report.h
 )
@@ -59,6 +66,12 @@ set(SOURCE_FILES
         src/sl/Flag.cc
         src/sl/StringUtil.cc
         src/sl/TLV.cc
+
+        src/scmp/Math.cc
+        src/scmp/Coord2D.cc
+        src/scmp/Motion2D.cc
+        src/scmp/Orientation.cc
+        src/scmp/Quaternion.cc
 
         src/test/Assert.cc
         src/test/Report.cc

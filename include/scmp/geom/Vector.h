@@ -31,7 +31,7 @@
 #include <ostream>
 #include <iostream>
 
-#include <scccl/math/math.h>
+#include <scmp/Math.h>
 
 
 // This implementation is essentially a C++ translation of a Python library
@@ -39,7 +39,7 @@
 // of the test vectors come from quiz questions in the class.
 
 
-namespace scmath {
+namespace scmp {
 namespace geom {
 
 
@@ -65,7 +65,7 @@ public:
 			this->arr[i] = unitLength;
 		}
 
-		scmath::DefaultEpsilon(this->epsilon);
+		scmp::DefaultEpsilon(this->epsilon);
 	}
 
 
@@ -76,7 +76,7 @@ public:
 	{
 		assert(ilst.size() == N);
 
-		scmath::DefaultEpsilon(this->epsilon);
+		scmp::DefaultEpsilon(this->epsilon);
 		std::copy(ilst.begin(), ilst.end(), this->arr.begin());
 	}
 
@@ -110,7 +110,7 @@ public:
 	isZero() const
 	{
 		for (size_t i = 0; i < N; i++) {
-			if (!scmath::WithinTolerance(this->arr[i], (T)0.0, this->epsilon)) {
+			if (!scmp::WithinTolerance(this->arr[i], (T)0.0, this->epsilon)) {
 				return false;
 			}
 		}
@@ -132,7 +132,7 @@ public:
 	bool
 	isUnitVector() const
 	{
-		return scmath::WithinTolerance(this->magnitude(), (T)1.0, this->epsilon);
+		return scmp::WithinTolerance(this->magnitude(), (T)1.0, this->epsilon);
 	}
 
 
@@ -163,7 +163,7 @@ public:
 		}
 
 		T angle = this->angle(other);
-		if (scmath::WithinTolerance(angle, (T)0.0, this->epsilon)) {
+		if (scmp::WithinTolerance(angle, (T)0.0, this->epsilon)) {
 			return true;
 		}
 
@@ -182,7 +182,7 @@ public:
 			return true;
 		}
 
-		return scmath::WithinTolerance(*this * other, (T)0.0, this->epsilon);
+		return scmp::WithinTolerance(*this * other, (T)0.0, this->epsilon);
 	}
 
 
@@ -318,7 +318,7 @@ public:
 	operator==(const Vector<T, N> &other) const
 	{
 		for (size_t i = 0; i<N; i++) {
-			if (!scmath::WithinTolerance(this->arr[i], other.arr[i], this->epsilon)) {
+			if (!scmp::WithinTolerance(this->arr[i], other.arr[i], this->epsilon)) {
 				return false;
 			}
 		}

@@ -9,7 +9,7 @@
 #define SCMATH_GEOM_ORIENTATION_H
 
 
-namespace scmath {
+namespace scmp {
 namespace geom {
 
 

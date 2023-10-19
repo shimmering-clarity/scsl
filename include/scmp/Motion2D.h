@@ -6,13 +6,13 @@
 #define SCCCL_MOTION2D_H
 
 
-#include <scccl/math/geom/vector.h>
+#include <scmp/geom/Vector.h>
 
-namespace scphys {
+namespace scmp {
 namespace basic {
 
 
-scmath::geom::Vector2d	Acceleration(double speed, double heading);
+scmp::geom::Vector2d	Acceleration(double speed, double heading);
 
 
 } // namespace basic

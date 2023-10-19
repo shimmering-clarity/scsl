@@ -10,11 +10,11 @@
 #include <iostream>
 #include <ostream>
 
-#include <scccl/math/math.h>
-#include <scccl/math/geom/vector.h>
+#include <scmp/Math.h>
+#include <scmp/geom/Vector.h>
 
 /// math contains the shimmering clarity math library.
-namespace scmath {
+namespace scmp {
 /// geom contains geometric classes and functions.
 namespace geom {
 
@@ -47,7 +47,7 @@ public:
 	/// The default Quaternion constructor returns an identity quaternion.
 	Quaternion() : v(Vector<T, 3>{0.0, 0.0, 0.0}), w(1.0)
 	{
-		scmath::DefaultEpsilon(this->eps);
+		scmp::DefaultEpsilon(this->eps);
 		v.setEpsilon(this->eps);
 	};
 
@@ -61,7 +61,7 @@ public:
 	Quaternion(Vector<T, 3> _axis, T _angle) : v(_axis), w(_angle)
 	{
 		this->constrainAngle();
-		scmath::DefaultEpsilon(this->eps);
+		scmp::DefaultEpsilon(this->eps);
 		v.setEpsilon(this->eps);
 	};
 
@@ -75,7 +75,7 @@ public:
 		w(vector[0])
 	{
 		this->constrainAngle();
-		scmath::DefaultEpsilon(this->eps);
+		scmp::DefaultEpsilon(this->eps);
 		v.setEpsilon(this->eps);
 	}
 
@@ -92,7 +92,7 @@ public:
 		this->w = it[0];
 
 		this->constrainAngle();
-		scmath::DefaultEpsilon(this->eps);
+		scmp::DefaultEpsilon(this->eps);
 		v.setEpsilon(this->eps);
 	}
 
@@ -199,7 +199,7 @@ public:
 	bool
 	isIdentity() const {
 		return this->v.isZero() &&
-		       scmath::WithinTolerance(this->w, (T)1.0, this->eps);
+		       scmp::WithinTolerance(this->w, (T)1.0, this->eps);
 	}
 
 
@@ -209,7 +209,7 @@ public:
 	bool
 	isUnitQuaternion() const
 	{
-		return scmath::WithinTolerance(this->norm(), (T) 1.0, this->eps);
+		return scmp::WithinTolerance(this->norm(), (T) 1.0, this->eps);
 	}
 
 
@@ -338,7 +338,7 @@ public:
 	operator==(const Quaternion<T> &other) const
 	{
 		return (this->v == other.v) &&
-		       (scmath::WithinTolerance(this->w, other.w, this->eps));
+		       (scmp::WithinTolerance(this->w, other.w, this->eps));
 	}
 
 

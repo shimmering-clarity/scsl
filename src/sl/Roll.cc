@@ -2,9 +2,7 @@
 #include <string>
 #include <vector>
 
-#include <scccl/math/math.h>
-using namespace std;
-using namespace scmath;
+#include <scmp/Math.h>
 
 
 static void

@@ -24,7 +24,7 @@
 #ifndef __SCTEST_CHECKS_H
 #define __SCTEST_CHECKS_H
 
-#include <scccl/math/math.h>
+#include <scmp/Math.h>
 
 
 namespace sctest {
@@ -41,8 +41,8 @@ namespace sctest {
 #define SCTEST_CHECK_GEZ(x)		if ((x) >= 0)	{ return false; }
 #define SCTEST_CHECK_LEZ(x)		if ((x) <= 0)	{ return false; }
 #define SCTEST_CHECK_LTZ(x)		if ((x) < 0)	{ return false; }
-#define SCTEST_CHECK_FEQ(x, y)		{ float eps; scmath::DefaultEpsilon(eps); if (!scmath::WithinTolerance((x), (y), eps)) { return false; }}
-#define SCTEST_CHECK_DEQ(x, y)		{ double eps; scmath::DefaultEpsilon(eps); if (!scmath::WithinTolerance((x), (y), eps)) { return false; }}
+#define SCTEST_CHECK_FEQ(x, y)		{ float eps; scmp::DefaultEpsilon(eps); if (!scmp::WithinTolerance((x), (y), eps)) { return false; }}
+#define SCTEST_CHECK_DEQ(x, y)		{ double eps; scmp::DefaultEpsilon(eps); if (!scmp::WithinTolerance((x), (y), eps)) { return false; }}
 
 } // namespace test
 

@@ -6,7 +6,7 @@
 #include <cmath>
 #include <vector>
 
-namespace scmath {
+namespace scmp {
 
 
 // MAX_RADIAN is a precomputed 2 * M_PI, and MIN_RADIAN is -2 * M_PI.

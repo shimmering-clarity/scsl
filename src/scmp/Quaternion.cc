@@ -1,9 +1,9 @@
 #include <iostream>
 
-#include <scccl/math/geom/quaternion.h>
+#include <scmp/geom/Quaternion.h>
 
 
-namespace scmath {
+namespace scmp {
 namespace geom {
 
 

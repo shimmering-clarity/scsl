@@ -29,7 +29,7 @@
 #include <vector>
 
 
-namespace scmath {
+namespace scmp {
 namespace geom {
 
 

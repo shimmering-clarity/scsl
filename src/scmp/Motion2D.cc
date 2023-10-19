@@ -1,17 +1,17 @@
 #include <cmath>
-#include <scccl/phys/basic/motion2d.h>
+#include <scmp/Motion2D.h>
 
-namespace scphys {
+namespace scmp {
 namespace basic {
 
 
-scmath::geom::Vector2d
+scmp::geom::Vector2d
 Acceleration(double speed, double heading)
 {
 	auto dx = std::cos(heading) * speed;
 	auto dy = std::sin(heading) * speed;
 
-	return scmath::geom::Vector2d({dx, dy});
+	return scmp::geom::Vector2d({dx, dy});
 }
 
 

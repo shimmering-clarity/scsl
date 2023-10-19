@@ -1,3 +1,4 @@
+
 //
 // Project: scccl
 // File: src/math/geom2d.cpp
@@ -25,8 +26,8 @@
 #include <iostream>
 #include <vector>
 
-#include <scccl/math/math.h>
-#include <scccl/math/geom/coord2d.h>
+#include <scmp/Math.h>
+#include <scmp/geom/Coord2D.h>
 
 
 // coord2d.cpp contains 2D geometric functions and data structures, such as
@@ -34,7 +35,7 @@
 
 // TODO: deprecate Point2D in favour of Vector
 
-namespace scmath {
+namespace scmp {
 namespace geom {
 
 
@@ -152,10 +153,10 @@ Polar2D::operator==(const Polar2D& rhs) const
 {
 	static double eps = 0.0;
 	if (eps == 0.0) {
-		scmath::DefaultEpsilon(eps);
+		scmp::DefaultEpsilon(eps);
 	}
-	return scmath::WithinTolerance(r, rhs.r, eps) &&
-	       scmath::WithinTolerance(theta, rhs.theta, eps);
+	return scmp::WithinTolerance(r, rhs.r, eps) &&
+	       scmp::WithinTolerance(theta, rhs.theta, eps);
 }
 
 

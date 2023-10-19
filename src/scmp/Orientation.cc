@@ -1,8 +1,8 @@
-#include <scccl/math/geom/vector.h>
-#include <scccl/math/geom/orientation.h>
+#include <scmp/geom/Vector.h>
+#include <scmp/geom/Orientation.h>
 
 
-namespace scmath {
+namespace scmp {
 namespace geom {
 
 
