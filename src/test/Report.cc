@@ -1,10 +1,12 @@
 ///
-/// \file Exceptions.cc
-/// \author K. Isom <kyle@imap.cc>
-/// \date 2023-10-10
-/// \brief Custom exceptions used in writing test programs.
+/// \file src/test/Report.cpp
+/// \author Kyle Isom
+/// \date 2017-06-07
 ///
-/// Copyright 2023 K. Isom <kyle@imap.cc>
+/// \brief Defines a Report structure that contains information about
+///        the results of unit tests.
+///
+/// Copyright 2017 K. Isom <kyle@imap.cc>
 ///
 /// Permission to use, copy, modify, and/or distribute this software for
 /// any purpose with or without fee is hereby granted, provided that
@@ -18,22 +20,18 @@
 /// OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER
 /// TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
 /// PERFORMANCE OF THIS SOFTWARE.
-///
 
-#include "Exceptions.h"
+#include <chrono>
 
-
-namespace scsl {
+#include <sctest/Report.h>
 
 
-AssertionFailed::AssertionFailed(std::string message) : msg(message) {}
+namespace sctest {
 
 
-const char *
-AssertionFailed::what()  const throw()
-{
-	return const_cast<char *>(this->msg.c_str());
-}
+_Report::_Report()
+		: Failing (0), Total(0), Start(std::chrono::steady_clock::now()),
+		  End(std::chrono::steady_clock::now()), Duration(0) {}
 
 
-}
+} // end namespace test

@@ -24,8 +24,8 @@
 #include <iostream>
 #include <sstream>
 
-#include "StringUtil.h"
-#include "Test.h"
+#include <scsl/StringUtil.h>
+#include <sctest/Assert.h>
 
 
 using namespace scsl;

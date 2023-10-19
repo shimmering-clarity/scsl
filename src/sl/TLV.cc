@@ -23,7 +23,7 @@
 #include <cassert>
 #include <cstring>
 
-#include "TLV.h"
+#include <scsl/TLV.h>
 
 using namespace scsl;
 

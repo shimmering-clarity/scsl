@@ -24,10 +24,9 @@
 #include <string>
 using namespace std;
 
-#include "Arena.h"
-#include "Commander.h"
-#include "Dictionary.h"
-#include "Flag.h"
+#include <scsl/Arena.h>
+#include <scsl/Commander.h>
+#include <scsl/Dictionary.h>
 using namespace scsl;
 
 static const char	*defaultPhonebook = "pb.dat";

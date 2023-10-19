@@ -36,7 +36,7 @@
 
 #include <ios>
 
-#include "Arena.h"
+#include <scsl/Arena.h>
 
 
 namespace scsl {

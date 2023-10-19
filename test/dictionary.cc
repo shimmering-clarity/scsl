@@ -1,9 +1,9 @@
 #include <iostream>
 
-#include "Arena.h"
-#include "Dictionary.h"
-#include "Test.h"
-#include "testFixtures.h"
+#include <scsl/Arena.h>
+#include <scsl/Dictionary.h>
+#include <sctest/Assert.h>
+#include "test_fixtures.h"
 
 
 using namespace scsl;

@@ -24,7 +24,7 @@
 #include <iostream>
 #include <sstream>
 
-#include "StringUtil.h"
+#include <scsl/StringUtil.h>
 
 
 namespace scsl {

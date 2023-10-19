@@ -24,7 +24,7 @@
 #include <cstdlib>
 #include <cstring>
 
-#include "Dictionary.h"
+#include <scsl/Dictionary.h>
 
 #if defined(SCSL_DESKTOP_BUILD)
 #include <iostream>

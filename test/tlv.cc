@@ -3,11 +3,11 @@
 #include <exception>
 #include <iostream>
 
-#include "Arena.h"
-#include "Test.h"
-#include "TLV.h"
+#include <scsl/Arena.h>
+#include <scsl/TLV.h>
+#include <sctest/Assert.h>
 
-#include "testFixtures.h"
+#include "test_fixtures.h"
 
 using namespace scsl;
 

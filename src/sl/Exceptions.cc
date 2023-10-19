@@ -1,8 +1,8 @@
 ///
-/// \file Test.cc
+/// \file Exceptions.cc
 /// \author K. Isom <kyle@imap.cc>
-/// \date 2023-10-09
-/// \brief Tooling to assist in building test programs..
+/// \date 2023-10-10
+/// \brief Custom exceptions used in writing test programs.
 ///
 /// Copyright 2023 K. Isom <kyle@imap.cc>
 ///
@@ -20,51 +20,20 @@
 /// PERFORMANCE OF THIS SOFTWARE.
 ///
 
-#include "Exceptions.h"
-#include "Test.h"
-
-#include <cassert>
-#include <iostream>
-#include <sstream>
+#include <scsl/Exceptions.h>
 
 
 namespace scsl {
 
-void
-TestAssert(bool condition, std::string message)
+
+AssertionFailed::AssertionFailed(std::string message) : msg(message) {}
+
+
+const char *
+AssertionFailed::what()  const throw()
 {
-#if defined(NDEBUG) || defined(SCSL_NOEXCEPT)
-	if (!condition) {
-		throw AssertionFailed(message);
-	}
-#else
-	if (!condition) {
-		std::cerr << message << std::endl;
-	}
-	assert(condition);
-#endif
+	return const_cast<char *>(this->msg.c_str());
 }
 
 
-void
-TestAssert(bool condition)
-{
-#if defined(NDEBUG)
-	if (condition) {
-		return;
-	}
-#if defined(SCSL_NOEXCEPT)
-	std::cerr << "Assertion failed!\n";
-#else
-	std::stringstream msg;
-
-	msg << "assertion failed at " << __FILE__ << ":" << __LINE__;
-	throw AssertionFailed(msg.str());
-#endif
-#else
-	assert(condition);
-#endif
 }
-
-
-} // namespace scsl

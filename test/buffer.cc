@@ -1,7 +1,7 @@
 #include <cassert>
 #include <iostream>
 
-#include "Buffer.h"
+#include <scsl/Buffer.h>
 using namespace scsl;
 
 

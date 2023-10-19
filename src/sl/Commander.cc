@@ -22,7 +22,7 @@
 
 #include <iostream>
 
-#include "Commander.h"
+#include <scsl/Commander.h>
 
 
 namespace scsl {

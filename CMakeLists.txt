@@ -33,28 +33,36 @@ endif ()
 add_compile_definitions(SCSL_DESKTOP_BUILD)
 add_compile_definitions(SCSL_VERSION=${PROJECT_VERSION})
 
-set(HEADER_FILES scsl.h
-        Arena.h
-        Buffer.h
-        Commander.h
-        Dictionary.h
-        Exceptions.h
-        Flag.h
-        StringUtil.h
-        TLV.h
-        Test.h
+set(HEADER_FILES
+        include/scsl/scsl.h
+        include/scsl/Arena.h
+        include/scsl/Buffer.h
+        include/scsl/Commander.h
+        include/scsl/Dictionary.h
+        include/scsl/Exceptions.h
+        include/scsl/Flag.h
+        include/scsl/StringUtil.h
+        include/scsl/TLV.h
+
+        include/sctest/Assert.h
+        include/sctest/Report.h
 )
 
+include_directories(include)
+
 set(SOURCE_FILES
-        Arena.cc
-        Buffer.cc
-        Commander.cc
-        Dictionary.cc
-        Exceptions.cc
-        Flag.cc
-        StringUtil.cc
-        TLV.cc
-        Test.cc
+        src/sl/Arena.cc
+        src/sl/Buffer.cc
+        src/sl/Commander.cc
+        src/sl/Dictionary.cc
+        src/sl/Exceptions.cc
+        src/sl/Flag.cc
+        src/sl/StringUtil.cc
+        src/sl/TLV.cc
+
+        src/test/Assert.cc
+        src/test/Report.cc
+        src/test/SimpleSuite.cc
 )
 
 if (APPLE)
@@ -67,31 +75,27 @@ add_library(scsl
         ${SOURCE_FILES} ${HEADER_FILES})
 endif()
 
-add_executable(phonebook phonebook.cc)
+add_executable(phonebook src/bin/phonebook.cc)
 target_link_libraries(phonebook scsl)
 
 include(CTest)
 enable_testing()
 
-add_executable(buffer_test bufferTest.cc)
-target_link_libraries(buffer_test scsl)
-add_test(bufferTest buffer_test)
+set(TEST_SOURCES)
+macro(generate_test name)
+    add_executable(test_${name} test/${name}.cc ${TEST_SOURCES} ${ARGN})
+    target_link_libraries(test_${name} ${PROJECT_NAME})
+    target_include_directories(test_${name} PRIVATE test)
+    add_test(test_${name} test_${name})
+endmacro()
 
-add_executable(tlv_test tlvTest.cc)
-target_link_libraries(tlv_test scsl)
-add_test(tlvTest tlv_test)
+generate_test(buffer)
+generate_test(tlv)
+generate_test(dictionary)
+generate_test(flag)
+generate_test(stringutil)
 
-add_executable(dictionary_test dictionaryTest.cc)
-target_link_libraries(dictionary_test scsl)
-add_test(dictionaryTest dictionary_test)
-
-add_executable(flag_test flagTest.cc)
-target_link_libraries(flag_test scsl)
-add_test(flagTest flag_test)
-
-add_executable(stringutil_test stringutil_test.cc)
-target_link_libraries(stringutil_test scsl)
-add_test(stringutilTest stringutil_test)
+generate_test(simple_suite_example)
 
 include(CMakePackageConfigHelpers)
 write_basic_package_version_file(

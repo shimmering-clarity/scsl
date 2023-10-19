@@ -26,7 +26,8 @@
 #include <ios>
 #include <iostream>
 
-#include "Buffer.h"
+#include <scsl/Buffer.h>
+
 
 namespace scsl {
 

@@ -4,8 +4,8 @@
 
 
 #include <iostream>
-#include "Flag.h"
-#include "Test.h"
+#include <scsl/Flag.h>
+#include <sctest/Assert.h>
 
 
 using namespace scsl;

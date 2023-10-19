@@ -25,8 +25,8 @@
 #include <regex>
 #include <vector>
 
-#include "Flag.h"
-#include "StringUtil.h"
+#include <scsl/Flag.h>
+#include <scsl/StringUtil.h>
 
 
 namespace scsl {
