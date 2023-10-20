@@ -4,6 +4,7 @@
  * of the Earth.
  */
 
+#include <cstdint>
 
 #ifndef SCMATH_GEOM_ORIENTATION_H
 #define SCMATH_GEOM_ORIENTATION_H
