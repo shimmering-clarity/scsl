@@ -61,7 +61,7 @@ SimpleSuite::AddTest(std::string name, std::function<bool()> test)
 void
 SimpleSuite::AddFailingTest(std::string name, std::function<bool()> test)
 {
-	const UnitTest test_case = {std::move(name), test, false};
+	const UnitTest test_case = {std::move(name), std::move(test), false};
 	tests.push_back(test_case);
 }
 

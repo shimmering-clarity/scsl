@@ -55,7 +55,6 @@ public:
 	Madgwick() : deltaT(0.0), previousSensorFrame(), sensorFrame()
 	{};
 
-
 	/// \brief The Madgwick filter is initialised with a sensor frame.
 	///
 	/// \param sf A sensor frame; if zero, the sensor frame will be
@@ -67,14 +66,12 @@ public:
 		}
 	}
 
-
 	/// \brief Initialise the filter with a sensor frame quaternion.
 	///
 	/// \param sf A quaternion representing the current Orientation.
 	Madgwick(scmp::geom::Quaternion<T> sf) :
 	    deltaT(0.0), previousSensorFrame(), sensorFrame(sf)
 	{};
-
 
 	/// \brief Return the current orientation as measured by the
 	///        filter.
@@ -85,7 +82,6 @@ public:
 	{
 		return this->sensorFrame;
 	}
-
 
 	/// \brief Return the filter's rate of angular change from a
 	///        sensor frame.
@@ -152,7 +148,6 @@ public:
 		this->UpdateFrame(this->sensorFrame + q, delta);
 	}
 
-
 	/// \brief Update the sensor frame with a gyroscope reading.
 	///
 	/// If no Δt is provided, the filter's default is used.
@@ -167,7 +162,6 @@ public:
 	{
 		this->UpdateAngularOrientation(gyro, this->deltaT);
 	}
-
 
 	/// \brief Retrieve a vector of the Euler angles in ZYX Orientation.
 	///

@@ -42,6 +42,11 @@ namespace geom {
 //
 // Point2D
 
+
+Point2D::Point2D() : x(0), y(0) {}
+
+Point2D::Point2D(int _x, int _y) : x(_x), y(_y) {}
+
 Point2D::Point2D(const Polar2D &pol)
     : x(std::rint(std::cos(pol.theta) * pol.r)),
       y(std::rint(std::sin(pol.theta) * pol.r)) {}

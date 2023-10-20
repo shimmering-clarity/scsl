@@ -46,6 +46,7 @@ set(HEADER_FILES
         include/scsl/StringUtil.h
         include/scsl/TLV.h
 
+        include/scmp/geom.h
         include/scmp/scmp.h
         include/scmp/Math.h
         include/scmp/Motion2D.h
@@ -116,6 +117,7 @@ generate_test(stringutil)
 # math and physics
 generate_test(coord2d)
 generate_test(madgwick)
+generate_test(math)
 generate_test(orientation)
 generate_test(quaternion)
 generate_test(vector)

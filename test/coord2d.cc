@@ -24,6 +24,7 @@
 #include <iostream>
 #include <vector>
 
+#include <scsl/Flags.h>
 #include <scmp/Math.h>
 #include <scmp/geom/Coord2D.h>
 #include <sctest/Checks.h>
@@ -222,9 +223,25 @@ geomRotatePointsAboutOrigin()
 
 
 int
-main()
+main(int argc, char *argv[])
 {
+	auto quiet = false;
+	auto flags = new scsl::Flags("test_orientation",
+				     "This test validates various orientation-related components in scmp.");
+	flags->Register("-q", false, "suppress test output");
+
+	auto parsed = flags->Parse(argc, argv);
+	if (parsed != scsl::Flags::ParseStatus::OK) {
+		std::cerr << "Failed to parse flags: "
+			  << scsl::Flags::ParseStatusToString(parsed) << "\n";
+	}
+
 	SimpleSuite suite;
+	flags->GetBool("-q", quiet);
+	if (quiet) {
+		suite.Silence();
+	}
+
 	suite.AddTest("geomValidateAngularRotation", geomValidateAngularRotation);
 	suite.AddTest("geomConversionIdentities", geomConversionIdentities);
 	suite.AddTest("geomVerifyBasicProperties", geomVerifyBasicProperties);
@@ -232,8 +249,8 @@ main()
 	suite.AddTest("geomRotatePoint2D", geomRotatePoint2D);
 	suite.AddTest("geomRotatePointsAboutOrigin", geomRotatePointsAboutOrigin);
 
+	delete flags;
 	auto result = suite.Run();
-	std::cout << suite << "\n";
-
+	std::cout << suite.GetReport() << "\n";
 	return result ? 0 : 1;
 }

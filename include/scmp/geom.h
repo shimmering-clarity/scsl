@@ -1,8 +1,8 @@
 ///
-/// \file include/scmp/scmp.h
+/// \file include/scmp/geom.h
 /// \author K. Isom <kyle@imap.cc>
-/// \date 2023-10-19
-/// \brief Aggregated scmp include header.
+/// \date 2023-10-20
+/// \brief 2D point and polar coordinate systems.
 ///
 /// Copyright 2023 K. Isom <kyle@imap.cc>
 ///
@@ -20,15 +20,24 @@
 /// PERFORMANCE OF THIS SOFTWARE.
 ///
 
-#ifndef SCSL_SCMP_H
-#define SCSL_SCMP_H
+#ifndef SCSL_GEOM_H
+#define SCSL_GEOM_H
 
 
-/// \brief Shimmering Clarity Math & Physics toolkit.
-///
-/// The Shimmering Clarity contains code related to math and physics,
-/// particularly as relevant to game programming and robotics.
-namespace scmp {}
+#include <scmp/geom/Coord2D.h>
+#include <scmp/geom/Orientation.h>
+#include <scmp/geom/Quaternion.h>
+#include <scmp/geom/Vector.h>
 
 
-#endif //SCSL_SCMP_H
+namespace scmp {
+
+
+/// \brief Geometry-related code.
+namespace geom {}
+
+
+} // namespace scmp
+
+
+#endif // SCSL_GEOM_H
