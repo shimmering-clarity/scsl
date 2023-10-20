@@ -38,7 +38,7 @@ namespace S {
 std::vector<std::string>
 SplitKeyValuePair(std::string line, std::string delimiter)
 {
-	auto pair = SplitN(std::move(line), delimiter, 2);
+	auto pair = SplitN(std::move(line), std::move(delimiter), 2);
 
 	if (pair.size() == 0) {
 		return {"", ""};
@@ -198,7 +198,7 @@ WriteTabIndented(std::ostream &os, std::string line, size_t maxLength,
 		 int tabStop, bool indentFirst)
 {
 	auto lines = WrapText(line, maxLength);
-	WriteTabIndented(os, lines, tabStop, indentFirst);
+	WriteTabIndented(os, std::move(lines), tabStop, indentFirst);
 }
 
 

@@ -46,6 +46,13 @@ Report::Failing() const
 
 
 size_t
+Report::Passing() const
+{
+	return this->passed;
+}
+
+
+size_t
 Report::Total() const
 {
 	return this->total;
@@ -56,6 +63,13 @@ void
 Report::Failed()
 {
 	this->failing++;
+}
+
+
+void
+Report::Passed()
+{
+	this->passed++;
 }
 
 
@@ -71,6 +85,7 @@ Report::Reset(size_t testCount)
 {
 	auto now = std::chrono::steady_clock::now();
 	this->total = testCount;
+	this->passed = 0;
 	this->failing = 0;
 
 	this->Start();
@@ -105,9 +120,14 @@ operator<<(std::ostream &os, const Report &report)
 {
 	auto elapsed = report.Elapsed();
 
-	os << report.Total() - report.Failing() << "/"
+	os << report.Passing() << "/"
 	   << report.Total() << " tests passed in "
 	   << std::setw(3) << elapsed.count() << "ms";
+
+	auto failed = report.Failing();
+	if (failed > 0) {
+		os << " (" << failed << " tests failed)";
+	}
 
 	return os;
 }

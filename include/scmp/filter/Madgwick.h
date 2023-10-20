@@ -1,5 +1,5 @@
 ///
-/// \file Madwick.cc
+/// \file Madgwick.h
 /// \author K. Isom <kyle@imap.cc>
 /// \date 2019-08-06
 /// \brief Implementation of a Madgwick filter.
@@ -22,10 +22,6 @@
 /// PERFORMANCE OF THIS SOFTWARE.
 ///
 
-/// \file madgwick.h
-/// \brief Implementation of a Madgwick filter.
-///
-/// See
 #ifndef SCMP_FILTER_MADGWICK_H
 #define SCMP_FILTER_MADGWICK_H
 
@@ -56,7 +52,8 @@ template <typename T>
 class Madgwick {
 public:
 	/// \brief The Madgwick filter is initialised with an identity quaternion.
-	Madgwick() : deltaT(0.0), previousSensorFrame(), sensorFrame() {};
+	Madgwick() : deltaT(0.0), previousSensorFrame(), sensorFrame()
+	{};
 
 
 	/// \brief The Madgwick filter is initialised with a sensor frame.
@@ -75,10 +72,12 @@ public:
 	///
 	/// \param sf A quaternion representing the current Orientation.
 	Madgwick(scmp::geom::Quaternion<T> sf) :
-	    deltaT(0.0), previousSensorFrame(), sensorFrame(sf) {};
+	    deltaT(0.0), previousSensorFrame(), sensorFrame(sf)
+	{};
 
 
-	/// \brief Return the current Orientation as measured by the filter.
+	/// \brief Return the current orientation as measured by the
+	///        filter.
 	///
 	/// \return The current sensor frame.
 	scmp::geom::Quaternion<T>
@@ -111,12 +110,28 @@ public:
 	UpdateFrame(const scmp::geom::Quaternion<T> &sf, T delta)
 	{
 		this->previousSensorFrame = this->sensorFrame;
-		this->sensorFrame = sf;
-		this->deltaT = delta;
+		this->sensorFrame         = sf;
+		this->deltaT              = delta;
 	}
 
+	/// \brief Update the sensor frame to a new frame.
+	///
+	/// \warning The filter's default Δt must be set before calling
+	// 	     this.
+	///
+	/// \param sf The new sensor frame replacing the previous one.
+	void
+	UpdateFrame(const scmp::geom::Quaternion<T> &sf)
+	{
+		this->UpdateFrame(sf, this->deltaT);
+	}
 
 	/// \brief Update the sensor frame with a gyroscope reading.
+	///
+	/// This method will assert that the Δt value is not zero
+	/// within a 100μs tolerance. This assert is compiled out with
+	/// the compile flag NDEBUG, but may be useful to catch
+	/// possible errors.
 	///
 	/// \param gyro A three-dimensional vector containing gyro readings
 	///             as w_x, w_y, w_z.
@@ -124,11 +139,33 @@ public:
 	void
 	UpdateAngularOrientation(const scmp::geom::Vector<T, 3> &gyro, T delta)
 	{
-		// Ensure the delta isn't zero within a 100 μs tolerance.
+		// Ensure the delta isn't zero within a 100 μs
+		// tolerance. The assert helps to catch bugs in
+		// testing, but otherwise we should refused to do
+		// anything.
 		assert(!scmp::WithinTolerance<T>(delta, 0.0, 0.0001));
-		scmp::geom::Quaternion<T>	q = this->AngularRate(gyro) * delta;
+		if (scmp::WithinTolerance<T>(delta, 0.0, 0.00001)) {
+			return;
+		}
+		scmp::geom::Quaternion<T> q = this->AngularRate(gyro) * delta;
 
 		this->UpdateFrame(this->sensorFrame + q, delta);
+	}
+
+
+	/// \brief Update the sensor frame with a gyroscope reading.
+	///
+	/// If no Δt is provided, the filter's default is used.
+	///
+	/// \warning The default Δt must be explicitly set using DeltaT
+	///          before calling this.
+	///
+	/// \param gyro A three-dimensional vector containing gyro readings
+	///             as w_x, w_y, w_z.
+	void
+	UpdateAngularOrientation(const scmp::geom::Vector<T, 3> &gyro)
+	{
+		this->UpdateAngularOrientation(gyro, this->deltaT);
 	}
 
 
@@ -140,6 +177,25 @@ public:
 	{
 		return this->sensorFrame.euler();
 	}
+
+	/// \brief Set the default Δt.
+	///
+	/// \note This must be explicitly called before calling any
+	///       method which uses the filter's internal Δt.
+	///
+	/// \param The time delta to use when no time delta is
+	///	   provided.
+	void
+	DeltaT(T newDeltaT)
+	{
+		this->deltaT = newDeltaT;
+	}
+
+	/// \brief Retrieve the filter's current ΔT.
+	///
+	/// \return The current value the filter will default to using
+	///	    if no time delta is provided.
+	T	DeltaT() { return this->deltaT; }
 
 private:
 	T				deltaT;

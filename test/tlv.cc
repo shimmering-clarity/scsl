@@ -28,38 +28,44 @@ tlvTestSuite(Arena &backend)
 	rec4.Tag = 1;
 
 	std::cout << "\twriting new rec1" << "\n";
-	assert(TLV::WriteToMemory(backend, cursor, rec1) != nullptr);
+	cursor = TLV::WriteToMemory(backend, cursor, rec1);
+	sctest::Assert(cursor != nullptr,
+		       "cursor should not be NULL after writing rec1");
 	std::cout << "\twriting new rec2" << "\n";
-	assert((cursor = TLV::WriteToMemory(backend, cursor, rec2)) != nullptr);
+	cursor = TLV::WriteToMemory(backend, cursor, rec2);
+	sctest::Assert(cursor != nullptr,
+		       "cursor should not be NULL after writing rec2");
 	std::cout << "\twriting new rec3" << "\n";
-	assert(TLV::WriteToMemory(backend, cursor, rec3) != nullptr);
+	cursor = TLV::WriteToMemory(backend, cursor, rec3);
+	sctest::Assert(cursor != nullptr);
 	cursor = nullptr;
 
 	// the cursor should point at the next record,
 	// and rec4 should contain the same data as rec1.
 	std::cout << "\tFindTag 1" << "\n";
 	cursor = TLV::FindTag(backend, cursor, rec4);
-	assert(cursor != nullptr); 
-	assert(cursor != backend.Start());
-	assert(cmpRecord(rec1, rec4));
+	sctest::Assert(cursor != nullptr, "cursor should not be null");
+	sctest::Assert(cursor != backend.Start());
+	sctest::Assert(cmpRecord(rec1, rec4));
 
 	std::cout << "\tFindTag 2" << "\n";
 	cursor = TLV::FindTag(backend, cursor, rec4);
-	assert(cursor != nullptr);
-	assert(cmpRecord(rec3, rec4));
+	sctest::Assert(cursor != nullptr,
+		       "cursor should not be null after reading last record");
+	sctest::Assert(cmpRecord(rec3, rec4), "rec3 != rec4");
 
 	std::cout << "\tSetRecord 1\n";
 	TLV::SetRecord(rec4, 3, TEST_STRLEN3, TEST_STR3);
-	assert(TLV::WriteToMemory(backend, nullptr, rec4));
+	sctest::Assert(TLV::WriteToMemory(backend, nullptr, rec4));
 
 	std::cout << "FindTag 3\n";
 	rec4.Tag = 2;
 	cursor = TLV::FindTag(backend, nullptr, rec4);
-	assert(cursor != nullptr);
+	sctest::Assert(cursor != nullptr);
 
 	std::cout << "DeleteRecord\n";
 	TLV::DeleteRecord(backend, cursor);
-	assert(cursor[0] == 3);
+	sctest::Assert(cursor[0] == 3);
 }
 
 bool

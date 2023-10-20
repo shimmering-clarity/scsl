@@ -1,5 +1,5 @@
 ///
-/// \file Exceptions.cc
+/// \file src/test/Exceptions.cc
 /// \author K. Isom <kyle@imap.cc>
 /// \date 2023-10-10
 /// \brief Custom exceptions used in writing test programs.
@@ -26,7 +26,7 @@
 namespace sctest {
 
 
-AssertionFailed::AssertionFailed(std::string message) : msg(message) {}
+AssertionFailed::AssertionFailed(std::string message) : msg(std::move(message)) {}
 
 
 const char *

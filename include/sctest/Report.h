@@ -40,10 +40,15 @@ public:
 	/// \return The number of tests that failed.
 	size_t	Failing() const;
 
+	/// \brief Returns the number of tests that have passed
+	///	   successfully.
+	size_t Passing() const;
+
 	/// \brief Total is the number of tests registered.
 	size_t	Total() const;
 
 	void	Failed();
+	void	Passed();
 	void	AddTest(size_t testCount = 0);
 	void	Reset(size_t testCount = 0);
 
@@ -54,8 +59,9 @@ public:
 
 	Report();
 private:
-	size_t	failing{};
-	size_t	total{};
+	size_t	failing;
+	size_t	passed;
+	size_t	total;
 
 	std::chrono::time_point<std::chrono::steady_clock>	start;
 	std::chrono::time_point<std::chrono::steady_clock>	end;

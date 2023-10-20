@@ -53,7 +53,7 @@ SimpleSuite::Silence()
 void
 SimpleSuite::AddTest(std::string name, std::function<bool()> test)
 {
-	const UnitTest test_case = {std::move(name), test};
+	const UnitTest test_case = {std::move(name), std::move(test), true};
 	tests.push_back(test_case);
 }
 
@@ -61,8 +61,7 @@ SimpleSuite::AddTest(std::string name, std::function<bool()> test)
 void
 SimpleSuite::AddFailingTest(std::string name, std::function<bool()> test)
 {
-	// auto ntest = [&test]() { return !test(); };
-	const UnitTest test_case = {std::move(name), [&test]() { return !test(); }};
+	const UnitTest test_case = {std::move(name), test, false};
 	tests.push_back(test_case);
 }
 
@@ -87,14 +86,19 @@ SimpleSuite::Run()
 				  << testCase.name << ": ";
 		}
 
-		this->hasPassed = testCase.test();
+		this->hasPassed = (testCase.test() == testCase.expect);
+		if (this->hasPassed) {
+			report.Passed();
+		} else {
+			report.Failed();
+		}
+
 		if (quiet) { continue; }
 
 		if (this->hasPassed) {
 			std::cout << "[PASS]";
 		} else {
 			std::cout << "[FAIL]";
-			report.Failed();
 		}
 		std::cout << "\n";
 	}

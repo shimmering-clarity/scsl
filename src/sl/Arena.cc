@@ -111,12 +111,12 @@ Arena::Open(const char *path)
 		this->Destroy();
 	}
 
-	if (stat(path, &st) != 0) {
+	this->fd = open(path, O_RDWR);
+	if (this->fd == -1) {
 		return -1;
 	}
 
-	this->fd = open(path, O_RDWR);
-	if (this->fd == -1) {
+	if (stat(path, &st) != 0) {
 		return -1;
 	}
 
@@ -152,6 +152,10 @@ Arena::Create(const char *path, size_t fileSize)
 bool
 Arena::CursorInArena(const uint8_t *cursor)
 {
+	if (cursor == nullptr) {
+		return false;
+	}
+
 	if (cursor < this->store) {
 		return false;
 	}
@@ -188,28 +192,26 @@ Arena::Destroy()
 	}
 
 	switch (this->arenaType) {
-		case ArenaType::Static:
-			break;
-		case ArenaType::Alloc:
-			delete[] this->store;
-			break;
-#if defined(__posix__) || defined(__linux__) || defined(__APPLE__)
-			case ArenaType::MemoryMapped:
-				if (munmap(this->store, this->size) == -1) {
-					abort();
-					return;
-				}
-
-				if (close(this->fd) == -1) {
-					abort();
-				}
-
-				this->fd = 0;
-				break;
-#endif
-		default:
-#if defined(NDEBUG)
+	case ArenaType::Static:
+		break;
+	case ArenaType::Alloc:
+		delete[] this->store;
+		break;
+	case ArenaType::MemoryMapped:
+		if (munmap(this->store, this->size) == -1) {
+			abort();
 			return;
+		}
+
+		if (close(this->fd) == -1) {
+			abort();
+		}
+
+		this->fd = 0;
+		break;
+	default:
+#if defined(NDEBUG)
+		return;
 #else
 			abort();
 #endif
@@ -241,11 +243,9 @@ operator<<(std::ostream &os, Arena &arena)
 		case ArenaType::Alloc:
 			os << "allocated";
 			break;
-#if defined(__posix__) || defined(__linux__) || defined(__APPLE__)
-			case ArenaType::MemoryMapped:
-				os << "mmap/file";
-				break;
-#endif
+		case ArenaType::MemoryMapped:
+			os << "mmap/file";
+			break;
 		default:
 			os << "unknown (this is a bug)";
 	}
@@ -263,15 +263,10 @@ operator<<(std::ostream &os, Arena &arena)
 int
 Arena::Write(const char *path)
 {
-	FILE *arenaFile = nullptr;
 	int retc = -1;
 
-#if defined(__posix__) || defined(__linux__) || defined(__APPLE__)
-	arenaFile = fopen(path, "w");
+	FILE *arenaFile = fopen(path, "w");
 	if (arenaFile == nullptr) {
-#else
-	if (fopen_s(&arenaFile, path, "w") != 0) {
-#endif
 		return -1;
 	}
 

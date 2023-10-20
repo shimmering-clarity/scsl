@@ -10,6 +10,7 @@ build
 core
 core.*
 cmake-build-*
+compile_commands.json
 
 bufferTest
 dictionaryTest

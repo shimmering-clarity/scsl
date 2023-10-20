@@ -41,6 +41,9 @@ struct UnitTest {
 
 	/// This is the test function to be run.
 	std::function<bool()>	test;
+
+	/// This is the value the test returns if it passes.
+	bool			expect;
 };
 
 /// \brief SimpleSuite is a test-running harness for simple tests.
@@ -105,8 +108,8 @@ public:
 
 private:
 	bool				quiet;
-	std::function<bool(void)> fnSetup, fnTeardown;
-	std::vector<UnitTest>     tests;
+	std::function<bool(void)>	fnSetup, fnTeardown;
+	std::vector<UnitTest>		tests;
 
 	// Report functions.
 	Report	report;

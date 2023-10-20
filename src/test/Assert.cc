@@ -1,8 +1,8 @@
 ///
-/// \file Test.cc
+/// \file src/sctest/Assert.cc
 /// \author K. Isom <kyle@imap.cc>
 /// \date 2023-10-09
-/// \brief Tooling to assist in building test programs..
+/// \brief Assertion tooling useful in building test programs.
 ///
 /// Copyright 2023 K. Isom <kyle@imap.cc>
 ///

@@ -99,7 +99,7 @@ Point2D::Rotate(std::vector<Polar2D> vertices, double theta)
 {
 	std::vector<Point2D>	rotated;
 
-	for (auto v : vertices) {
+	for (auto& v : vertices) {
 		Point2D	p;
 		v.RotateAround(*this, p, theta);
 		rotated.push_back(p)	;

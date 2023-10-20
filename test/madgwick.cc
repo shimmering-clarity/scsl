@@ -29,6 +29,60 @@ SimpleAngularOrientationFloat()
 		mflt.UpdateAngularOrientation(gyro, delta);
 	}
 
+
+	SCTEST_CHECK_EQ(mflt.Orientation(), frame20Deg);
+
+	auto euler = mflt.Euler();
+	SCTEST_CHECK_FEQ_EPS(euler[0], twentyDegrees, 0.01);
+	SCTEST_CHECK_FEQ_EPS(euler[1], 0.0, 0.01);
+	SCTEST_CHECK_FEQ_EPS(euler[2], 0.0, 0.01);
+
+	return true;
+}
+
+
+bool
+SimpleAngularOrientationFloatDefaultDT()
+{
+	filter::Madgwickf	mflt;
+	const geom::Vector3f    gyro{0.174533, 0.0, 0.0}; // 10° X rotation.
+	const geom::Quaternionf frame20Deg{0.984808, 0.173648, 0, 0}; // 20° final Orientation.
+	const float             delta         = 0.00917; // assume 109 updates per second, as per the paper.
+	const float             twentyDegrees = scmp::DegreesToRadiansF(20.0);
+
+	mflt.DeltaT(delta);
+
+	// The paper specifies a minimum of 109 IMU readings to stabilize; for
+	// two seconds, that means 218 updates.
+	for (int i = 0; i < 218; i++) {
+		mflt.UpdateAngularOrientation(gyro);
+	}
+
+	SCTEST_CHECK_EQ(mflt.Orientation(), frame20Deg);
+
+	auto euler = mflt.Euler();
+	SCTEST_CHECK_FEQ_EPS(euler[0], twentyDegrees, 0.01);
+	SCTEST_CHECK_FEQ_EPS(euler[1], 0.0, 0.01);
+	SCTEST_CHECK_FEQ_EPS(euler[2], 0.0, 0.01);
+
+	return true;
+}
+
+
+bool
+VerifyUpdateWithZeroDeltaTFails()
+{
+	filter::Madgwickf	mflt;
+	const geom::Vector3f    gyro{0.174533, 0.0, 0.0}; // 10° X rotation.
+	const geom::Quaternionf frame20Deg{0.984808, 0.173648, 0, 0}; // 20° final Orientation.
+	const float             twentyDegrees = scmp::DegreesToRadiansF(20.0);
+
+	// The paper specifies a minimum of 109 IMU readings to stabilize; for
+	// two seconds, that means 218 updates.
+	for (int i = 0; i < 218; i++) {
+		mflt.UpdateAngularOrientation(gyro);
+	}
+
 	SCTEST_CHECK_EQ(mflt.Orientation(), frame20Deg);
 
 	auto euler = mflt.Euler();
@@ -182,22 +236,25 @@ main(int argc, char **argv)
 
 	sctest::SimpleSuite	suite;
 
-	suite.AddTest("SimpleAngularOrientationDouble",
+	suite.AddTest("SimpleAngularOrientationFloat",
 		      SimpleAngularOrientationFloat);
+	suite.AddTest("SimpleAngularOrientationFloatDefaultDT",
+			SimpleAngularOrientationFloatDefaultDT);
+	suite.AddFailingTest("VerifyUpdateWithZeroDeltaTFails",
+		      VerifyUpdateWithZeroDeltaTFails);
 	suite.AddTest("SimpleAngularOrientationDouble",
 		      SimpleAngularOrientationDouble);
-	suite.AddTest("SimpleAngularOrientationDouble (iniital vector3f)",
+	suite.AddTest("SimpleAngularOrientationFloat (inital vector3f)",
 		      SimpleAngularOrientation2InitialVector3f);
-	suite.AddTest("SimpleAngularOrientationDouble (iniital vector3d)",
+	suite.AddTest("SimpleAngularOrientationDouble (inital vector3d)",
 		      SimpleAngularOrientation2InitialVector3d);
-	suite.AddTest("SimpleAngularOrientationDouble (iniital quaternionf)",
+	suite.AddTest("SimpleAngularOrientationFloat (inital quaternionf)",
 		      SimpleAngularOrientation2InitialQuaternionf);
-	suite.AddTest("SimpleAngularOrientationDouble (iniital quaterniond)",
+	suite.AddTest("SimpleAngularOrientationDouble (inital quaterniond)",
 		      SimpleAngularOrientation2InitialQuaterniond);
 
 	auto result = suite.Run();
 
 	std::cout << suite.GetReport() << "\n";
 	return result ? 0 : 1;
-
 }

@@ -25,12 +25,13 @@
 
 #include <scsl/TLV.h>
 
+
 using namespace scsl;
 
 
 /// REC_SIZE calculates the total length of a TLV record, including the
 /// two byte header.
-#define REC_SIZE(x)	((std::size_t)x.Len + 2)
+#define REC_SIZE(x)        ((std::size_t)x.Len + 2)
 
 
 namespace scsl {
@@ -100,6 +101,10 @@ SetRecord(Record &rec, uint8_t tag, uint8_t len, const char *val)
 void
 ReadFromMemory(Record &rec, uint8_t *cursor)
 {
+	assert(cursor != nullptr);
+	if (cursor == nullptr) {
+		return;
+	}
 	rec.Tag = cursor[0];
 	rec.Len = cursor[1];
 	memcpy(rec.Val, cursor + 2, rec.Len);
@@ -117,9 +122,10 @@ FindTag(Arena &arena, uint8_t *cursor, Record &rec)
 	cursor = LocateTag(arena, cursor, rec);
 	if (rec.Tag != TAG_EMPTY) {
 		cursor = SkipRecord(rec, cursor);
-		if (!arena.CursorInArena(cursor)) {
-			cursor = nullptr;
-		}
+	}
+
+	if (!arena.CursorInArena(cursor)) {
+		cursor = nullptr;
 	}
 
 	return cursor;
@@ -129,18 +135,19 @@ FindTag(Arena &arena, uint8_t *cursor, Record &rec)
 uint8_t *
 LocateTag(Arena &arena, uint8_t *cursor, Record &rec)
 {
-	uint8_t tag, len;
-
-	if (!arena.CursorInArena(cursor)) {
-		cursor = nullptr;
-	}
+	uint8_t tag = TAG_EMPTY;
+	uint8_t len;
 
 	if (cursor == nullptr) {
 		cursor = arena.Start();
 	}
 
-	while (((tag = cursor[0]) != rec.Tag) &&
-		(arena.CursorInArena(cursor))) {
+	if (!arena.CursorInArena(cursor)) {
+		cursor = arena.Start();
+	}
+
+	while (arena.CursorInArena(cursor) &&
+	       ((tag = cursor[0]) != rec.Tag)) {
 		assert(arena.CursorInArena(cursor));
 		len = cursor[1];
 		if (!spaceAvailable(arena, cursor, len)) {
@@ -193,7 +200,7 @@ DeleteRecord(Arena &arena, uint8_t *cursor)
 		return;
 	}
 
-	uint8_t len = cursor[1] + 2;
+	uint8_t len   = cursor[1] + 2;
 	uint8_t *stop = arena.Start() + arena.Size();
 
 	stop -= len;

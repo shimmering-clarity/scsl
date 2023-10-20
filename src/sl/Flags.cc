@@ -63,7 +63,7 @@ NewFlag(std::string fName, FlagType fType, std::string fDescription)
 	flag->Type        = fType;
 	flag->WasSet      = false;
 	flag->Name        = std::move(fName);
-	flag->Description = fDescription;
+	flag->Description = std::move(fDescription);
 	flag->Value       = FlagValue{};
 
 	return flag;
@@ -114,7 +114,7 @@ Flags::Register(std::string fName, FlagType fType, std::string fDescription)
 bool
 Flags::Register(std::string fName, bool defaultValue, std::string fDescription)
 {
-	if (!this->Register(fName, FlagType::Boolean, fDescription)) {
+	if (!this->Register(fName, FlagType::Boolean, std::move(fDescription))) {
 		return false;
 	}
 
@@ -164,7 +164,7 @@ Flags::Register(std::string fName, size_t defaultValue, std::string fDescription
 bool
 Flags::Register(std::string fName, std::string defaultValue, std::string fDescription)
 {
-	if (!this->Register(fName, FlagType::String, fDescription)) {
+	if (!this->Register(fName, FlagType::String, std::move(fDescription))) {
 		return false;
 	}
 
