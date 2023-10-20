@@ -55,7 +55,7 @@ BestDie(int k, int m, int n)
 	auto dice = Die(m, n);
 
 	if (k < m) {
-		std::sort(dice.begin(), dice.end(), std::greater<int>());
+		std::sort(dice.begin(), dice.end(), std::greater<>());
 		dice.resize(static_cast<size_t>(k));
 	}
 

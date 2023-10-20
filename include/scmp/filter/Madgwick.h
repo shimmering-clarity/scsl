@@ -136,10 +136,7 @@ public:
 	UpdateAngularOrientation(const scmp::geom::Vector<T, 3> &gyro, T delta)
 	{
 		// Ensure the delta isn't zero within a 100 μs
-		// tolerance. The assert helps to catch bugs in
-		// testing, but otherwise we should refused to do
-		// anything.
-		assert(!scmp::WithinTolerance<T>(delta, 0.0, 0.0001));
+		// tolerance.
 		if (scmp::WithinTolerance<T>(delta, 0.0, 0.00001)) {
 			return;
 		}
