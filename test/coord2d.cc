@@ -25,21 +25,23 @@
 
 #include <scmp/Math.h>
 #include <scmp/geom/Coord2D.h>
-#include <sctest/SimpleSuite.h>
 #include <sctest/Checks.h>
+#include <sctest/SimpleSuite.h>
 
 using namespace scmp::geom;
 using namespace sctest;
 
 
+namespace {
 #define CHECK_ROTATE(theta, expected)	if (!scmp::WithinTolerance(scmp::RotateRadians((double)theta, 0), (double)expected, (double)0.0001)) { \
-	std::cerr << "Expected " << theta << " to wrap to " << expected << std::endl; \
-	std::cerr << "    have " << scmp::RotateRadians(theta, 0) << std::endl; \
+	std::cerr << "Expected " << theta << " to wrap to " << expected << "\n"; \
+	std::cerr << "    have " << scmp::RotateRadians(theta, 0) << "\n"; \
 	return false; \
 }
 
-static bool
-geom_validate_angular_rotation(void)
+
+bool
+geomValidateAngularRotation()
 {
 		CHECK_ROTATE(0, 0);
 		CHECK_ROTATE(M_PI/4, M_PI/4);
@@ -54,17 +56,18 @@ geom_validate_angular_rotation(void)
 		return true;
 }
 
-static bool
-geom_conversion_identities(void)
+
+bool
+geomConversionIdentities()
 {
-	Point2D	points[4] = {
+	const std::array<Point2D,4> 	points = {
 		Point2D(1, 0),
 		Point2D(0, 1),
 		Point2D(-1, 0),
 		Point2D(0, -1)
 	};
 
-	Polar2D	polars[4] = {
+	const std::array<Polar2D,4>	polars = {
 		Polar2D(1, 0),
 		Polar2D(1, scmp::DegreesToRadiansD(90)),
 		Polar2D(1, scmp::DegreesToRadiansD(180)),
@@ -72,92 +75,103 @@ geom_conversion_identities(void)
 	};
 
 	for (auto i = 0; i < 4; i++) {
-		Polar2D	pol(points[i]);
-		if (pol != polars[i]) {
-			std::cerr << "! measured value outside tolerance (" << i << ")" << std::endl;
-			std::cerr << "  " << points[i] << " → " << pol << " ← " << polars[i] << std::endl; 
+		const Polar2D	pol(points.at(i));
+		if (pol != polars.at(i)) {
+			std::cerr << "! measured value outside tolerance ("
+				  << i << ")\n";
+			std::cerr << "  " << points.at(i) << " → " << pol
+				  << " ← " << polars.at(i) << "\n";
 			return false;
 		}
 
-		Point2D	pt(pol);
-		SCTEST_CHECK(pt == points[i]);
+		const Point2D point(pol);
+		SCTEST_CHECK(point == points.at(i));
 	}
 
 	return true;
 }
 
-static bool
-geom_verify_basic_properties(void)
-{
-	Point2D p1(1, 1);
-	Point2D p2(2, 2);
-	Point2D p3(3, 3);
 
-	SCTEST_CHECK((p1 + p2) == p3);
-	SCTEST_CHECK((p3 - p2) == p1);
+bool
+geomVerifyBasicProperties()
+{
+	const Point2D pt1(1, 1);
+	const Point2D pt2(2, 2);
+	const Point2D pt3(3, 3);
+
+	SCTEST_CHECK((pt1 + pt2) == pt3);
+	SCTEST_CHECK((pt3 - pt2) == pt1);
 
 	// commutative
-	SCTEST_CHECK((p1 + p2) == (p2 + p1));
-	SCTEST_CHECK((p1 + p3) == (p3 + p1));
-	SCTEST_CHECK((p2 + p3) == (p3 + p2));
+	SCTEST_CHECK((pt1 + pt2) == (pt2 + pt1));
+	SCTEST_CHECK((pt1 + pt3) == (pt3 + pt1));
+	SCTEST_CHECK((pt2 + pt3) == (pt3 + pt2));
 
 	// associative
-	SCTEST_CHECK(((p1 + p2) + p3) == (p1 + (p2 + p3)));
+	SCTEST_CHECK(((pt1 + pt2) + pt3) == (pt1 + (pt2 + pt3)));
 
 	// transitive
-	Point2D	p4(1, 1);
-	Point2D p5(1, 1);
-	SCTEST_CHECK(p1 == p4);
-	SCTEST_CHECK(p4 == p5);
-	SCTEST_CHECK(p1 == p5);
+	const Point2D pt4(1, 1);
+	const Point2D pt5(1, 1);
+	SCTEST_CHECK(pt1 == pt4);
+	SCTEST_CHECK(pt4 == pt5);
+	SCTEST_CHECK(pt1 == pt5);
 
 	// scaling
-	Point2D p6(2, 3);
-	Point2D p7(8, 12);
-	SCTEST_CHECK((p6 * 4) == p7);
+	const Point2D pt6(2, 3);
+	const Point2D pt7(8, 12);
+	SCTEST_CHECK((pt6 * 4) == pt7);
 	return true;
 }
 
-static bool
-geom_compare_point2d(void)
-{
-	Point2D	p1(1, 1);
-	Point2D	p2(1, 1);
-	Point2D	p3(0, 1);
 
-	SCTEST_CHECK(p1 == p2);
-	SCTEST_CHECK_FALSE(p2 == p3);
+bool
+geomComparePoint2D()
+{
+	const Point2D pt1(1, 1);
+	const Point2D pt2(1, 1);
+	const Point2D pt3(0, 1);
+
+	SCTEST_CHECK(pt1 == pt2);
+	SCTEST_CHECK_FALSE(pt2 == pt3);
 	return true;
 }
 
-static bool
-geom_rotate_point2d(void)
+
+bool
+geomRotatePoint2D()
 {
-	Point2D vertices[4] = {	
+	std::array<Point2D, 4> vertices = {
 		Point2D(1, 0),  // θ = 0	
 		Point2D(0, 1),  // θ = π/2
 		Point2D(-1, 0), // θ = π
 		Point2D(0, -1)  // θ = 3π/2
 	};
 
-	Point2D	vertex;
-	vertices[0].Rotate(vertex, 1.5708);
+	for (auto i = 0; i < 4; i++) {
+		auto first    = i % 4;
+		auto expected = (i + 1) % 4;
 
-	if (vertex != vertices[1]) {
-		std::cerr << "expected: " << vertices[1] << std::endl;
-		std::cerr << "    have: " << vertex << std::endl;
-		return false;
+		Point2D vertex;
+		vertices.at(first).Rotate(vertex, 1.5708);
+
+		if (vertex != vertices.at(expected)) {
+			std::cerr << "expected: " << expected << "\n";
+			std::cerr << "    have: " << vertex << "\n";
+			return false;
+		}
 	}
 	return true;
 }
 
-static bool
-geom_rotate_points_about_origin(void)
+
+bool
+geomRotatePointsAboutOrigin()
 {
 	Point2D	origin(3, 3);
 	double	theta = 0;
 
-	std::vector<Polar2D> vertices {
+	const std::vector<Polar2D> vertices {
 		Polar2D(2, 0),
 		Polar2D(1.41421, 2.35619),
 		Polar2D(1.41421, -2.35619)		
@@ -203,25 +217,22 @@ geom_rotate_points_about_origin(void)
 
 	return true;
 }
+} // anonymous namespace
+
 
 int
-main(void)
+main()
 {
-	SimpleSuite	ts;
-	ts.AddTest("geom_validate_angular_rotation", geom_validate_angular_rotation);
-	ts.AddTest("geom_conversion_identities", geom_conversion_identities);
-	ts.AddTest("geom_verify_basic_properties", geom_verify_basic_properties);
-	ts.AddTest("geom_compare_point2d", geom_compare_point2d);
-	ts.AddTest("geom_rotate_point2d", geom_rotate_point2d);
-	ts.AddTest("geom_rotate_points_about_origin", geom_rotate_points_about_origin);
-	
-	if (ts.Run()) {
-		std::cout << "OK" << std::endl;
-		return 0;
-	}
-	else {
-		auto r = ts.GetReport();
-		std::cerr << r.Failing << "/" << r.Total << " tests failed." << std::endl;
-		return 1;
-	}
+	SimpleSuite suite;
+	suite.AddTest("geomValidateAngularRotation", geomValidateAngularRotation);
+	suite.AddTest("geomConversionIdentities", geomConversionIdentities);
+	suite.AddTest("geomVerifyBasicProperties", geomVerifyBasicProperties);
+	suite.AddTest("geomComparePoint2D", geomComparePoint2D);
+	suite.AddTest("geomRotatePoint2D", geomRotatePoint2D);
+	suite.AddTest("geomRotatePointsAboutOrigin", geomRotatePointsAboutOrigin);
+
+	auto result = suite.Run();
+	std::cout << suite << "\n";
+
+	return result ? 0 : 1;
 }

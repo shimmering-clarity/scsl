@@ -21,12 +21,6 @@
 /// TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
 /// PERFORMANCE OF THIS SOFTWARE.
 ///
-/// \section PLATFORM SUPPORT
-///
-/// Arena will build on the major platforms, but memory-mapped files are only
-/// supported on Unix-like systems. File I/O on Windows, for example, reads the
-/// file into an allocated arena. See Arena::Open for more details.
-
 
 #ifndef KIMODEM_ARENA_H
 #define KIMODEM_ARENA_H

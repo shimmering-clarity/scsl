@@ -428,71 +428,65 @@ Vector3DoubleTests_CrossProduct()
 
 
 int
-main(void)
+main()
 {
-	SimpleSuite	ts;
-	ts.AddTest("Vector3Miscellaneous_ExtractionOperator3d",
-		Vector3Miscellaneous_ExtractionOperator3d);
-	ts.AddTest("Vector3Miscellaneous_ExtractionOperator3f",
-		   Vector3Miscellaneous_ExtractionOperator3f);
-	ts.AddTest("Vector3Miscellaneous_SetEpsilon",
-		   Vector3Miscellaneous_SetEpsilon);
-	ts.AddTest("Vector3FloatTests_Magnitude",
-		   Vector3FloatTests_Magnitude);
-	ts.AddTest("Vector3FloatTests_Equality",
-		   Vector3FloatTests_Equality);
-	ts.AddTest("Vector3FloatTests_Addition",
-		Vector3FloatTests_Addition);
-	ts.AddTest("Vector3FloatTests_Subtraction",
-		Vector3FloatTests_Subtraction);
-	ts.AddTest("Vector3FloatTests_ScalarMultiplication",
-		Vector3FloatTests_ScalarMultiplication);
-	ts.AddTest("Vector3FloatTests_ScalarDivision",
-		Vector3FloatTests_ScalarDivision);
-	ts.AddTest("Vector3FloatTests_DotProduct",
-		Vector3FloatTests_DotProduct);
-	ts.AddTest("Vector3FloatTests_UnitVector",
-		Vector3FloatTests_UnitVector);
-	ts.AddTest("Vector3FloatTests_Angle",
-		   Vector3FloatTests_Angle);
-	ts.AddTest("Vector3FloatTests_ParallelOrthogonalVectors",
-		   Vector3FloatTests_ParallelOrthogonalVectors);
-	ts.AddTest("Vector3FloatTests_Projections",
-		   Vector3FloatTests_Projections);
-	ts.AddTest("Vector3FloatTests_CrossProduct",
-		   Vector3FloatTests_CrossProduct);
-	ts.AddTest("Vector3DoubleTests_Magnitude",
-		   Vector3DoubleTests_Magnitude);
-	ts.AddTest("Vector3DoubleTests_Equality",
-		   Vector3DoubleTests_Equality);
-	ts.AddTest("Vector3DoubleTests_Addition",
-		   Vector3DoubleTests_Addition);
-	ts.AddTest("Vector3DoubleTests_Subtraction",
-		   Vector3DoubleTests_Subtraction);
-	ts.AddTest("Vector3DoubleTests_ScalarMultiplication",
-		   Vector3DoubleTests_ScalarMultiplication);
-	ts.AddTest("Vector3DoubleTests_ScalarDivision",
-		   Vector3DoubleTests_ScalarDivision);
-	ts.AddTest("Vector3DoubleTests_DotProduct",
-		   Vector3DoubleTests_DotProduct);
-	ts.AddTest("Vector3DoubleTests_UnitVector",
-		   Vector3DoubleTests_UnitVector);
-	ts.AddTest("Vector3DoubleTests_Angle",
-		   Vector3DoubleTests_Angle);
-	ts.AddTest("Vector3DoubleTests_ParallelOrthogonalVectors",
-		   Vector3DoubleTests_ParallelOrthogonalVectors);
-	ts.AddTest("Vector3DoubleTests_Projections",
-		   Vector3DoubleTests_Projections);
-	ts.AddTest("Vector3DoubleTests_CrossProduct",
-		   Vector3DoubleTests_CrossProduct);
-	
-	if (ts.Run()) {
-		std::cout << "OK" << std::endl;
-		return 0;
-	}
-	else {
-		auto r = ts.GetReport();
-		std::cerr << r.Failing << "/" << r.Total << " tests failed." << std::endl;
-		return 1;
-	}
+	SimpleSuite suite;
+	suite.AddTest("Vector3Miscellaneous_ExtractionOperator3d",
+		      Vector3Miscellaneous_ExtractionOperator3d);
+	suite.AddTest("Vector3Miscellaneous_ExtractionOperator3f",
+		      Vector3Miscellaneous_ExtractionOperator3f);
+	suite.AddTest("Vector3Miscellaneous_SetEpsilon",
+		      Vector3Miscellaneous_SetEpsilon);
+	suite.AddTest("Vector3FloatTests_Magnitude",
+		      Vector3FloatTests_Magnitude);
+	suite.AddTest("Vector3FloatTests_Equality",
+		      Vector3FloatTests_Equality);
+	suite.AddTest("Vector3FloatTests_Addition",
+		      Vector3FloatTests_Addition);
+	suite.AddTest("Vector3FloatTests_Subtraction",
+		      Vector3FloatTests_Subtraction);
+	suite.AddTest("Vector3FloatTests_ScalarMultiplication",
+		      Vector3FloatTests_ScalarMultiplication);
+	suite.AddTest("Vector3FloatTests_ScalarDivision",
+		      Vector3FloatTests_ScalarDivision);
+	suite.AddTest("Vector3FloatTests_DotProduct",
+		      Vector3FloatTests_DotProduct);
+	suite.AddTest("Vector3FloatTests_UnitVector",
+		      Vector3FloatTests_UnitVector);
+	suite.AddTest("Vector3FloatTests_Angle",
+		      Vector3FloatTests_Angle);
+	suite.AddTest("Vector3FloatTests_ParallelOrthogonalVectors",
+		      Vector3FloatTests_ParallelOrthogonalVectors);
+	suite.AddTest("Vector3FloatTests_Projections",
+		      Vector3FloatTests_Projections);
+	suite.AddTest("Vector3FloatTests_CrossProduct",
+		      Vector3FloatTests_CrossProduct);
+	suite.AddTest("Vector3DoubleTests_Magnitude",
+		      Vector3DoubleTests_Magnitude);
+	suite.AddTest("Vector3DoubleTests_Equality",
+		      Vector3DoubleTests_Equality);
+	suite.AddTest("Vector3DoubleTests_Addition",
+		      Vector3DoubleTests_Addition);
+	suite.AddTest("Vector3DoubleTests_Subtraction",
+		      Vector3DoubleTests_Subtraction);
+	suite.AddTest("Vector3DoubleTests_ScalarMultiplication",
+		      Vector3DoubleTests_ScalarMultiplication);
+	suite.AddTest("Vector3DoubleTests_ScalarDivision",
+		      Vector3DoubleTests_ScalarDivision);
+	suite.AddTest("Vector3DoubleTests_DotProduct",
+		      Vector3DoubleTests_DotProduct);
+	suite.AddTest("Vector3DoubleTests_UnitVector",
+		      Vector3DoubleTests_UnitVector);
+	suite.AddTest("Vector3DoubleTests_Angle",
+		      Vector3DoubleTests_Angle);
+	suite.AddTest("Vector3DoubleTests_ParallelOrthogonalVectors",
+		      Vector3DoubleTests_ParallelOrthogonalVectors);
+	suite.AddTest("Vector3DoubleTests_Projections",
+		      Vector3DoubleTests_Projections);
+	suite.AddTest("Vector3DoubleTests_CrossProduct",
+		      Vector3DoubleTests_CrossProduct);
+	auto result = suite.Run();
+
+	std::cout << suite.GetReport() << "\n";
+	return result ? 0 : 1;
 }

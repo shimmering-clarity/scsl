@@ -20,7 +20,6 @@
 /// PERFORMANCE OF THIS SOFTWARE.
 ///
 
-#include <chrono>
 #include <iostream>
 
 #include <sctest/SimpleSuite.h>
@@ -39,14 +38,22 @@ SimpleSuite::SimpleSuite()
     : quiet(false), fnSetup(stub), fnTeardown(stub), tests(),
       report(), hasRun(false)
 {
+	this->Reset();
+}
 
+
+void
+SimpleSuite::Silence()
+{
+	// Silence will fall.
+	quiet = true;
 }
 
 
 void
 SimpleSuite::AddTest(std::string name, std::function<bool()> test)
 {
-	TestCase test_case = {name, test};
+	UnitTest const test_case = {name, test};
 	tests.push_back(test_case);
 }
 
@@ -55,7 +62,7 @@ void
 SimpleSuite::AddFailingTest(std::string name, std::function<bool()> test)
 {
 	// auto ntest = [&test]() { return !test(); };
-	TestCase test_case = {name, [&test]() { return !test(); }};
+	UnitTest test_case = {name, [&test]() { return !test(); }};
 	tests.push_back(test_case);
 }
 
@@ -63,38 +70,55 @@ SimpleSuite::AddFailingTest(std::string name, std::function<bool()> test)
 bool
 SimpleSuite::Run()
 {
-	report.Start = std::chrono::steady_clock::now();
+	report.Reset(this->tests.size());
+
 	unless(quiet) { std::cout << "Setting up the tests.\n"; }
 	unless(fnSetup()) { return false; }
 
-	// Reset the failed test counts.
-	report.Failing = 0;
+	this->hasRun = true;
+	this->hasPassed = true;
 
-	bool result = true;
-	hasRun = true;
-	report.Total = tests.size();
-	for (size_t i = 0; i < report.Total && result; i++) {
-		TestCase tc = tests.at(i);
+	for (size_t i = 0; i < this->report.Total() && this->hasPassed; i++) {
+		const UnitTest testCase = this->tests.at(i);
 		unless(quiet) {
-			std::cout << "[" << i + 1 << "/" << report.Total << "] Running test " << tc.name << ": ";
+			std::cout << "[" << i + 1 << "/"
+				  << this -> report.Total()
+				  << "] Running test "
+				  << testCase.name << ": ";
 		}
 
-		result = tc.test();
+		this->hasPassed = testCase.test();
 		if (quiet) { continue; }
 
-		if (result) {
+		if (this->hasPassed) {
 			std::cout << "[PASS]";
 		} else {
 			std::cout << "[FAIL]";
-			report.Failing++;
+			report.Failed();
 		}
 		std::cout << "\n";
 	}
 
 	unless(quiet) { std::cout << "Tearing down the tests.\n"; }
 	unless(fnTeardown()) { return false; }
-	report.End = std::chrono::steady_clock::now();
-	return result;
+	report.End();
+	return this->hasPassed;
+}
+
+
+void
+SimpleSuite::Reset()
+{
+	this->report.Reset(0);
+	this->hasRun = false;
+	this->hasPassed = false;
+}
+
+
+bool
+SimpleSuite::HasRun() const
+{
+	return this->hasRun;
 }
 
 
@@ -102,6 +126,19 @@ Report
 SimpleSuite::GetReport()
 {
 	return report;
+}
+
+
+std::ostream &
+operator<<(std::ostream &os, SimpleSuite &suite)
+{
+	if (suite.HasRun()) {
+		os << "OK: " << suite.GetReport();
+	} else {
+		os << "Test suite hasn't run.";
+	}
+
+	return os;
 }
 
 

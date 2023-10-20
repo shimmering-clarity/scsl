@@ -22,16 +22,96 @@
 /// PERFORMANCE OF THIS SOFTWARE.
 
 #include <chrono>
+#include <iomanip>
+#include <ostream>
 
 #include <sctest/Report.h>
+
 
 
 namespace sctest {
 
 
-_Report::_Report()
-		: Failing (0), Total(0), Start(std::chrono::steady_clock::now()),
-		  End(std::chrono::steady_clock::now()), Duration(0) {}
+Report::Report()
+{
+	this->Reset(0);
+}
 
 
-} // end namespace test
+size_t
+Report::Failing() const
+{
+	return this->failing;
+}
+
+
+size_t
+Report::Total() const
+{
+	return this->total;
+}
+
+
+void
+Report::Failed()
+{
+	this->failing++;
+}
+
+
+void
+Report::AddTest(size_t testCount)
+{
+	this->total += testCount;
+}
+
+
+void
+Report::Reset(size_t testCount)
+{
+	auto now = std::chrono::steady_clock::now();
+	this->total = testCount;
+	this->failing = 0;
+
+	this->Start();
+	this->end = now;
+}
+
+
+
+void
+Report::Start()
+{
+	this->start = std::chrono::steady_clock::now();
+}
+
+
+void
+Report::End()
+{
+	this->end = std::chrono::steady_clock::now();
+}
+
+
+std::chrono::duration<double, std::milli>
+Report::Elapsed() const
+{
+	return this->end - this->start;
+}
+
+
+std::ostream&
+operator<<(std::ostream &os, const Report &report)
+{
+	auto elapsed = report.Elapsed();
+
+	os << report.Total() - report.Failing() << "/"
+	   << report.Total() << " tests passed in "
+	   << std::setw(3) << elapsed.count() << "ms";
+
+	return os;
+}
+
+
+
+} // end namespace sctest

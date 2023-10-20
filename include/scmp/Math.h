@@ -1,4 +1,26 @@
-/// math.h provides certain useful mathematical functions.
+///
+/// \file include/scmp/Math.h
+/// \author K. Isom <kyle@imap.cc>
+/// \date 2017-06-05
+/// \brief Common math functions.
+///
+/// Arena defines a memory management backend for pre-allocating memory.
+///
+/// Copyright 2023 K. Isom <kyle@imap.cc>
+///
+/// Permission to use, copy, modify, and/or distribute this software for
+/// any purpose with or without fee is hereby granted, provided that
+/// the above copyright notice and this permission notice appear in all /// copies.
+///
+/// THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL
+/// WARRANTIES WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED
+/// WARRANTIES OF MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE
+/// AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL
+/// DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA
+/// OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER
+/// TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
+/// PERFORMANCE OF THIS SOFTWARE.
+///
 
 #ifndef SCCCL_MATH_H
 #define SCCCL_MATH_H
@@ -9,8 +31,8 @@
 namespace scmp {
 
 
-// MAX_RADIAN is a precomputed 2 * M_PI, and MIN_RADIAN is -2 * M_PI.
-constexpr double	MAX_RADIAN = 2 * M_PI;
+/// MAX_RADIAN is a precomputed 2 * M_PI. and MIN_RADIAN is -2 * M_PI.
+constexpr double MAX_RADIAN = 2 * M_PI;
 constexpr double MIN_RADIAN = -2 * M_PI;
 constexpr double POS_HALF_RADIAN = M_PI / 2;
 constexpr double NEG_HALF_RADIAN = -(M_PI / 2);
@@ -18,8 +40,10 @@ constexpr double NEG_HALF_RADIAN = -(M_PI / 2);
 
 /// Roll m die of n sides, returning a vector of the dice.
 std::vector<int>	Die(int m, int n);
+
 /// Roll m die of n sides, returning the total of the die.
 int			DieTotal(int m, int n);
+
 /// Roll m die of n sides, and take the total of the top k die.
 int			BestDie(int k, int m, int n);
 

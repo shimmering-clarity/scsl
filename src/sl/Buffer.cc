@@ -109,11 +109,18 @@ Buffer::Append(const std::string s)
 bool
 Buffer::Append(const uint8_t *data, const size_t datalen)
 {
+	if (datalen == 0) {
+		return false;
+	}
+
 	auto resized = false;
 	auto newCap = this->mustGrow(datalen);
 
 	if (newCap > 0) {
 		this->Resize(newCap);
+		resized = true;
+	} else if (this->contents == nullptr) {
+		this->Resize(this->capacity);
 		resized = true;
 	}
 

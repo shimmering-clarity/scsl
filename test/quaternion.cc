@@ -429,49 +429,43 @@ QuaternionMiscellanous_InitializerConstructor()
 int
 main(void)
 {
-	SimpleSuite	ts;
+	SimpleSuite suite;
 
-	ts.AddTest("Quaternion_SelfTest", Quaternion_SelfTest);
-	ts.AddTest("QuaternionMiscellanous_InitializerConstructor",
-		QuaternionMiscellanous_InitializerConstructor);
-	ts.AddTest("QuaternionMiscellaneous_SanityChecks",
-		   QuaternionMiscellaneous_SanityChecks);
-	ts.AddTest("QuaternionMiscellaneous_OutputStream",
-		   QuaternionMiscellaneous_OutputStream);
+	suite.AddTest("Quaternion_SelfTest", Quaternion_SelfTest);
+	suite.AddTest("QuaternionMiscellanous_InitializerConstructor",
+		      QuaternionMiscellanous_InitializerConstructor);
+	suite.AddTest("QuaternionMiscellaneous_SanityChecks",
+		      QuaternionMiscellaneous_SanityChecks);
+	suite.AddTest("QuaternionMiscellaneous_OutputStream",
+		      QuaternionMiscellaneous_OutputStream);
 
-	ts.AddTest("Quaterniond_Addition", Quaterniond_Addition);
-	ts.AddTest("Quaterniond_Conjugate", Quaterniond_Conjugate);
-	ts.AddTest("Quaterniond_Euler", Quaterniond_Euler);
-	ts.AddTest("Quaterniond_Identity", Quaterniond_Identity);
-	ts.AddTest("Quaterniond_Inverse", Quaterniond_Inverse);
-	ts.AddTest("Quaterniond_Norm", Quaterniond_Norm);
-	ts.AddTest("Quaterniond_Product", Quaterniond_Product);
-	ts.AddTest("Quaterniond_Rotate", Quaterniond_Rotate);
-	ts.AddTest("Quaterniond_ShortestSLERP", Quaterniond_ShortestSLERP);
-	ts.AddTest("Quaterniond_ShortestSLERP2", Quaterniond_ShortestSLERP2);
-	ts.AddTest("Quaterniond_Unit", Quaterniond_Unit);
-	ts.AddTest("Quaterniond_UtilityCreator", Quaterniond_UtilityCreator);
+	suite.AddTest("Quaterniond_Addition", Quaterniond_Addition);
+	suite.AddTest("Quaterniond_Conjugate", Quaterniond_Conjugate);
+	suite.AddTest("Quaterniond_Euler", Quaterniond_Euler);
+	suite.AddTest("Quaterniond_Identity", Quaterniond_Identity);
+	suite.AddTest("Quaterniond_Inverse", Quaterniond_Inverse);
+	suite.AddTest("Quaterniond_Norm", Quaterniond_Norm);
+	suite.AddTest("Quaterniond_Product", Quaterniond_Product);
+	suite.AddTest("Quaterniond_Rotate", Quaterniond_Rotate);
+	suite.AddTest("Quaterniond_ShortestSLERP", Quaterniond_ShortestSLERP);
+	suite.AddTest("Quaterniond_ShortestSLERP2", Quaterniond_ShortestSLERP2);
+	suite.AddTest("Quaterniond_Unit", Quaterniond_Unit);
+	suite.AddTest("Quaterniond_UtilityCreator", Quaterniond_UtilityCreator);
 
-	ts.AddTest("Quaternionf_Addition", Quaternionf_Addition);
-	ts.AddTest("Quaternionf_Conjugate", Quaternionf_Conjugate);
-	ts.AddTest("Quaternionf_Euler", Quaternionf_Euler);
-	ts.AddTest("Quaternionf_Identity", Quaternionf_Identity);
-	ts.AddTest("Quaternionf_Inverse", Quaternionf_Inverse);
-	ts.AddTest("Quaternionf_Norm", Quaternionf_Norm);
-	ts.AddTest("Quaternionf_Product", Quaternionf_Product);
-	ts.AddTest("Quaternionf_Rotate", Quaternionf_Rotate);
-	ts.AddTest("Quaternionf_ShortestSLERP", Quaternionf_ShortestSLERP);
-	ts.AddTest("Quaternionf_ShortestSLERP2", Quaternionf_ShortestSLERP2);
-	ts.AddTest("Quaternionf_Unit", Quaternionf_Unit);
-	ts.AddTest("Quaternionf_UtilityCreator", Quaternionf_UtilityCreator);
+	suite.AddTest("Quaternionf_Addition", Quaternionf_Addition);
+	suite.AddTest("Quaternionf_Conjugate", Quaternionf_Conjugate);
+	suite.AddTest("Quaternionf_Euler", Quaternionf_Euler);
+	suite.AddTest("Quaternionf_Identity", Quaternionf_Identity);
+	suite.AddTest("Quaternionf_Inverse", Quaternionf_Inverse);
+	suite.AddTest("Quaternionf_Norm", Quaternionf_Norm);
+	suite.AddTest("Quaternionf_Product", Quaternionf_Product);
+	suite.AddTest("Quaternionf_Rotate", Quaternionf_Rotate);
+	suite.AddTest("Quaternionf_ShortestSLERP", Quaternionf_ShortestSLERP);
+	suite.AddTest("Quaternionf_ShortestSLERP2", Quaternionf_ShortestSLERP2);
+	suite.AddTest("Quaternionf_Unit", Quaternionf_Unit);
+	suite.AddTest("Quaternionf_UtilityCreator", Quaternionf_UtilityCreator);
 
-	if (ts.Run()) {
-		std::cout << "OK" << std::endl;
-		return 0;
-	}
-	else {
-		auto r = ts.GetReport();
-		std::cerr << r.Failing << "/" << r.Total << " tests failed." << std::endl;
-		return 1;
-	}
+	auto result = suite.Run();
+	std::cout << suite.GetReport() << "\n";
+	return result ? 0 : 1;
 }

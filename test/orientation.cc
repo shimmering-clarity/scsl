@@ -1,32 +1,40 @@
-#include <sctest/Checks.h>
-#include <sctest/SimpleSuite.h>
+#include <scsl/Flag.h>
 
 #include <scmp/Math.h>
 #include <scmp/geom/Vector.h>
 #include <scmp/geom/Orientation.h>
+
+#include <sctest/Checks.h>
+#include <sctest/SimpleSuite.h>
+
 
 using namespace std;
 using namespace scmp;
 using namespace sctest;
 
 
-static bool
+namespace {
+
+
+bool
 UnitConversions_RadiansToDegreesF()
 {
 	for (int i = 0; i < 360; i++) {
-		auto	deg = static_cast<float>(i);
-		SCTEST_CHECK_FEQ(scmp::RadiansToDegreesF(scmp::DegreesToRadiansF(deg)), deg);
+		auto rads = scmp::DegreesToRadiansF(i);
+		auto deg = scmp::RadiansToDegreesF(rads);
+
+		SCTEST_CHECK_FEQ(deg, static_cast<float>(i));
 	}
 
 	return true;
 }
 
 
-static bool
+bool
 UnitConversions_RadiansToDegreesD()
 {
 	for (int i = 0; i < 360; i++) {
-		auto	deg = static_cast<double>(i);
+		auto deg = static_cast<double>(i);
 		SCTEST_CHECK_DEQ(scmp::RadiansToDegreesD(scmp::DegreesToRadiansD(deg)), deg);
 	}
 
@@ -34,10 +42,10 @@ UnitConversions_RadiansToDegreesD()
 }
 
 
-static bool
+bool
 Orientation2f_Heading()
 {
-	geom::Vector2f	a {2.0, 2.0};
+	geom::Vector2f a{2.0, 2.0};
 
 	SCTEST_CHECK_FEQ(geom::Heading2f(a), scmp::DegreesToRadiansF(45));
 
@@ -45,10 +53,10 @@ Orientation2f_Heading()
 }
 
 
-static bool
+bool
 Orientation3f_Heading()
 {
-	geom::Vector3f	a {2.0, 2.0, 2.0};
+	geom::Vector3f a{2.0, 2.0, 2.0};
 
 	SCTEST_CHECK_FEQ(geom::Heading3f(a), scmp::DegreesToRadiansF(45));
 
@@ -56,43 +64,56 @@ Orientation3f_Heading()
 }
 
 
-static bool
+bool
 Orientation2d_Heading()
 {
-	geom::Vector2d	a {2.0, 2.0};
+	geom::Vector2d a{2.0, 2.0};
 
-	 return scmp::WithinTolerance(geom::Heading2d(a), scmp::DegreesToRadiansD(45), 0.000001);
+	return scmp::WithinTolerance(geom::Heading2d(a), scmp::DegreesToRadiansD(45), 0.000001);
 }
 
 
-static bool
+bool
 Orientation3d_Heading()
 {
-	geom::Vector3d	a {2.0, 2.0, 2.0};
+	geom::Vector3d a{2.0, 2.0, 2.0};
 
 	return scmp::WithinTolerance(geom::Heading3d(a), scmp::DegreesToRadiansD(45), 0.000001);
 }
 
 
+} // anonymous namespace
+
+
 int
-main(void)
+main(int argc, char *argv[])
 {
-	SimpleSuite	ts;
+	auto quiet = false;
+	auto flags = new scsl::Flags("test_orientation",
+				     "This test validates various orientation-related components in scmp.");
+	flags->Register("-q", false, "suppress test output");
 
-	ts.AddTest("UnitConversions_RadiansToDegreesF", UnitConversions_RadiansToDegreesF);
-	ts.AddTest("UnitConversions_RadiansToDegreesD", UnitConversions_RadiansToDegreesD);
-	ts.AddTest("Orientation2f_Heading", Orientation2f_Heading);
-	ts.AddTest("Orientation3f_Heading", Orientation3f_Heading);
-	ts.AddTest("Orientation2d_Heading", Orientation2d_Heading);
-	ts.AddTest("Orientation3d_Heading", Orientation3d_Heading);
+	auto parsed = flags->Parse(argc, argv);
+	if (parsed != scsl::Flags::ParseStatus::OK) {
+		std::cerr << "Failed to parse flags: "
+			  << scsl::Flags::ParseStatusToString(parsed) << "\n";
+	}
 
-	if (ts.Run()) {
-		std::cout << "OK" << std::endl;
-		return 0;
+	SimpleSuite suite;
+	flags->GetBool("-q", quiet);
+	if (quiet) {
+		suite.Silence();
 	}
-	else {
-		auto r = ts.GetReport();
-		std::cerr << r.Failing << "/" << r.Total << " tests failed." << std::endl;
-		return 1;
-	}
+
+	suite.AddTest("UnitConversions_RadiansToDegreesF", UnitConversions_RadiansToDegreesF);
+	suite.AddTest("UnitConversions_RadiansToDegreesD", UnitConversions_RadiansToDegreesD);
+	suite.AddTest("Orientation2f_Heading", Orientation2f_Heading);
+	suite.AddTest("Orientation3f_Heading", Orientation3f_Heading);
+	suite.AddTest("Orientation2d_Heading", Orientation2d_Heading);
+	suite.AddTest("Orientation3d_Heading", Orientation3d_Heading);
+
+	delete flags;
+	auto result = suite.Run();
+	std::cout << suite.GetReport() << "\n";
+	return result ? 0 : 1;
 }

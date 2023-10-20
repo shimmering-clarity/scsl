@@ -28,21 +28,42 @@
 
 namespace sctest {
 
-typedef struct _Report {
-	// Failing stores the number of failing tests; for tests added
-	// with AddTest, this is a test that returned false. For tests
-	// added with AddFailingTest, this is a test that returned true.
-	size_t	Failing;
 
-	// Total is the number of tests registered during the last run.
-	size_t	Total;
+class Report {
+public:
+	/// \brief Failing returns the count of failed tests.
+	///
+	/// \details If a test is run and expected to pass, but fails,
+	///	     it is marked as failed. If a test is expected to
+	///	     fail, but passes, it is marked as failed.
+	///
+	/// \return The number of tests that failed.
+	size_t	Failing() const;
 
-	std::chrono::time_point<std::chrono::steady_clock>	Start;
-	std::chrono::time_point<std::chrono::steady_clock>	End;
-	std::chrono::duration<double>						Duration;
+	/// \brief Total is the number of tests registered.
+	size_t	Total() const;
 
-	_Report();
-} Report;
+	void	Failed();
+	void	AddTest(size_t testCount = 0);
+	void	Reset(size_t testCount = 0);
 
-} // end namespace test
+	void	Start();
+	void	End();
+	std::chrono::duration<double, std::milli>
+		Elapsed() const;
+
+	Report();
+private:
+	size_t	failing{};
+	size_t	total{};
+
+	std::chrono::time_point<std::chrono::steady_clock>	start;
+	std::chrono::time_point<std::chrono::steady_clock>	end;
+};
+
+
+std::ostream &operator<<(std::ostream &os, const Report &report);
+} // end namespace sctest
+
+
 #endif

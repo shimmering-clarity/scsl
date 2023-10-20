@@ -44,16 +44,17 @@ set(HEADER_FILES
         include/scsl/StringUtil.h
         include/scsl/TLV.h
 
+        include/scmp/scmp.h
         include/scmp/Math.h
         include/scmp/Motion2D.h
         include/scmp/geom/Coord2D.h
         include/scmp/geom/Orientation.h
         include/scmp/geom/Quaternion.h
         include/scmp/geom/Vector.h
+        include/scmp/filter/Madgwick.h
 
         include/sctest/Assert.h
         include/sctest/Report.h
-        include/scmp/filter/Madgwick.h
 )
 
 include_directories(include)

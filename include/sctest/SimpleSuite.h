@@ -1,30 +1,28 @@
-//
-// Project: scccl
-// File: include/test/SimpleSuite.h
-// Author: Kyle Isom
-// Date: 2017-06-05
-// Namespace: test
-//
-// SimpleSuite.h defines the SimpleSuite class for unit testing.
-//
-// Copyright 2017 Kyle Isom <kyle@imap.cc>
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//     http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+///
+/// \file SimpleSuite.h
+/// \author K. Isom <kyle@imap.cc>
+/// \date 2017-06-05
+/// \brief Defines a simple unit testing framework.
+///
+/// Copyright 2017 K. Isom <kyle@imap.cc>
+///
+/// Permission to use, copy, modify, and/or distribute this software for
+/// any purpose with or without fee is hereby granted, provided that
+/// the above copyright notice and this permission notice appear in all /// copies.
+///
+/// THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL
+/// WARRANTIES WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED
+/// WARRANTIES OF MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE
+/// AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL
+/// DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA
+/// OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER
+/// TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
+/// PERFORMANCE OF THIS SOFTWARE.
+///
+
 #ifndef SCTEST_SIMPLESUITE_H
 #define SCTEST_SIMPLESUITE_H
 
-// SimpleSuite.h
-// This header file defines the interface for a simple suite of tests.
 
 #include <functional>
 #include <string>
@@ -34,54 +32,91 @@
 
 namespace sctest {
 
-typedef struct {
-	std::string			name;
-	std::function<bool(void)>	test;
-} TestCase;
 
+/// \brief UnitTest describes a single unit test. It is a predicate:
+///        did the test pass?
+struct UnitTest {
+	/// What name should be shown when running tests?
+	std::string		name;
+
+	/// This is the test function to be run.
+	std::function<bool()>	test;
+};
+
+/// \brief SimpleSuite is a test-running harness for simple tests.
+///
+/// A simple test is defined as a test that takes no arguments and
+/// returns a boolean status where true indicates the test has passed.
 class SimpleSuite {
-	public:
+public:
 	SimpleSuite();
 
-	// Silence suppresses output.
-	void Silence(void) { quiet = true; }
+	/// \brief Silence suppresses output.
+	void Silence();
 
-	// Setup defines a setup function; this should be a predicate. This function
-	// is called at the start of the Run method, before tests are run.
+	/// \brief Define a suite setup function.
+	///
+	/// If present, this setup function is called at the start of
+	/// the Run method, before tests are run. It should be a
+	/// predicate: if it returns false, tests automatically fail.
 	void Setup(std::function<bool(void)> setupFn) { fnSetup = setupFn; }
 
-	// Teardown defines a teardown function; this should be a predicate. This
-	// function is called at the end of the Run method, after all tests have run.
+	/// \brief Define a teardown function.
+	///
+	/// If present, this teardown function is called at the end of
+	/// the Run method, after all tests have run.
 	void Teardown(std::function<bool(void)> teardownFn) { fnTeardown = teardownFn; }
 
-	// AddTest is used to add a test that is expected to return true.
-	void AddTest(std::string, std::function<bool(void)>);
+	/// \brief Register a new simple test.
+	///
+	/// \param label The text that will identify test when
+	///        running.
+	/// \param test This test should return true if the test has
+	/// 	   passed.
+	void AddTest(std::string label, std::function<bool(void)> test);
 
-	// AddFailingTest is used to add a test that is expected to return false.
-	void AddFailingTest(std::string, std::function<bool(void)>);
+	/// \brief Register a test that is expected to return false.
+	///
+	/// \param label The text that will identify test when
+	///        running.
+	/// \param test This test should return false if the test has
+	/// 	   passed.
+	void AddFailingTest(std::string label, std::function<bool(void)> test);
 
-	bool Run(void);
+	/// \brief Run all the registered tests.
+	///
+	/// \return True if all tests have passed.
+	bool Run();
 
-	// Reporting methods.
+	/// Reporting methods.
 
-	// Reset clears the report statistics.
-	void Reset(void) { report.Failing = report.Total = 0; hasRun = false; };
+	/// \brief Reset clears the report statistics.
+	///
+	/// Reset will preserve the setup and teardown functions, just
+	/// resetting the suite's internal state.
+	void Reset();
 
-	// IsReportReady returns true if a report is ready.
-	bool IsReportReady(void) { return hasRun; }
+	/// \brief
+	// HasRun returns true if a report is ready.
+	bool HasRun() const;
 
 	// Report returns a Report.
 	Report GetReport(void);
-	
-	private:
+
+private:
 	bool				quiet;
-	std::function<bool(void)>	fnSetup, fnTeardown;
-	std::vector<TestCase>		tests;
+	std::function<bool(void)> fnSetup, fnTeardown;
+	std::vector<UnitTest>     tests;
 
 	// Report functions.
-	Report				report;
-	bool				hasRun; // Have the tests been run yet?
+	Report	report;
+	bool	hasRun; // Have the tests been run yet?
+	bool	hasPassed;
 };
 
-} // end namespace test
+
+std::ostream& operator<<(std::ostream& os, SimpleSuite &suite);
+
+
+} // namespace sctest
 #endif

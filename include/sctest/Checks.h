@@ -35,16 +35,11 @@ namespace sctest {
 #define SCTEST_CHECK_FALSE(x)		if ((x))	{ return false; }
 #define SCTEST_CHECK_EQ(x, y)		if ((x) != (y))	{ return false; }
 #define SCTEST_CHECK_NE(x, y)		if ((x) == (y))	{ return false; }
-#define SCTEST_CHECK_ZERO(x)		if ((x) != 0)	{ return false; }
-#define SCTEST_CHECK_GTZ(x)		if ((x) > 0) 	{ return false; }
-#define SCTEST_CHECK_GEZ(x)		if ((x) >= 0)	{ return false; }
-#define SCTEST_CHECK_LEZ(x)		if ((x) <= 0)	{ return false; }
-#define SCTEST_CHECK_LTZ(x)		if ((x) < 0)	{ return false; }
 #define SCTEST_CHECK_FEQ(x, y)		{ float eps; scmp::DefaultEpsilon(eps); if (!scmp::WithinTolerance((x), (y), eps)) { return false; }}
 #define SCTEST_CHECK_DEQ(x, y)		{ double eps; scmp::DefaultEpsilon(eps); if (!scmp::WithinTolerance((x), (y), eps)) { return false; }}
 
-#define SCTEST_CHECK_FEQ_EPS(x, y, eps)	{ if (!scmp::WithinTolerance((x), (y), eps)) { return false; }}
-#define SCTEST_CHECK_DEQ_EPS(x, y, eps)	{ if (!scmp::WithinTolerance((x), (y), eps)) { return false; }}
+#define SCTEST_CHECK_FEQ_EPS(x, y, eps)	{ if (!scmp::WithinTolerance<float>((x), (y), eps)) { return false; }}
+#define SCTEST_CHECK_DEQ_EPS(x, y, eps)	{ if (!scmp::WithinTolerance<double>((x), (y), eps)) { return false; }}
 
 
 } // namespace sctest
