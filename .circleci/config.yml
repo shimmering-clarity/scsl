@@ -18,9 +18,19 @@ jobs:
           name: Setup cmake build
           command: setup-cmake.sh
 
+  static_analysis:
+    docker:
+      - image: git.wntrmute.dev/sc/dev:alpine
+    steps:
+      - checkout
+      - run:
+          - name: trunk check
+            command: ./trunk check
+
 # Orchestrate jobs using workflows
 # See: https://circleci.com/docs/configuration-reference/#workflows
 workflows:
   ctest:
     jobs:
       - ctest
+      - static_analysis
