@@ -8,7 +8,7 @@ jobs:
       - checkout
       - run:
           name: Setup cmake build
-          command: setup-cmake.sh
+          command: cmake-build-and-test.sh
   static_analysis:
     docker:
       - image: git.wntrmute.dev/sc/dev:main
