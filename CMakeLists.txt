@@ -6,6 +6,7 @@ project(scsl LANGUAGES CXX
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_VERBOSE_MAKEFILES TRUE)
 set(VERBOSE YES)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 # compile options:
 #   -Wall                   Default to all errors.

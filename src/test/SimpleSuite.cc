@@ -53,7 +53,7 @@ SimpleSuite::Silence()
 void
 SimpleSuite::AddTest(std::string name, std::function<bool()> test)
 {
-	UnitTest const test_case = {name, test};
+	const UnitTest test_case = {std::move(name), test};
 	tests.push_back(test_case);
 }
 
@@ -62,7 +62,7 @@ void
 SimpleSuite::AddFailingTest(std::string name, std::function<bool()> test)
 {
 	// auto ntest = [&test]() { return !test(); };
-	UnitTest test_case = {name, [&test]() { return !test(); }};
+	const UnitTest test_case = {std::move(name), [&test]() { return !test(); }};
 	tests.push_back(test_case);
 }
 

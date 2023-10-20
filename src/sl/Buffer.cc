@@ -207,7 +207,13 @@ Buffer::Resize(size_t newCapacity)
 	auto newContents = new uint8_t[newCapacity];
 
 	memset(newContents, 0, newCapacity);
-	if (this->length > 0) {
+
+	// Defensive coding check.
+	if ((this->length > 0) && (this->contents == nullptr)) {
+		abort();
+	}
+
+	if (this->length > 0 && this->contents != nullptr) {
 		memcpy(newContents, this->contents, this->length);
 	}
 

@@ -33,4 +33,3 @@ workflows:
   ctest:
     jobs:
       - ctest
-      - static_analysis

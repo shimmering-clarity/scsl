@@ -21,11 +21,12 @@
 ///
 
 
+#include <cassert>
 #include <iostream>
 #include <regex>
 #include <utility>
-#include <vector>
 
+#include <vector>
 #include <scsl/Flags.h>
 #include <scsl/StringUtil.h>
 
@@ -76,14 +77,14 @@ Flags::Flags(std::string fName)
 
 
 Flags::Flags(std::string fName, std::string fDescription)
-    : name(fName), description(fDescription)
+    : name(std::move(fName)), description(std::move(fDescription))
 {
 }
 
 
 Flags::~Flags()
 {
-	for (auto flag : this->flags) {
+	for (auto &flag : this->flags) {
 		if (flag.second->Type == FlagType::String) {
 			delete flag.second->Value.s;
 		}
@@ -103,7 +104,8 @@ Flags::Register(std::string fName, FlagType fType, std::string fDescription)
 		return false;
 	}
 
-	auto flag = NewFlag(fName, fType, fDescription);
+	auto flag = NewFlag(fName, fType, std::move(fDescription));
+	assert(flag != nullptr);
 	this->flags[fName] = flag;
 	return true;
 }
@@ -124,7 +126,7 @@ Flags::Register(std::string fName, bool defaultValue, std::string fDescription)
 bool
 Flags::Register(std::string fName, int defaultValue, std::string fDescription)
 {
-	if (!this->Register(fName, FlagType::Integer, fDescription)) {
+	if (!this->Register(fName, FlagType::Integer, std::move(fDescription))) {
 		return false;
 	}
 
@@ -139,6 +141,8 @@ Flags::Register(std::string fName, unsigned int defaultValue, std::string fDescr
 	if (!this->Register(fName, FlagType::UnsignedInteger, std::move(fDescription))) {
 		return false;
 	}
+	assert(this->flags.count(fName) != 0);
+	assert(this->flags[fName] != nullptr);
 
 	this->flags[fName]->Value.u = defaultValue;
 	return true;
@@ -164,7 +168,7 @@ Flags::Register(std::string fName, std::string defaultValue, std::string fDescri
 		return false;
 	}
 
-	this->flags[fName]->Value.s = new std::string(defaultValue);
+	this->flags[fName]->Value.s = new std::string(std::move(defaultValue));
 	return true;
 }
 
@@ -368,7 +372,7 @@ Flags::Arg(size_t i)
 
 
 Flag *
-Flags::checkGetArg(std::string fName, FlagType eType)
+Flags::checkGetArg(std::string& fName, FlagType eType)
 {
 	if (this->flags[fName] == 0) {
 		return nullptr;

@@ -62,7 +62,7 @@ SplitKeyValuePair(std::string line, char delimiter)
 	std::string sDelim;
 
 	sDelim.push_back(std::move(delimiter));
-	return SplitKeyValuePair(line, sDelim);
+	return SplitKeyValuePair(std::move(line), sDelim);
 }
 
 
@@ -154,7 +154,7 @@ WrapText(std::string& line, size_t lineLength)
 	}
 
 	std::string wLine;
-	for (auto   word: parts) {
+	for (auto &word: parts) {
 		if (word.size() == 0) {
 			continue;
 		}

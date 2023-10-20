@@ -81,6 +81,17 @@ TestSplit(std::string line, std::string delim, size_t maxCount, std::vector<std:
 
 
 bool
+TestSplitChar()
+{
+	auto expected = std::vector<std::string>{"hello", "world"};
+	const auto *inputLine = "hello=world\n";
+	auto actual = U::S::SplitKeyValuePair(inputLine, '=');
+
+	return actual == expected;
+}
+
+
+bool
 TestWrapping()
 {
 	std::string testLine = "A much longer line, something that can be tested with WrapText. ";
@@ -115,7 +126,7 @@ TestWrapping()
 		return false;
 	}
 
-	U::S::WriteTabIndented(std::cout, wrapped, 4, true);
+//	U::S::WriteTabIndented(std::cout, wrapped, 4, true);
 	return true;
 }
 
@@ -142,6 +153,7 @@ main()
 	suite.AddTest("SplitN(0) with empty element",
 		      TestSplit("abc::def:ghi", ":", 0,
 				std::vector<std::string>{"abc", "", "def", "ghi"}));
+	suite.AddTest("TestSplitKV(char)", TestSplitChar);
 	suite.AddTest("TextWrapping", TestWrapping);
 	auto result = suite.Run();
 	std::cout << suite.GetReport() << "\n";

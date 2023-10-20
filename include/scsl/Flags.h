@@ -329,7 +329,7 @@ public:
 
 private:
 	ParseStatus parseArg(int argc, char **argv, int &index);
-	Flag *checkGetArg(std::string fName, FlagType eType);
+	Flag *checkGetArg(std::string& fName, FlagType eType);
 
 	std::string                   name;
 	std::string                   description;
