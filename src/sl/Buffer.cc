@@ -124,7 +124,15 @@ Buffer::Append(const uint8_t *data, const size_t datalen)
 		resized = true;
 	}
 
+	// If newCap is > 0, memory will be allocated for this->
+	// contents, and if contents was null, then Resize should force
+	// it to be allocated. Still, a little defensive coding never
+	// hurt.
 	assert(this->contents != nullptr);
+	if (this->contents == nullptr) {
+		return false;
+	}
+
 	memcpy(this->contents + this->length, data, datalen);
 	this->length += datalen;
 	return resized;
