@@ -3,7 +3,7 @@ version: 2.1
 jobs:
   ctest:
     docker:
-      - image: git.wntrmute.dev/sc/dev:alpine
+      - image: git.wntrmute.dev/sc/dev:main
     steps:
       - checkout
       - run:
@@ -11,7 +11,7 @@ jobs:
           command: setup-cmake.sh
   static_analysis:
     docker:
-      - image: git.wntrmute.dev/sc/dev:alpine
+      - image: git.wntrmute.dev/sc/dev:main
     steps:
       - checkout
       - run:
