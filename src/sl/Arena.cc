@@ -127,26 +127,25 @@ Arena::Open(const char *path)
 int
 Arena::Create(const char *path, size_t fileSize)
 {
+	int 	ret = -1;
+
 	if (this->size > 0) {
 		this->Destroy();
 	}
 
 
 	auto *fHandle = fopen(path, "w");
-	if (fHandle == nullptr) {
-		return -1;
-	}
+	if (fHandle != nullptr) {
+		auto newFileDes = fileno(fHandle);
+		if (ftruncate(newFileDes, static_cast<off_t>(fileSize)) == 0) {
+			ret = this->Open(path);
+		}
 
-	auto newFileDes = fileno(fHandle);
-
-	if (ftruncate(newFileDes, static_cast<off_t>(fileSize)) == -1) {
 		close(newFileDes);
 		fclose(fHandle);
-		return -1;
 	}
 
-	close(newFileDes);
-	return this->Open(path);
+	return ret;
 }
 
 
