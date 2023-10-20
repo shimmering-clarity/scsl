@@ -158,6 +158,10 @@ operator<<(std::ostream &os, const Dictionary &dictionary)
 	uint8_t 	*cursor = (dictionary.arena).Start();
 	TLV::Record	 rec;
 
+	if (cursor == nullptr) {
+		return os;
+	}
+
 	TLV::ReadFromMemory(rec, cursor);
 	if (rec.Tag == TLV::TAG_EMPTY) {
 		os << "\t(NONE)" << std::endl;
@@ -168,7 +172,11 @@ operator<<(std::ostream &os, const Dictionary &dictionary)
 		os << "\t" << rec.Val << "->";
 		cursor = TLV::SkipRecord(rec, cursor);
 		TLV::ReadFromMemory(rec, cursor);
-		os << rec.Val << std::endl;
+		if (cursor == nullptr) {
+			os << "*** CORRUPT DICTIONARY ***\n";
+			break;
+		}
+		os << rec.Val << "\n";
 		cursor = TLV::SkipRecord(rec, cursor);
 		TLV::ReadFromMemory(rec, cursor);
 	}
