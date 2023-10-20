@@ -1,6 +1,6 @@
 # scsl : The Shimmering Clarity Standard C++ Library
 
-[![CircleCI](https://dl.circleci.com/status-badge/img/gh/shimmering-clarity/emsha/tree/master.svg?style=svg)](https://dl.circleci.com/status-badge/redirect/gh/shimmering-clarity/emsha/tree/master)
+[![CircleCI](https://dl.circleci.com/status-badge/img/gh/shimmering-clarity/scsl/tree/master.svg?style=svg)](https://dl.circleci.com/status-badge/redirect/gh/shimmering-clarity/scsl/tree/master)
 
 [![image](https://scan.coverity.com/projects/29251/badge.svg)](https://scan.coverity.com/projects/shimmering-clarity-scsl)
 
