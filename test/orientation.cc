@@ -1,4 +1,4 @@
-#include <scsl/Flag.h>
+#include <scsl/Flags.h>
 
 #include <scmp/Math.h>
 #include <scmp/geom/Vector.h>

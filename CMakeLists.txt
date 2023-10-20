@@ -24,6 +24,7 @@ add_compile_options(
         "-g"
         "$<$<CONFIG:RELEASE>:-O2>"
 )
+#add_link_options("-fsanitize=address")
 if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
     add_compile_options("-stdlib=libc++")
 else ()
@@ -40,7 +41,7 @@ set(HEADER_FILES
         include/scsl/Commander.h
         include/scsl/Dictionary.h
         include/sctest/Exceptions.h
-        include/scsl/Flag.h
+        include/scsl/Flags.h
         include/scsl/StringUtil.h
         include/scsl/TLV.h
 
@@ -65,7 +66,7 @@ set(SOURCE_FILES
         src/sl/Commander.cc
         src/sl/Dictionary.cc
         src/test/Exceptions.cc
-        src/sl/Flag.cc
+        src/sl/Flags.cc
         src/sl/StringUtil.cc
         src/sl/TLV.cc
 
@@ -108,7 +109,7 @@ endmacro()
 generate_test(buffer)
 generate_test(tlv)
 generate_test(dictionary)
-generate_test(flag)
+generate_test(flags)
 generate_test(stringutil)
 
 # math and physics

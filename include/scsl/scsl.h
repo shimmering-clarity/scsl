@@ -33,7 +33,7 @@
 #include <scsl/Commander.h>
 #include <scsl/Dictionary.h>
 #include <scsl/Exceptions.h>
-#include <scsl/Flag.h>
+#include <scsl/Flags.h>
 #include <scsl/StringUtil.h>
 #include <scsl/TLV.h>
 #include <scsl/Test.h>

@@ -35,7 +35,7 @@ Assert(bool condition, std::string message)
 {
 #if defined(NDEBUG) || defined(SCSL_NOEXCEPT)
 	if (!condition) {
-		throw AssertionFailed(message);
+		throw AssertionFailed(std::move(message));
 	}
 #else
 	if (!condition) {

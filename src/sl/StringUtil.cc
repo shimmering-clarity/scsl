@@ -38,7 +38,7 @@ namespace S {
 std::vector<std::string>
 SplitKeyValuePair(std::string line, std::string delimiter)
 {
-	auto pair = SplitN(line, delimiter, 2);
+	auto pair = SplitN(std::move(line), delimiter, 2);
 
 	if (pair.size() == 0) {
 		return {"", ""};
@@ -61,7 +61,7 @@ SplitKeyValuePair(std::string line, char delimiter)
 {
 	std::string sDelim;
 
-	sDelim.push_back(delimiter);
+	sDelim.push_back(std::move(delimiter));
 	return SplitKeyValuePair(line, sDelim);
 }
 
@@ -143,7 +143,7 @@ SplitN(std::string s, std::string delim, size_t maxCount)
 
 
 std::vector<std::string>
-WrapText(std::string line, size_t lineLength)
+WrapText(std::string& line, size_t lineLength)
 {
 	std::vector<std::string> wrapped;
 	auto                     parts = SplitN(line, " ", 0);

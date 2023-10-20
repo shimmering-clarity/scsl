@@ -23,9 +23,10 @@
 
 #include <iostream>
 #include <regex>
+#include <utility>
 #include <vector>
 
-#include <scsl/Flag.h>
+#include <scsl/Flags.h>
 #include <scsl/StringUtil.h>
 
 
@@ -33,7 +34,7 @@ namespace scsl {
 
 
 static const std::regex isFlag("^--?[a-zA-Z0-9][a-zA-Z0-9-_]*$",
-			       std::regex_constants::nosubs);
+			       std::regex_constants::nosubs|std::regex_constants::optimize);
 
 std::string
 Flags::ParseStatusToString(ParseStatus status)
@@ -60,7 +61,7 @@ NewFlag(std::string fName, FlagType fType, std::string fDescription)
 
 	flag->Type        = fType;
 	flag->WasSet      = false;
-	flag->Name        = fName;
+	flag->Name        = std::move(fName);
 	flag->Description = fDescription;
 	flag->Value       = FlagValue{};
 
@@ -69,7 +70,7 @@ NewFlag(std::string fName, FlagType fType, std::string fDescription)
 
 
 Flags::Flags(std::string fName)
-    : name(fName), description("")
+    : name(std::move(fName)), description("")
 {
 }
 
@@ -135,7 +136,7 @@ Flags::Register(std::string fName, int defaultValue, std::string fDescription)
 bool
 Flags::Register(std::string fName, unsigned int defaultValue, std::string fDescription)
 {
-	if (!this->Register(fName, FlagType::UnsignedInteger, fDescription)) {
+	if (!this->Register(fName, FlagType::UnsignedInteger, std::move(fDescription))) {
 		return false;
 	}
 
@@ -147,7 +148,7 @@ Flags::Register(std::string fName, unsigned int defaultValue, std::string fDescr
 bool
 Flags::Register(std::string fName, size_t defaultValue, std::string fDescription)
 {
-	if (!this->Register(fName, FlagType::SizeT, fDescription)) {
+	if (!this->Register(fName, FlagType::SizeT, std::move(fDescription))) {
 		return false;
 	}
 

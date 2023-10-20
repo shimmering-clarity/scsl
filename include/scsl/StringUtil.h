@@ -94,7 +94,7 @@ std::vector<std::string>	SplitN(std::string, std::string delimiter, size_t maxCo
 /// WrapText is a very simple wrapping function that breaks the line into
 /// lines of at most lineLength characters. It does this by breaking the
 /// line into individual words (splitting on whitespace).
-std::vector<std::string>	WrapText(std::string line, size_t lineLength);
+std::vector<std::string>	WrapText(std::string& line, size_t lineLength);
 
 /// Write out a vector of lines indented with tabs.
 ///
