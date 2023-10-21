@@ -1,5 +1,5 @@
 ///
-/// \file Flag.h
+/// \file include/scsl/Flags.h
 /// \author K. Isom <kyle@imap.cc>
 /// \date 2023-10-12
 /// \brief Flag declares a command-line flag parser.

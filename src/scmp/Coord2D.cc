@@ -155,9 +155,9 @@ Polar2D::Polar2D() : Vector<double, 2>{0.0, 0.0} {};
 Polar2D::Polar2D(double _r, double _theta) : Vector<double, 2>{_r, _theta}
 {}
 
-Polar2D::Polar2D(const Point2D &pt)
-    : Vector<double, 2>{std::sqrt((pt.X() * pt.X()) + (pt.Y() * pt.Y())),
-      			std::atan2(pt.Y(), pt.X())}
+Polar2D::Polar2D(const Point2D &point)
+    : Vector<double, 2>{std::sqrt((point.X() * point.X()) + (point.Y() * point.Y())),
+      			std::atan2(point.Y(), point.X())}
 {}
 
 
@@ -190,10 +190,10 @@ Polar2D::Theta(const double _theta)
 
 
 void
-Polar2D::ToPoint(Point2D &pt)
+Polar2D::ToPoint(Point2D &point)
 {
-	pt.Y(std::rint(std::sin(this->Theta()) * this->R()));
-	pt.X(std::rint(std::cos(this->Theta()) * this->R()));
+	point.Y(std::rint(std::sin(this->Theta()) * this->R()));
+	point.X(std::rint(std::cos(this->Theta()) * this->R()));
 }
 
 
@@ -206,22 +206,10 @@ Polar2D::ToString()
 
 
 void
-Polar2D::Rotate(Polar2D &rot, double delta)
+Polar2D::Rotate(Polar2D &rotated, double delta)
 {
-	rot.R(this->R());
-	rot.Theta(RotateRadians(this->Theta(), delta));
-}
-
-
-bool
-Polar2D::operator==(const Polar2D &rhs) const
-{
-	static double eps = 0.0;
-	if (eps == 0.0) {
-		scmp::DefaultEpsilon(eps);
-	}
-	return scmp::WithinTolerance(this->R(), rhs.R(), eps) &&
-	       scmp::WithinTolerance(this->Theta(), rhs.Theta(), eps);
+	rotated.R(this->R());
+	rotated.Theta(RotateRadians(this->Theta(), delta));
 }
 
 

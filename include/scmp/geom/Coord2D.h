@@ -39,8 +39,7 @@ class Point2D;
 
 class Polar2D;
 
-/// \brief Point2D is a logical grouping of a set of 2D cartesian
-///        coordinates.
+/// \brief Point2D is a cartesian (X,Y) pairing.
 class Point2D : public Vector<int, 2> {
 public:
 	/// \brief A Point2D defaults to (0,0).
@@ -97,37 +96,63 @@ public:
 	friend std::ostream &operator<<(std::ostream &outs, const Point2D &pt);
 };
 
-// A Polar2D is a 2D polar coordinate, specified in terms of the radius from
-// some origin and the Angle from the positive X Axis of a cartesian coordinate
-// system.
+/// \brief Polar2D is a pairing of a radius r and angle θ from some
+///        reference point; in this library, it is assumed to be the
+///        Cartesian origin (0, 0).
 class Polar2D : public Vector<double, 2> {
 public:
-	// A Polar2D can be initialised as a zeroised polar coordinate, by specifying
-	// the radius and Angle directly, or via conversion from a Point2D.
-	Polar2D();
-	Polar2D(double _r, double _theta);
-	Polar2D(const Point2D &);
+	/// A Polar2D can be initialised as a zeroised polar coordinate, by specifying
+	/// the radius and Angle directly, or via conversion from a Point2D.
 
+	/// \brief Construct a zero polar coordinate.
+	Polar2D();
+
+	/// \brief Construct a polar coordinate from a radius and
+	///        angle.
+	///
+	/// \param _r A radius
+	/// \param _theta An angle
+	Polar2D(double _r, double _theta);
+
+	/// \brief Construct a polar coordinate from a point.
+	///
+	/// This construct uses the origin (0,0) as the reference point.
+	///
+	/// \param point A 2D Cartesian point.
+	Polar2D(const Point2D& point);
+
+	/// \brief Return the radius component of this coordinate.
 	double R() const;
+
+	/// \brief Set the radius component of this coordinate.
 	void R(const double _r);
 
+	/// \brief Return the angle component of this coordinate.
 	double Theta() const;
+
+	/// \brief Set the angle component of this coordinate.
 	void Theta(const double _theta);
 
+	/// \brief Return the coordinate in string form.
 	std::string ToString();
-	void ToPoint(Point2D &);
 
-	// Rotate rotates the polar coordinate by the number of radians, storing the result
-	// in the Polar2D argument.
-	void Rotate(Polar2D &, double);
+	/// \brief Construct a Point2D representing this Polar2D.
+	void ToPoint(Point2D &point);
 
-	// RotateAround rotates this point about by theta radians, storing the rotated point
-	// in result.
-	void RotateAround(const Point2D &other, Point2D &result, double tjeta);
+	/// \brief Rotate polar coordinate by some angle.
+	///
+	/// \param rotated The rotated Polar2D will be stored in this
+	///        coordinate.
+	/// \param delta The angle to rotate by.
+	void Rotate(Polar2D &rotated, double delta);
 
-	bool operator==(const Polar2D &) const;
-	bool operator!=(const Polar2D &rhs) const
-	{ return !(*this == rhs); }
+	/// \brief Rotate this polar coordinate around a 2D point.
+	///
+	/// \param other The reference point.
+	/// \param result The point where the result will stored.
+	/// \param delta The angle to rotate by.
+	void RotateAround(const Point2D &other, Point2D &result, double delta);
+
 	friend std::ostream &operator<<(std::ostream &, const Polar2D &);
 };
 

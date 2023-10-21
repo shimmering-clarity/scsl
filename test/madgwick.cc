@@ -153,7 +153,7 @@ SimpleAngularOrientation2InitialVector3f()
 bool
 SimpleAngularOrientation2InitialQuaternionf()
 {
-	const auto              initialFrame = geom::QuaternionFromEuler({0, 0, 0});
+	const auto              initialFrame = geom::FloatQuaternionFromEuler({0, 0, 0});
 	filter::Madgwickf       mflt(initialFrame);
 	const geom::Vector3F    gyro{0.174533, 0.0, 0.0}; // 10° X rotation.
 	const geom::Quaternionf frame20Deg{0.984808, 0.173648, 0, 0}; // 20° final Orientation.
@@ -207,7 +207,7 @@ SimpleAngularOrientation2InitialVector3d()
 bool
 SimpleAngularOrientation2InitialQuaterniond()
 {
-	const auto              initialFrame = geom::QuaternionFromEuler({0, 0, 0});
+	const auto              initialFrame = geom::DoubleQuaternionFromEuler({0, 0, 0});
 	filter::Madgwickd       mflt(initialFrame);
 	const geom::Vector3D    gyro{0.174533, 0.0, 0.0}; // 10° X rotation.
 	const geom::Quaterniond frame20Deg{0.984808, 0.173648, 0, 0}; // 20° final Orientation.

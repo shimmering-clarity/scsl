@@ -266,8 +266,8 @@ public:
 	/// Return the Euler angles for this MakeQuaternion as a vector of
 	/// <yaw, pitch, roll>.
 	///
-	/// \warn Users of this function should watch out for gimbal
-	///       lock.
+	/// \warning Users of this function should watch out for gimbal
+	///          lock.
 	///
 	/// \return A vector<T, 3> containing <yaw, pitch, roll>
 	Vector<T, 3>
@@ -492,7 +492,7 @@ MakeQuaternion(Vector<T, 3> axis, T angle)
 /// \return A Quaternion representation of the Orientation represented
 ///         by the Euler angles.
 /// \relatesalso Quaternion
-Quaternionf	QuaternionFromEuler(Vector3F euler);
+Quaternionf	FloatQuaternionFromEuler(Vector3F euler);
 
 
 /// \brief COnstruct a Quaternion from Euler angles.
@@ -504,7 +504,7 @@ Quaternionf	QuaternionFromEuler(Vector3F euler);
 /// \return A Quaternion representation of the Orientation represented
 ///         by the Euler angles.
 /// \relatesalso Quaternion
-Quaterniond	QuaternionFromEuler(Vector3D euler);
+Quaterniond	DoubleQuaternionFromEuler(Vector3D euler);
 
 
 /// \brief Linear interpolation for two Quaternions.

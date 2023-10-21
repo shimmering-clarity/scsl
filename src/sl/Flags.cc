@@ -1,5 +1,5 @@
 ///
-/// \file Flag.cc
+/// \file src/sl/Flags.cc
 /// \author K. Isom <kyle@imap.cc>
 /// \date 2023-10-12
 /// \brief Flag defines a command-line flag parser.

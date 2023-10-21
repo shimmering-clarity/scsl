@@ -51,7 +51,7 @@ Quaterniond_Euler()
 {
 	geom::Quaterniond	p = geom::MakeQuaternion(
 	    geom::Vector3D{5.037992718099102, 6.212303632611285, 1.7056797335843106}, M_PI / 4.0);
-	geom::Quaterniond	q = geom::QuaternionFromEuler(p.Euler());
+	geom::Quaterniond	q = geom::DoubleQuaternionFromEuler(p.Euler());
 
 	SCTEST_CHECK_EQ(p, q);
 	
@@ -238,7 +238,7 @@ Quaternionf_Euler()
 {
 	geom::Quaternionf	p = geom::MakeQuaternion(
 	    geom::Vector3F{5.037992718099102, 6.212303632611285, 1.7056797335843106}, M_PI / 4.0);
-	geom::Quaternionf	q = geom::QuaternionFromEuler(p.Euler());
+	geom::Quaternionf	q = geom::FloatQuaternionFromEuler(p.Euler());
 
 	SCTEST_CHECK_EQ(p, q);
 

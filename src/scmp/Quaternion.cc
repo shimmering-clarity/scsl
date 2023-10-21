@@ -24,7 +24,7 @@ MakeQuaternion(Vector3D axis, double angle)
 
 
 Quaternionf
-QuaternionFromEuler(Vector3F euler)
+FloatQuaternionFromEuler(Vector3F euler)
 {
 	float x, y, z, w;
 	euler = euler / 2.0;
@@ -46,7 +46,7 @@ QuaternionFromEuler(Vector3F euler)
 
 
 Quaterniond
-QuaternionFromEuler(Vector3D euler)
+DoubleQuaternionFromEuler(Vector3D euler)
 {
 	double x, y, z, w;
 	euler = euler / 2.0;

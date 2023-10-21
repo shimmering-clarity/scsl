@@ -89,7 +89,7 @@ std::vector<std::string>	SplitKeyValuePair(std::string line, char delimiter);
 /// \param maxCount The maximum number of parts to split. If 0, there is no
 ///	   	    limit to the number of parts.
 /// \return A vector containing all the parts of the string.
-std::vector<std::string>	SplitN(std::string, std::string delimiter, size_t maxCount=0);
+std::vector<std::string>	SplitN(std::string s, std::string delimiter, size_t maxCount=0);
 
 /// WrapText is a very simple wrapping function that breaks the line into
 /// lines of At most lineLength characters. It does this by breaking the

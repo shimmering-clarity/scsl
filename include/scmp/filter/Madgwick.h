@@ -174,7 +174,7 @@ public:
 	/// \note This must be explicitly called before calling any
 	///       method which uses the filter's internal Δt.
 	///
-	/// \param The time delta to use when no time delta is
+	/// \param newDeltaT The time delta to use when no time delta is
 	///	   provided.
 	void
 	DeltaT(T newDeltaT)
