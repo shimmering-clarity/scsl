@@ -7,31 +7,31 @@ namespace geom {
 
 
 float
-Heading2f(Vector2f vec)
+Heading2F(Vector2F vec)
 {
-	return vec.angle(Basis2f[Basis_x]);
+	return vec.Angle(Basis2F[BasisX]);
 }
 
 
 float
-Heading3f(Vector3f vec)
+Heading3f(Vector3F vec)
 {
-	Vector2f	vec2f {vec[0], vec[1]};
-	return Heading2f(vec2f);
+	Vector2F vec2f {vec[0], vec[1]};
+	return Heading2F(vec2f);
 }
 
 
 double
-Heading2d(Vector2d vec)
+Heading2d(Vector2D vec)
 {
-	return vec.angle(Basis2d[Basis_x]);
+	return vec.Angle(Basis2D[BasisX]);
 }
 
 
 double
-Heading3d(Vector3d vec)
+Heading3d(Vector3D vec)
 {
-	Vector2d	vec2d {vec[0], vec[1]};
+	Vector2D vec2d {vec[0], vec[1]};
 	return Heading2d(vec2d);
 }
 

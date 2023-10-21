@@ -20,8 +20,8 @@ using namespace scmp;
 bool
 SimpleAngularOrientationFloat()
 {
-	filter::Madgwickf	mflt;
-	const geom::Vector3f    gyro{0.174533, 0.0, 0.0}; // 10° X rotation.
+	filter::Madgwickf       mflt;
+	const geom::Vector3F    gyro{0.174533, 0.0, 0.0}; // 10° X rotation.
 	const geom::Quaternionf frame20Deg{0.984808, 0.173648, 0, 0}; // 20° final Orientation.
 	const float             delta         = 0.00917; // assume 109 updates per second, as per the paper.
 	const float             twentyDegrees = scmp::DegreesToRadiansF(20.0);
@@ -47,8 +47,8 @@ SimpleAngularOrientationFloat()
 bool
 SimpleAngularOrientationFloatDefaultDT()
 {
-	filter::Madgwickf	mflt;
-	const geom::Vector3f    gyro{0.174533, 0.0, 0.0}; // 10° X rotation.
+	filter::Madgwickf       mflt;
+	const geom::Vector3F    gyro{0.174533, 0.0, 0.0}; // 10° X rotation.
 	const geom::Quaternionf frame20Deg{0.984808, 0.173648, 0, 0}; // 20° final Orientation.
 	const float             delta         = 0.00917; // assume 109 updates per second, as per the paper.
 	const float             twentyDegrees = scmp::DegreesToRadiansF(20.0);
@@ -75,8 +75,8 @@ SimpleAngularOrientationFloatDefaultDT()
 bool
 VerifyUpdateWithZeroDeltaTFails()
 {
-	filter::Madgwickf	mflt;
-	const geom::Vector3f    gyro{0.174533, 0.0, 0.0}; // 10° X rotation.
+	filter::Madgwickf       mflt;
+	const geom::Vector3F    gyro{0.174533, 0.0, 0.0}; // 10° X rotation.
 	const geom::Quaternionf frame20Deg{0.984808, 0.173648, 0, 0}; // 20° final Orientation.
 	const float             twentyDegrees = scmp::DegreesToRadiansF(20.0);
 
@@ -100,8 +100,8 @@ VerifyUpdateWithZeroDeltaTFails()
 bool
 SimpleAngularOrientationDouble()
 {
-	filter::Madgwickd	mflt;
-	const geom::Vector3d    gyro{0.174533, 0.0, 0.0}; // 10° X rotation.
+	filter::Madgwickd       mflt;
+	const geom::Vector3D    gyro{0.174533, 0.0, 0.0}; // 10° X rotation.
 	const geom::Quaterniond frame20Deg{0.984808, 0.173648, 0, 0}; // 20° final Orientation.
 	const double            delta         = 0.00917; // assume 109 updates per second, as per the paper.
 	const double            twentyDegrees = scmp::DegreesToRadiansD(20.0);
@@ -126,9 +126,9 @@ SimpleAngularOrientationDouble()
 bool
 SimpleAngularOrientation2InitialVector3f()
 {
-	const geom::Vector3f    initialFrame{0, 0, 0};
+	const geom::Vector3F    initialFrame{0, 0, 0};
 	filter::Madgwickf       mflt(initialFrame);
-	const geom::Vector3f    gyro{0.174533, 0.0, 0.0}; // 10° X rotation.
+	const geom::Vector3F    gyro{0.174533, 0.0, 0.0}; // 10° X rotation.
 	const geom::Quaternionf frame20Deg{0.984808, 0.173648, 0, 0}; // 20° final Orientation.
 	const float             delta         = 0.00917; // assume 109 updates per second, as per the paper.
 	const float             twentyDegrees = scmp::DegreesToRadiansF(20.0);
@@ -153,9 +153,9 @@ SimpleAngularOrientation2InitialVector3f()
 bool
 SimpleAngularOrientation2InitialQuaternionf()
 {
-	const auto              initialFrame = geom::quaternionf_from_euler({0, 0, 0});
+	const auto              initialFrame = geom::QuaternionFromEuler({0, 0, 0});
 	filter::Madgwickf       mflt(initialFrame);
-	const geom::Vector3f    gyro{0.174533, 0.0, 0.0}; // 10° X rotation.
+	const geom::Vector3F    gyro{0.174533, 0.0, 0.0}; // 10° X rotation.
 	const geom::Quaternionf frame20Deg{0.984808, 0.173648, 0, 0}; // 20° final Orientation.
 	const float             delta         = 0.00917; // assume 109 updates per second, as per the paper.
 	const float             twentyDegrees = scmp::DegreesToRadiansF(20.0);
@@ -180,9 +180,9 @@ SimpleAngularOrientation2InitialQuaternionf()
 bool
 SimpleAngularOrientation2InitialVector3d()
 {
-	const geom::Vector3d    initialFrame{0, 0, 0};
+	const geom::Vector3D    initialFrame{0, 0, 0};
 	filter::Madgwickd       mflt(initialFrame);
-	const geom::Vector3d    gyro{0.174533, 0.0, 0.0}; // 10° X rotation.
+	const geom::Vector3D    gyro{0.174533, 0.0, 0.0}; // 10° X rotation.
 	const geom::Quaterniond frame20Deg{0.984808, 0.173648, 0, 0}; // 20° final Orientation.
 	const double            delta         = 0.00917; // assume 109 updates per second, as per the paper.
 	const double            twentyDegrees = scmp::DegreesToRadiansD(20.0);
@@ -207,9 +207,9 @@ SimpleAngularOrientation2InitialVector3d()
 bool
 SimpleAngularOrientation2InitialQuaterniond()
 {
-	const auto              initialFrame = geom::quaterniond_from_euler({0, 0, 0});
-	filter::Madgwickd	mflt(initialFrame);
-	const geom::Vector3d    gyro{0.174533, 0.0, 0.0}; // 10° X rotation.
+	const auto              initialFrame = geom::QuaternionFromEuler({0, 0, 0});
+	filter::Madgwickd       mflt(initialFrame);
+	const geom::Vector3D    gyro{0.174533, 0.0, 0.0}; // 10° X rotation.
 	const geom::Quaterniond frame20Deg{0.984808, 0.173648, 0, 0}; // 20° final Orientation.
 	const double            delta         = 0.00917; // assume 109 updates per second, as per the paper.
 	const double            twentyDegrees = scmp::DegreesToRadiansD(20.0);
@@ -266,9 +266,9 @@ main(int argc, char **argv)
 		      SimpleAngularOrientation2InitialVector3f);
 	suite.AddTest("SimpleAngularOrientationDouble (inital vector3d)",
 		      SimpleAngularOrientation2InitialVector3d);
-	suite.AddTest("SimpleAngularOrientationFloat (inital quaternionf)",
+	suite.AddTest("SimpleAngularOrientationFloat (inital MakeQuaternion)",
 		      SimpleAngularOrientation2InitialQuaternionf);
-	suite.AddTest("SimpleAngularOrientationDouble (inital quaterniond)",
+	suite.AddTest("SimpleAngularOrientationDouble (inital MakeQuaternion)",
 		      SimpleAngularOrientation2InitialQuaterniond);
 
 	delete flags;

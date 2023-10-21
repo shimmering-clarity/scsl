@@ -45,9 +45,9 @@ UnitConversions_RadiansToDegreesD()
 bool
 Orientation2f_Heading()
 {
-	geom::Vector2f a{2.0, 2.0};
+	geom::Vector2F a{2.0, 2.0};
 
-	SCTEST_CHECK_FEQ(geom::Heading2f(a), scmp::DegreesToRadiansF(45));
+	SCTEST_CHECK_FEQ(geom::Heading2F(a), scmp::DegreesToRadiansF(45));
 
 	return true;
 }
@@ -56,7 +56,7 @@ Orientation2f_Heading()
 bool
 Orientation3f_Heading()
 {
-	geom::Vector3f a{2.0, 2.0, 2.0};
+	geom::Vector3F a{2.0, 2.0, 2.0};
 
 	SCTEST_CHECK_FEQ(geom::Heading3f(a), scmp::DegreesToRadiansF(45));
 
@@ -67,7 +67,7 @@ Orientation3f_Heading()
 bool
 Orientation2d_Heading()
 {
-	geom::Vector2d a{2.0, 2.0};
+	geom::Vector2D a{2.0, 2.0};
 
 	return scmp::WithinTolerance(geom::Heading2d(a), scmp::DegreesToRadiansD(45), 0.000001);
 }
@@ -76,7 +76,7 @@ Orientation2d_Heading()
 bool
 Orientation3d_Heading()
 {
-	geom::Vector3d a{2.0, 2.0, 2.0};
+	geom::Vector3D a{2.0, 2.0, 2.0};
 
 	return scmp::WithinTolerance(geom::Heading3d(a), scmp::DegreesToRadiansD(45), 0.000001);
 }

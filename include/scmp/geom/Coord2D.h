@@ -46,7 +46,7 @@ public:
 	/// \brief A Point2D defaults to (0,0).
 	Point2D();
 
-	/// \brief Initialize a Point2D at (_x, _y).
+	/// \brief Initialize a Point2D At (_x, _y).
 	Point2D(int _x, int _y);
 
 	/// \brief Initialize a Point2D from a Polar2D coordinate.
@@ -74,13 +74,13 @@ public:
 	/// \brief Rotate rotates the point by theta radians.
 	///
 	/// \param rotated Stores the rotated point.
-	/// \param theta The angle (in radians) to rotate the point.
+	/// \param theta The Angle (in radians) to Rotate the point.
 	void Rotate(Point2D& rotated, double theta);
 
 	/// \brief Rotate this point around a series of vertices.
 	///
-	/// \param vertices A series of vertices to rotate this point around.
-	/// \param theta The angle to rotate by.
+	/// \param vertices A series of vertices to Rotate this point around.
+	/// \param theta The Angle to Rotate by.
 	/// \return A series of rotated points.
 	std::vector<Point2D> Rotate(std::vector<Polar2D> vertices, double theta);
 
@@ -98,12 +98,12 @@ public:
 };
 
 // A Polar2D is a 2D polar coordinate, specified in terms of the radius from
-// some origin and the angle from the positive X axis of a cartesian coordinate
+// some origin and the Angle from the positive X Axis of a cartesian coordinate
 // system.
 class Polar2D : public Vector<double, 2> {
 public:
 	// A Polar2D can be initialised as a zeroised polar coordinate, by specifying
-	// the radius and angle directly, or via conversion from a Point2D.
+	// the radius and Angle directly, or via conversion from a Point2D.
 	Polar2D();
 	Polar2D(double _r, double _theta);
 	Polar2D(const Point2D &);

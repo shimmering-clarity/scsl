@@ -8,23 +8,23 @@ namespace geom {
 
 
 Quaternionf
-quaternionf(Vector3f axis, float angle)
+MakeQuaternion(Vector3F axis, float angle)
 {
-	return Quaternionf(axis.unitVector() * std::sin(angle / 2.0),
+	return Quaternionf(axis.UnitVector() * std::sin(angle / 2.0),
 			   std::cos(angle / 2.0));
 }
 
 
 Quaterniond
-quaterniond(Vector3d axis, double angle)
+MakeQuaternion(Vector3D axis, double angle)
 {
-	return Quaterniond(axis.unitVector() * std::sin(angle / 2.0),
+	return Quaterniond(axis.UnitVector() * std::sin(angle / 2.0),
 			   std::cos(angle / 2.0));
 }
 
 
 Quaternionf
-quaternionf_from_euler(Vector3f euler)
+QuaternionFromEuler(Vector3F euler)
 {
 	float x, y, z, w;
 	euler = euler / 2.0;
@@ -41,12 +41,12 @@ quaternionf_from_euler(Vector3f euler)
 	z = (cos_yaw * cos_pitch * sin_roll) + (sin_yaw * sin_pitch * cos_roll);
 	w = (cos_yaw * cos_pitch * cos_roll) - (sin_yaw * sin_pitch * sin_roll);
 
-	return Quaternionf(Vector4f{w, x, y, z});
+	return Quaternionf(Vector4F{w, x, y, z});
 }
 
 
 Quaterniond
-quaterniond_from_euler(Vector3d euler)
+QuaternionFromEuler(Vector3D euler)
 {
 	double x, y, z, w;
 	euler = euler / 2.0;
@@ -63,21 +63,21 @@ quaterniond_from_euler(Vector3d euler)
 	z = (cos_yaw * cos_pitch * sin_roll) + (sin_yaw * sin_pitch * cos_roll);
 	w = (cos_yaw * cos_pitch * cos_roll) - (sin_yaw * sin_pitch * sin_roll);
 
-	return Quaterniond(Vector4d{w, x, y, z});
+	return Quaterniond(Vector4D{w, x, y, z});
 }
 
 
 void
-Quaternion_SelfTest()
+QuaternionSelfTest()
 {
 #ifndef NDEBUG
-	Vector3f		v {1.0, 0.0, 0.0};
-	Vector3f		yAxis {0.0, 1.0, 0.0};
+	Vector3F		v {1.0, 0.0, 0.0};
+	Vector3F		yAxis {0.0, 1.0, 0.0};
 	float			angle = M_PI / 2;
 
 	Quaternionf		p = quaternionf(yAxis, angle);
 	Quaternionf		q;
-	Vector3f		vr {0.0, 0.0, 1.0};
+	Vector3F		vr {0.0, 0.0, 1.0};
 
 	assert(p.isUnitQuaternion());
 	std::cerr << p.rotate(v) << std::endl;

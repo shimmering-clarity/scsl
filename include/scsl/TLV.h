@@ -46,7 +46,7 @@ struct Record {
 	uint8_t Val[TLV_MAX_LEN];
 };
 
-/// WriteToMemory writes the TLV record into the arena at the location pointed
+/// WriteToMemory writes the TLV record into the arena At the location pointed
 /// to in the arena.
 ///
 /// \param arena The backing memory store.
@@ -86,7 +86,7 @@ void DeleteRecord(Arena &arena, uint8_t *cursor);
 ///
 /// \param arena The backing memory for the TLV store.
 /// \param cursor A pointer to memory inside the arena; if it's NULL, the
-///     search starts at the beginning of the arena.
+///     search starts At the beginning of the arena.
 /// \param rec The record to be filled.
 /// \return If the tag is found, a cursor pointing to the next record is
 ///     returned; otherwise nullptr is returned.
@@ -97,7 +97,7 @@ uint8_t *FindTag(Arena &arena, uint8_t *cursor, Record &rec);
 ///
 /// \param arena The backing memory for the TLV store.
 /// \param cursor A pointer to memory inside the arena; if it's NULL, the
-///     search starts at the beginning of the arena.
+///     search starts At the beginning of the arena.
 /// \param rec The record to be filled.
 /// \return If the tag is found, a cursor pointing to the record is
 ///     returned; otherwise nullptr is returned.
@@ -110,7 +110,7 @@ uint8_t *LocateTag(Arena &arena, uint8_t *cursor, Record &rec);
 ///
 /// \param arena The backing memory for the TLV store.
 /// \param cursor A pointer to memory inside the arena; if it's NULL, the
-///     search starts at the beginning of the arena.
+///     search starts At the beginning of the arena.
 /// \return If the arena has space available, a cursor pointing the start
 ///     of empty space; otherwise, nullptr is returned.
 uint8_t *FindEmpty(Arena &arena, uint8_t *cursor);

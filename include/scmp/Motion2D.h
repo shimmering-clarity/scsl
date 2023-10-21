@@ -12,7 +12,7 @@ namespace scmp {
 namespace basic {
 
 
-scmp::geom::Vector2d	Acceleration(double speed, double heading);
+scmp::geom::Vector2D	Acceleration(double speed, double heading);
 
 
 } // namespace basic

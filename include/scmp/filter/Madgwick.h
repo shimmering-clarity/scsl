@@ -40,8 +40,8 @@ namespace filter {
 /// @brief Madgwick implements an efficient Orientation filter for IMUs.
 ///
 /// Madgwick is a  novel  Orientation  filter  applicable  to  IMUs
-/// consisting of tri-axis  gyroscopes  and  accelerometers,  and  MARG
-/// sensor  arrays  that  also  include tri-axis magnetometers.  The MARG
+/// consisting of tri-Axis  gyroscopes  and  accelerometers,  and  MARG
+/// sensor  arrays  that  also  include tri-Axis magnetometers.  The MARG
 /// implementation incorporates magnetic distortionand  gyroscope  bias
 /// drift  compensation.
 ///
@@ -51,24 +51,24 @@ namespace filter {
 template <typename T>
 class Madgwick {
 public:
-	/// \brief The Madgwick filter is initialised with an identity quaternion.
+	/// \brief The Madgwick filter is initialised with an identity MakeQuaternion.
 	Madgwick() : deltaT(0.0), previousSensorFrame(), sensorFrame()
 	{};
 
 	/// \brief The Madgwick filter is initialised with a sensor frame.
 	///
 	/// \param sf A sensor frame; if zero, the sensor frame will be
-	///           initialised as an identity quaternion.
+	///           initialised as an identity MakeQuaternion.
 	Madgwick(scmp::geom::Vector<T, 3> sf) : deltaT(0.0), previousSensorFrame()
 	{
-		if (!sf.isZero()) {
-			sensorFrame = scmp::geom::quaternion<T>(sf, 0.0);
+		if (!sf.IsZero()) {
+			sensorFrame = scmp::geom::MakeQuaternion<T>(sf, 0.0);
 		}
 	}
 
-	/// \brief Initialise the filter with a sensor frame quaternion.
+	/// \brief Initialise the filter with a sensor frame MakeQuaternion.
 	///
-	/// \param sf A quaternion representing the current Orientation.
+	/// \param sf A MakeQuaternion representing the current Orientation.
 	Madgwick(scmp::geom::Quaternion<T> sf) :
 	    deltaT(0.0), previousSensorFrame(), sensorFrame(sf)
 	{};
@@ -91,7 +91,7 @@ public:
 	///
 	/// \param gyro A three-dimensional vector containing gyro readings
 	///             as w_x, w_y, w_z.
-	/// \return A quaternion representing the rate of angular change.
+	/// \return A MakeQuaternion representing the rate of angular change.
 	scmp::geom::Quaternion<T>
 	AngularRate(const scmp::geom::Vector<T, 3> &gyro) const
 	{
@@ -166,7 +166,7 @@ public:
 	scmp::geom::Vector<T, 3>
 	Euler()
 	{
-		return this->sensorFrame.euler();
+		return this->sensorFrame.Euler();
 	}
 
 	/// \brief Set the default Δt.

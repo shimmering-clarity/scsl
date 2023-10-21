@@ -102,37 +102,37 @@ public:
 	/// \return True if the Buffer was resized.
 	bool Append(const uint8_t c);
 
-	/// Insert copies a C-style string into the buffer at index.
+	/// Insert copies a C-style string into the buffer At index.
 	///
-	/// \param index The index to insert the string at.
+	/// \param index The index to insert the string At.
 	/// \param s The string to insert.
 	/// \return True if the Buffer was resized.
 	bool Insert(const size_t index, const char *s);
 
-	/// Insert copies a string into the buffer at index.
+	/// Insert copies a string into the buffer At index.
 	///
-	/// \param index The index the string should be inserted at.
+	/// \param index The index the string should be inserted At.
 	/// \param s The string to insert.
 	/// \return True if the Buffer was resized.
 	bool Insert(const size_t index, const std::string s);
 
-	/// Insert copies a uint8_t buffer into the buffer at index.
+	/// Insert copies a uint8_t buffer into the buffer At index.
 	///
-	/// \param index The index to insert the buffer at.
+	/// \param index The index to insert the buffer At.
 	/// \param data The buffer to insert.
 	/// \param datalen The size of the data buffer.
 	/// \return True if the Buffer was resized.
 	bool
 	Insert(const size_t index, const uint8_t *data, const size_t datalen);
 
-	/// Insert copies a character into the buffer at index.
+	/// Insert copies a character into the buffer At index.
 	///
-	/// \param index The index to insert the character at.
+	/// \param index The index to insert the character At.
 	/// \param c The character to insert.
 	/// \return True if the Buffer was resized.
 	bool Insert(const size_t index, const uint8_t c);
 
-	/// Remove removes `count` bytes from the buffer at `index`.
+	/// Remove removes `count` bytes from the buffer At `index`.
 	///
 	/// \param index The starting index to remove bytes from.
 	/// \param count The number of bytes to remove.

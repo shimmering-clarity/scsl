@@ -2,7 +2,7 @@
 /// \file include/scmp/geom.h
 /// \author K. Isom <kyle@imap.cc>
 /// \date 2023-10-20
-/// \brief 2D point and polar coordinate systems.
+/// \brief Vector-based geometry code.
 ///
 /// Copyright 2023 K. Isom <kyle@imap.cc>
 ///

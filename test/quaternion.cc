@@ -15,7 +15,7 @@ using namespace sctest;
 static bool
 Quaternion_SelfTest()
 {
-	geom::Quaternion_SelfTest();
+	geom::QuaternionSelfTest();
 	return true;
 }
 
@@ -23,9 +23,9 @@ Quaternion_SelfTest()
 static bool
 Quaterniond_Addition()
 {
-	geom::Quaterniond	p(geom::Vector4d {3.0, 1.0, -2.0, 1.0});
-	geom::Quaterniond	q(geom::Vector4d {2.0, -1.0, 2.0, 3.0});
-	geom::Quaterniond	expected(geom::Vector4d{5.0, 0.0, 0.0, 4.0});
+	geom::Quaterniond	p(geom::Vector4D {3.0, 1.0, -2.0, 1.0});
+	geom::Quaterniond	q(geom::Vector4D {2.0, -1.0, 2.0, 3.0});
+	geom::Quaterniond	expected(geom::Vector4D{5.0, 0.0, 0.0, 4.0});
 
 	SCTEST_CHECK_EQ(p + q, expected);
 	SCTEST_CHECK_EQ(expected - q, p);
@@ -41,7 +41,7 @@ Quaterniond_Conjugate()
 	geom::Quaterniond	p {2.0, 3.0, 4.0, 5.0};
 	geom::Quaterniond	q {2.0, -3.0, -4.0, -5.0};
 
-	SCTEST_CHECK_EQ(p.conjugate(), q);
+	SCTEST_CHECK_EQ(p.Conjugate(), q);
 
 	return true;
 }
@@ -49,8 +49,9 @@ Quaterniond_Conjugate()
 static bool
 Quaterniond_Euler()
 {
-	geom::Quaterniond	p = geom::quaterniond(geom::Vector3d{5.037992718099102, 6.212303632611285, 1.7056797335843106}, M_PI/4.0);
-	geom::Quaterniond	q = geom::quaterniond_from_euler(p.euler());
+	geom::Quaterniond	p = geom::MakeQuaternion(
+	    geom::Vector3D{5.037992718099102, 6.212303632611285, 1.7056797335843106}, M_PI / 4.0);
+	geom::Quaterniond	q = geom::QuaternionFromEuler(p.Euler());
 
 	SCTEST_CHECK_EQ(p, q);
 	
@@ -64,7 +65,7 @@ Quaterniond_Identity()
 	geom::Quaterniond	p {3.0, 1.0, -2.0, 1.0};
 	geom::Quaterniond	q;
 
-	SCTEST_CHECK(q.isIdentity());
+	SCTEST_CHECK(q.IsIdentity());
 	SCTEST_CHECK_EQ(p * q, p);
 	
 	return true;
@@ -77,7 +78,7 @@ Quaterniond_Inverse()
 	geom::Quaterniond	p {2.0, 3.0, 4.0, 5.0};
 	geom::Quaterniond	q {0.03704, -0.05556, -0.07407, -0.09259};
 
-	SCTEST_CHECK_EQ(p.inverse(), q);
+	SCTEST_CHECK_EQ(p.Inverse(), q);
 
 	return true;
 }
@@ -89,7 +90,7 @@ Quaterniond_Norm()
 	geom::Quaterniond	p {5.563199889674063, 0.9899139811480784, 9.387110042325054, 6.161341707794767};
 	double 			norm = 12.57016663729933;
 
-	SCTEST_CHECK_DEQ(p.norm(), norm);
+	SCTEST_CHECK_DEQ(p.Norm(), norm);
 
 	return true;
 }
@@ -111,27 +112,27 @@ Quaterniond_Product()
 static bool
 Quaterniond_Rotate()
 {
-	// This test aims to rotate a vector v using a quaternion.
+	// This test aims to Rotate a vector v using a MakeQuaternion.
 	// c.f. https://math.stackexchange.com/questions/40164/how-do-you-rotate-a-vector-by-a-unit-quaternion
 	// If we assume a standard IMU frame of reference following the
 	// right hand rule:
-	// + The x axis points toward magnetic north
-	// + The y axis points toward magnentic west
-	// + The z axis points toward the sky
+	// + The x Axis points toward magnetic north
+	// + The y Axis points toward magnentic west
+	// + The z Axis points toward the sky
 	// Given a vector pointing due north, rotating by 90º about
-	// the y-axis should leave us pointing toward the sky.
+	// the y-Axis should leave us pointing toward the sky.
 
-	geom::Vector3d		v {1.0, 0.0, 0.0};     // a vector pointed north
-	geom::Vector3d		yAxis {0.0, 1.0, 0.0}; // a vector representing the y axis.
-	double			angle = M_PI / 2;      // 90º rotation
+	geom::Vector3D v {1.0, 0.0, 0.0};     // a vector pointed north
+	geom::Vector3D yAxis {0.0, 1.0, 0.0}; // a vector representing the y Axis.
+	double         angle = M_PI / 2;      // 90º rotation
 
-	// A quaternion representing a 90º rotation about the y axis.
-	geom::Quaterniond	p = geom::quaterniond(yAxis, angle);
-	geom::Vector3d		vr {0.0, 0.0, 1.0};    // expected rotated vector.
+	// A MakeQuaternion representing a 90º rotation about the y Axis.
+	geom::Quaterniond p = geom::MakeQuaternion(yAxis, angle);
+	geom::Vector3D    vr {0.0, 0.0, 1.0};    // expected rotated vector.
 
-	// A rotation quaternion should be a unit quaternion.
-	SCTEST_CHECK(p.isUnitQuaternion());
-	SCTEST_CHECK_EQ(p.rotate(v), vr);
+	// A rotation quaternion should be a unit MakeQuaternion.
+	SCTEST_CHECK(p.IsUnitQuaternion());
+	SCTEST_CHECK_EQ(p.Rotate(v), vr);
 
 	return true;
 }
@@ -141,13 +142,13 @@ static bool
 Quaterniond_ShortestSLERP()
 {
 	// Our starting point is an Orientation that is yawed 45° - our
-	// Orientation is pointed π/4 radians in the X axis.
+	// Orientation is pointed π/4 radians in the X Axis.
 	geom::Quaterniond	p {0.92388, 0.382683, 0, 0};
 	// Our ending point is an Orientation that is yawed -45° - or
-	// pointed -π/4 radians in the X axis.
+	// pointed -π/4 radians in the X Axis.
 	geom::Quaterniond	q {0.92388, -0.382683, 0, 0};
-	// The halfway point should be oriented midway about the X axis. It turns
-	// out this is an identity quaternion.
+	// The halfway point should be oriented midway about the X Axis. It turns
+	// out this is an identity MakeQuaternion.
 	geom::Quaterniond	r;
 
 	SCTEST_CHECK_EQ(geom::ShortestSLERP(p, q, 0.0), p);
@@ -185,7 +186,7 @@ Quaterniond_Unit()
 {
 	geom::Quaterniond	q {0.0, 0.5773502691896258, 0.5773502691896258, 0.5773502691896258};
 
-	SCTEST_CHECK(q.isUnitQuaternion());
+	SCTEST_CHECK(q.IsUnitQuaternion());
 
 	return true;
 }
@@ -194,9 +195,9 @@ Quaterniond_Unit()
 static bool
 Quaterniond_UtilityCreator()
 {
-	geom::Vector3d		v {1.0, 1.0, 1.0};
-	double			w = M_PI;
-	geom::Quaterniond	p = geom::quaterniond(v, w);
+	geom::Vector3D v {1.0, 1.0, 1.0};
+	double         w = M_PI;
+	geom::Quaterniond	p = geom::MakeQuaternion(v, w);
 	geom::Quaterniond	q {0.0, 0.5773502691896258, 0.5773502691896258, 0.5773502691896258};
 
 	SCTEST_CHECK_EQ(p, q);
@@ -226,7 +227,7 @@ Quaternionf_Conjugate()
 	geom::Quaternionf	p {2.0, 3.0, 4.0, 5.0};
 	geom::Quaternionf	q {2.0, -3.0, -4.0, -5.0};
 
-	SCTEST_CHECK_EQ(p.conjugate(), q);
+	SCTEST_CHECK_EQ(p.Conjugate(), q);
 
 	return true;
 }
@@ -235,8 +236,9 @@ Quaternionf_Conjugate()
 static bool
 Quaternionf_Euler()
 {
-	geom::Quaternionf	p = geom::quaternionf(geom::Vector3f{5.037992718099102, 6.212303632611285, 1.7056797335843106}, M_PI/4.0);
-	geom::Quaternionf	q = geom::quaternionf_from_euler(p.euler());
+	geom::Quaternionf	p = geom::MakeQuaternion(
+	    geom::Vector3F{5.037992718099102, 6.212303632611285, 1.7056797335843106}, M_PI / 4.0);
+	geom::Quaternionf	q = geom::QuaternionFromEuler(p.Euler());
 
 	SCTEST_CHECK_EQ(p, q);
 
@@ -262,7 +264,7 @@ Quaternionf_Inverse()
 	geom::Quaternionf	p {2.0, 3.0, 4.0, 5.0};
 	geom::Quaternionf	q {0.03704, -0.05556, -0.07407, -0.09259};
 
-	SCTEST_CHECK_EQ(p.inverse(), q);
+	SCTEST_CHECK_EQ(p.Inverse(), q);
 	
 	return true;
 }
@@ -274,7 +276,7 @@ Quaternionf_Norm()
 	geom::Quaternionf	p {0.9899139811480784, 9.387110042325054, 6.161341707794767, 5.563199889674063};
 	float 			norm = 12.57016663729933;
 
-	SCTEST_CHECK_FEQ(p.norm(), norm);
+	SCTEST_CHECK_FEQ(p.Norm(), norm);
 	
 	return true;
 }
@@ -296,15 +298,15 @@ Quaternionf_Product()
 static bool
 Quaternionf_Rotate()
 {
-	geom::Vector3f		v {1.0, 0.0, 0.0};
-	geom::Vector3f		yAxis {0.0, 1.0, 0.0};
-	float			angle = M_PI / 2;
+	geom::Vector3F v {1.0, 0.0, 0.0};
+	geom::Vector3F yAxis {0.0, 1.0, 0.0};
+	float          angle = M_PI / 2;
 
-	geom::Quaternionf	p = geom::quaternionf(yAxis, angle); 
-	geom::Vector3f		vr {0.0, 0.0, 1.0};
+	geom::Quaternionf p = geom::MakeQuaternion(yAxis, angle);
+	geom::Vector3F    vr {0.0, 0.0, 1.0};
 
-	SCTEST_CHECK(p.isUnitQuaternion());
-	SCTEST_CHECK_EQ(p.rotate(v), vr);
+	SCTEST_CHECK(p.IsUnitQuaternion());
+	SCTEST_CHECK_EQ(p.Rotate(v), vr);
 
 	return true;
 }
@@ -314,13 +316,13 @@ static bool
 Quaternionf_ShortestSLERP()
 {
 	// Our starting point is an Orientation that is yawed 45° - our
-	// Orientation is pointed π/4 radians in the X axis.
+	// Orientation is pointed π/4 radians in the X Axis.
 	geom::Quaternionf	p {0.92388, 0.382683, 0, 0};
 	// Our ending point is an Orientation that is yawed -45° - or
-	// pointed -π/4 radians in the X axis.
+	// pointed -π/4 radians in the X Axis.
 	geom::Quaternionf	q {0.92388, -0.382683, 0, 0};
-	// The halfway point should be oriented midway about the X axis. It turns
-	// out this is an identity quaternion.
+	// The halfway point should be oriented midway about the X Axis. It turns
+	// out this is an identity MakeQuaternion.
 	geom::Quaternionf	r;
 
 	SCTEST_CHECK_EQ(geom::ShortestSLERP(p, q, (float)0.0), p);
@@ -358,7 +360,7 @@ Quaternionf_Unit()
 {
 	geom::Quaternionf	q {0.0, 0.5773502691896258, 0.5773502691896258, 0.5773502691896258};
 
-	SCTEST_CHECK(q.isUnitQuaternion());
+	SCTEST_CHECK(q.IsUnitQuaternion());
 
 	return true;
 }
@@ -367,9 +369,9 @@ Quaternionf_Unit()
 static bool
 Quaternionf_UtilityCreator()
 {
-	geom::Vector3f		v {1.0, 1.0, 1.0};
-	float			w = M_PI;
-	geom::Quaternionf	p = geom::quaternionf(v, w);
+	geom::Vector3F v {1.0, 1.0, 1.0};
+	float          w = M_PI;
+	geom::Quaternionf	p = geom::MakeQuaternion(v, w);
 	geom::Quaternionf	q {0.0, 0.5773502691896258, 0.5773502691896258, 0.5773502691896258};
 
 	SCTEST_CHECK_EQ(p, q);
@@ -381,15 +383,15 @@ Quaternionf_UtilityCreator()
 static bool
 QuaternionMiscellaneous_SanityChecks()
 {
-	geom::Vector4d		q {4.0, 1.0, 2.0, 3.0};
-	geom::Vector3d		v {1.0, 2.0, 3.0};
-	double 			w = 4.0;
+	geom::Vector4D q {4.0, 1.0, 2.0, 3.0};
+	geom::Vector3D v {1.0, 2.0, 3.0};
+	double         w = 4.0;
 	geom::Quaterniond	p(q);
-	geom::Quaterniond	u = p.unitQuaternion();
+	geom::Quaterniond	u = p.UnitQuaternion();
 
-	SCTEST_CHECK_EQ(p.axis(), v);
-	SCTEST_CHECK_DEQ(p.angle(), w);
-	SCTEST_CHECK(u.isUnitQuaternion());
+	SCTEST_CHECK_EQ(p.Axis(), v);
+	SCTEST_CHECK_DEQ(p.Angle(), w);
+	SCTEST_CHECK(u.IsUnitQuaternion());
 
 	return true;
 }
@@ -417,10 +419,10 @@ static bool
 QuaternionMiscellanous_InitializerConstructor()
 {
 	geom::Quaternionf	p {1.0, 1.0, 1.0, 1.0};
-	geom::Quaternionf	q(geom::Vector4f {1.0, 1.0, 1.0, 1.0});
+	geom::Quaternionf	q(geom::Vector4F {1.0, 1.0, 1.0, 1.0});
 
 	SCTEST_CHECK_EQ(p, q);
-	SCTEST_CHECK_FEQ(p.norm(), (float)2.0);
+	SCTEST_CHECK_FEQ(p.Norm(), (float)2.0);
 
 	return true;
 }
@@ -449,7 +451,7 @@ main(int argc, char *argv[])
 		suite.Silence();
 	}
 
-	suite.AddTest("Quaternion_SelfTest", Quaternion_SelfTest);
+	suite.AddTest("QuaternionSelfTest", Quaternion_SelfTest);
 	suite.AddTest("QuaternionMiscellanous_InitializerConstructor",
 		      QuaternionMiscellanous_InitializerConstructor);
 	suite.AddTest("QuaternionMiscellaneous_SanityChecks",

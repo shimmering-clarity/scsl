@@ -1,33 +1,32 @@
+///
+/// \file include/scmp/geom/Coord2D.h
+/// \author K. Isom <kyle@imap.cc>
+/// \date 2017-06-05
+/// \brief 2D point and polar coordinate systems.
+///
+/// Copyright 2023 K. Isom <kyle@imap.cc>
+///
+/// Permission to use, copy, modify, and/or distribute this software for
+/// any purpose with or without fee is hereby granted, provided that
+/// the above copyright notice and this permission notice appear in all /// copies.
+///
+/// THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL
+/// WARRANTIES WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED
+/// WARRANTIES OF MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE
+/// AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL
+/// DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA
+/// OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER
+/// TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
+/// PERFORMANCE OF THIS SOFTWARE.
+///
 
-//
-// Project: scccl
-// File: src/math/geom2d.cpp
-// Author: Kyle Isom
-// Date: 2017-06-05
-// Namespace: math::geom
-//
-// geom2d.cpp contains the implementation of 2D geometry in the math::geom
-// namespace.
-//
-// Copyright 2017 Kyle Isom <kyle@imap.cc>
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//     http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
 #include <cmath>
 #include <iostream>
 #include <vector>
 
 #include <scmp/Math.h>
 #include <scmp/geom/Coord2D.h>
+#include <scmp/geom/Orientation.h>
 #include <scmp/geom/Vector.h>
 
 
@@ -61,21 +60,21 @@ Point2D::Point2D(const Polar2D &pol)
 int
 Point2D::X() const
 {
-	return this->at(0);
+	return this->At(0);
 }
 
 
 void
 Point2D::X(int _x)
 {
-	this->Set(0, _x);
+	this->Set(BasisX, _x);
 }
 
 
 int
 Point2D::Y() const
 {
-	return this->at(1);
+	return this->At(1);
 }
 
 
@@ -165,7 +164,7 @@ Polar2D::Polar2D(const Point2D &pt)
 double
 Polar2D::R() const
 {
-	return this->at(0);
+	return this->At(0);
 }
 
 
@@ -179,7 +178,7 @@ Polar2D::R(const double _r)
 double
 Polar2D::Theta() const
 {
-	return this->at(1);
+	return this->At(1);
 }
 
 

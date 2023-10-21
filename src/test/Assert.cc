@@ -58,7 +58,7 @@ Assert(bool condition)
 #else
 	std::stringstream msg;
 
-	msg << "assertion failed at " << __FILE__ << ":" << __LINE__;
+	msg << "assertion failed At " << __FILE__ << ":" << __LINE__;
 	throw AssertionFailed(msg.str());
 #endif
 #else

@@ -70,7 +70,7 @@ enum class ArenaType
 /// The arena should be initialized with one of the Set methods (SetStatic,
 /// SetAlloc) or one of the file-based options (Create, Open, MemoryMap). At
 /// this point, no further memory management should be done until the end of the
-/// arena's life, at which point Destroy should be called.
+/// arena's life, At which point Destroy should be called.
 class Arena {
 public:
 	/// An Arena is initialized with no backing memory.

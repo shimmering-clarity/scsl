@@ -39,27 +39,27 @@ namespace U {
 namespace S {
 
 
-/// Remove any whitespace at the beginning of the string. The string
+/// Remove any whitespace At the beginning of the string. The string
 /// is modified in-place.
 void		TrimLeadingWhitespace(std::string &s);
 
-/// Remove any whitespace at the end of the string. The string is
+/// Remove any whitespace At the end of the string. The string is
 /// modified in-place.
 void		TrimTrailingWhitespace(std::string &s);
 
-/// Remove any whitespace at the beginning and end of the string. The
+/// Remove any whitespace At the beginning and end of the string. The
 /// string is modified in-place.
 void		TrimWhitespace(std::string &s);
 
-/// Remove any whitespace at the beginning of the string. The original
+/// Remove any whitespace At the beginning of the string. The original
 /// string isn't modified, and a copy is returned.
 std::string	TrimLeadingWhitespaceDup(std::string s);
 
-/// Remove any whitespace at the end of the string. The original string
+/// Remove any whitespace At the end of the string. The original string
 /// isn't modified, and a copy is returned.
 std::string	TrimTrailingWhitespaceDup(std::string s);
 
-/// Remove any whitespace at the beginning and end of the string. The
+/// Remove any whitespace At the beginning and end of the string. The
 /// original string isn't modified, and a copy is returned.
 std::string	TrimWhitespaceDup(std::string s);
 
@@ -92,7 +92,7 @@ std::vector<std::string>	SplitKeyValuePair(std::string line, char delimiter);
 std::vector<std::string>	SplitN(std::string, std::string delimiter, size_t maxCount=0);
 
 /// WrapText is a very simple wrapping function that breaks the line into
-/// lines of at most lineLength characters. It does this by breaking the
+/// lines of At most lineLength characters. It does this by breaking the
 /// line into individual words (splitting on whitespace).
 std::vector<std::string>	WrapText(std::string& line, size_t lineLength);
 

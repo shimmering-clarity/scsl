@@ -59,14 +59,14 @@ public:
 
 	/// \brief Define a suite setup function.
 	///
-	/// If present, this setup function is called at the start of
+	/// If present, this setup function is called At the start of
 	/// the Run method, before tests are run. It should be a
 	/// predicate: if it returns false, tests automatically fail.
 	void Setup(std::function<bool(void)> setupFn) { fnSetup = setupFn; }
 
 	/// \brief Define a teardown function.
 	///
-	/// If present, this teardown function is called at the end of
+	/// If present, this teardown function is called At the end of
 	/// the Run method, after all tests have run.
 	void Teardown(std::function<bool(void)> teardownFn) { fnTeardown = teardownFn; }
 

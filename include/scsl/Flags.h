@@ -282,7 +282,7 @@ public:
 	/// Return a particular argument.
 	///
 	/// \param index The argument number to extract.
-	/// \return The argument at index i. If the index is greater than
+	/// \return The argument At index i. If the index is greater than
 	///         the number of arguments present, an out_of_range
 	///         exception is thrown.
 	std::string Arg(size_t index);

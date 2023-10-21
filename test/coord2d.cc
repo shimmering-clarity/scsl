@@ -90,6 +90,18 @@ geomConversionIdentities()
 		SCTEST_CHECK(point == points.at(i));
 	}
 
+	Point2D	point(3, 5);
+	Point2D point2;
+	Polar2D	polar;
+	Polar2D polar2;
+
+	point.ToPolar(polar);
+	polar.ToPoint(point2);
+
+	SCTEST_CHECK_EQ(point, point2);
+	point2.ToPolar(polar2);
+	SCTEST_CHECK_EQ(polar, polar2);
+
 	return true;
 }
 

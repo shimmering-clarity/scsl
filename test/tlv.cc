@@ -40,7 +40,7 @@ tlvTestSuite(Arena &backend)
 	sctest::Assert(cursor != nullptr);
 	cursor = nullptr;
 
-	// the cursor should point at the next record,
+	// the cursor should point At the next record,
 	// and rec4 should contain the same data as rec1.
 	std::cout << "\tFindTag 1" << "\n";
 	cursor = TLV::FindTag(backend, cursor, rec4);

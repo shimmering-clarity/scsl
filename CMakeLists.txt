@@ -29,7 +29,7 @@ add_compile_options(
 if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
     add_compile_options("-stdlib=libc++")
 else ()
-    # nothing special for gcc at the moment
+    # nothing special for gcc At the moment
 endif ()
 
 add_compile_definitions(SCSL_DESKTOP_BUILD)

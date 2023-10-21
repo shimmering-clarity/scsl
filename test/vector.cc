@@ -11,7 +11,7 @@
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
+// You may obtain a copy of the License At
 //
 //     http://www.apache.org/licenses/LICENSE-2.0
 //
@@ -37,8 +37,8 @@ using namespace std;
 static bool
 Vector3Miscellaneous_ExtractionOperator3d()
 {
-	geom::Vector3d	vec {1.0, 2.0, 3.0};
-	stringstream	vecBuffer;
+	geom::Vector3D vec {1.0, 2.0, 3.0};
+	stringstream   vecBuffer;
 
 	vecBuffer << vec;
 	SCTEST_CHECK_EQ(vecBuffer.str(), "<1, 2, 3>");
@@ -49,8 +49,8 @@ Vector3Miscellaneous_ExtractionOperator3d()
 static bool
 Vector3Miscellaneous_ExtractionOperator3f()
 {
-	geom::Vector3f	vec {1.0, 2.0, 3.0};
-	stringstream	vecBuffer;
+	geom::Vector3F vec {1.0, 2.0, 3.0};
+	stringstream   vecBuffer;
 
 	vecBuffer << vec;
 	SCTEST_CHECK_EQ(vecBuffer.str(), "<1, 2, 3>");
@@ -60,10 +60,10 @@ Vector3Miscellaneous_ExtractionOperator3f()
 
 static bool
 Vector3Miscellaneous_SetEpsilon() {
-	geom::Vector3f	a {1.0, 1.0, 1.0};
-	geom::Vector3f	b;
+	geom::Vector3F a {1.0, 1.0, 1.0};
+	geom::Vector3F b;
 
-	a.setEpsilon(1.1);
+	a.SetEpsilon(1.1);
 	SCTEST_CHECK_EQ(a, b);
 	return true;
 }
@@ -72,10 +72,10 @@ Vector3Miscellaneous_SetEpsilon() {
 static bool
 Vector3FloatTests_Magnitude()
 {
-	geom::Vector3f	v3f {1.0, -2.0, 3.0};
-	const float	expected = 3.74165738677394;
+	geom::Vector3F v3f {1.0, -2.0, 3.0};
+	const float    expected = 3.74165738677394;
 
-	SCTEST_CHECK_FEQ(v3f.magnitude(), expected);
+	SCTEST_CHECK_FEQ(v3f.Magnitude(), expected);
 
 	return true;
 }
@@ -84,9 +84,9 @@ Vector3FloatTests_Magnitude()
 static bool
 Vector3FloatTests_Equality()
 {
-	geom::Vector3f	a {1.0, 2.0, 3.0};
-	geom::Vector3f	b {1.0, 2.0, 3.0};
-	geom::Vector3f	c {1.0, 2.0, 1.0};
+	geom::Vector3F a {1.0, 2.0, 3.0};
+	geom::Vector3F b {1.0, 2.0, 3.0};
+	geom::Vector3F c {1.0, 2.0, 1.0};
 
 	SCTEST_CHECK_EQ(a, b);
 	SCTEST_CHECK_EQ(b, a);
@@ -100,9 +100,9 @@ Vector3FloatTests_Equality()
 static bool
 Vector3FloatTests_Addition()
 {
-	geom::Vector3f	a {1.0, 2.0, 3.0};
-	geom::Vector3f	b {4.0, 5.0, 6.0};
-	geom::Vector3f	expected {5.0, 7.0, 9.0};
+	geom::Vector3F a {1.0, 2.0, 3.0};
+	geom::Vector3F b {4.0, 5.0, 6.0};
+	geom::Vector3F expected {5.0, 7.0, 9.0};
 
 	SCTEST_CHECK_EQ(a+b, expected);
 
@@ -113,9 +113,9 @@ Vector3FloatTests_Addition()
 static bool
 Vector3FloatTests_Subtraction()
 {
-	geom::Vector3f	a {1.0, 2.0, 3.0};
-	geom::Vector3f	b {4.0, 5.0, 6.0};
-	geom::Vector3f	c {5.0, 7.0, 9.0};
+	geom::Vector3F a {1.0, 2.0, 3.0};
+	geom::Vector3F b {4.0, 5.0, 6.0};
+	geom::Vector3F c {5.0, 7.0, 9.0};
 
 	SCTEST_CHECK_EQ(c-b, a);
 
@@ -126,8 +126,8 @@ Vector3FloatTests_Subtraction()
 static bool
 Vector3FloatTests_ScalarMultiplication()
 {
-	geom::Vector3f	a {1.0, 2.0, 3.0};
-	geom::Vector3f	expected {3.0, 6.0, 9.0};
+	geom::Vector3F a {1.0, 2.0, 3.0};
+	geom::Vector3F expected {3.0, 6.0, 9.0};
 
 	SCTEST_CHECK_EQ(a * 3.0, expected);
 
@@ -138,8 +138,8 @@ Vector3FloatTests_ScalarMultiplication()
 static bool
 Vector3FloatTests_ScalarDivision()
 {
-	geom::Vector3f	a {1.0, 2.0, 3.0};
-	geom::Vector3f	b {3.0, 6.0, 9.0};
+	geom::Vector3F a {1.0, 2.0, 3.0};
+	geom::Vector3F b {3.0, 6.0, 9.0};
 
 	SCTEST_CHECK_EQ(b / 3.0, a);
 
@@ -150,8 +150,8 @@ Vector3FloatTests_ScalarDivision()
 static bool
 Vector3FloatTests_DotProduct()
 {
-	geom::Vector3f	a {1.0, 2.0, 3.0};
-	geom::Vector3f	b {4.0, 5.0, 6.0};
+	geom::Vector3F a {1.0, 2.0, 3.0};
+	geom::Vector3F b {4.0, 5.0, 6.0};
 
 	SCTEST_CHECK_FEQ(a * b, (float)32.0);
 
@@ -162,14 +162,14 @@ static bool
 Vector3FloatTests_UnitVector()
 {
 	// Test values randomly generated and calculated with numpy.
-	geom::Vector3f	vec3 {5.320264018493507, 5.6541812891273935, 1.9233435162644652};
-	geom::Vector3f	unit {0.6651669556972103, 0.7069150218815566, 0.24046636539587804};
-	geom::Vector3f	unit2;
+	geom::Vector3F vec3 {5.320264018493507, 5.6541812891273935, 1.9233435162644652};
+	geom::Vector3F unit {0.6651669556972103, 0.7069150218815566, 0.24046636539587804};
+	geom::Vector3F unit2;
 
-	SCTEST_CHECK_EQ(vec3.unitVector(), unit);
-	SCTEST_CHECK_FALSE(vec3.isUnitVector());
-	SCTEST_CHECK(unit.isUnitVector());
-	SCTEST_CHECK(unit2.isUnitVector());
+	SCTEST_CHECK_EQ(vec3.UnitVector(), unit);
+	SCTEST_CHECK_FALSE(vec3.IsUnitVector());
+	SCTEST_CHECK(unit.IsUnitVector());
+	SCTEST_CHECK(unit2.IsUnitVector());
 
 	return true;
 }
@@ -177,13 +177,13 @@ Vector3FloatTests_UnitVector()
 static bool
 Vector3FloatTests_Angle()
 {
-	geom::Vector3f	a {0.3977933061361172, 8.053980094436525, 8.1287759943773};
-	geom::Vector3f	b {9.817895298608196, 4.034166890407462, 4.37628316513266};
-	geom::Vector3f	c {7.35, 0.221, 5.188};
-	geom::Vector3f	d {2.751, 8.259, 3.985};
+	geom::Vector3F a {0.3977933061361172, 8.053980094436525, 8.1287759943773};
+	geom::Vector3F b {9.817895298608196, 4.034166890407462, 4.37628316513266};
+	geom::Vector3F c {7.35, 0.221, 5.188};
+	geom::Vector3F d {2.751, 8.259, 3.985};
 
-	SCTEST_CHECK_FEQ(a.angle(b), (float)0.9914540426033251);
-	if (!scmp::WithinTolerance(c.angle(d), (float)1.052, (float)0.001)) {
+	SCTEST_CHECK_FEQ(a.Angle(b), (float)0.9914540426033251);
+	if (!scmp::WithinTolerance(c.Angle(d), (float)1.052, (float)0.001)) {
 		return false;
 	}
 
@@ -194,26 +194,26 @@ Vector3FloatTests_Angle()
 static bool
 Vector3FloatTests_ParallelOrthogonalVectors()
 {
-	geom::Vector3f	a {-2.029, 9.97, 4.172};
-	geom::Vector3f	b {-9.231, -6.639, -7.245};
-	geom::Vector3f	c {-2.328, -7.284, -1.214};
-	geom::Vector3f	d {-1.821, 1.072, -2.94};
-	geom::Vector3f	e {-2.0, 1.0, 3.0};
-	geom::Vector3f	f {-6.0, 3.0, 9.0};
-	geom::Vector3f	zeroVector {0.0, 0.0, 0.0};
+	geom::Vector3F a {-2.029, 9.97, 4.172};
+	geom::Vector3F b {-9.231, -6.639, -7.245};
+	geom::Vector3F c {-2.328, -7.284, -1.214};
+	geom::Vector3F d {-1.821, 1.072, -2.94};
+	geom::Vector3F e {-2.0, 1.0, 3.0};
+	geom::Vector3F f {-6.0, 3.0, 9.0};
+	geom::Vector3F zeroVector {0.0, 0.0, 0.0};
 
-	SCTEST_CHECK_FALSE(a.isParallel(b));
-	SCTEST_CHECK_FALSE(a.isOrthogonal(b));
+	SCTEST_CHECK_FALSE(a.IsParallel(b));
+	SCTEST_CHECK_FALSE(a.IsOrthogonal(b));
 
-	SCTEST_CHECK_FALSE(c.isParallel(d));
-	SCTEST_CHECK(c.isOrthogonal(d));
+	SCTEST_CHECK_FALSE(c.IsParallel(d));
+	SCTEST_CHECK(c.IsOrthogonal(d));
 
-	SCTEST_CHECK(e.isParallel(f));
-	SCTEST_CHECK_FALSE(e.isOrthogonal(f));
+	SCTEST_CHECK(e.IsParallel(f));
+	SCTEST_CHECK_FALSE(e.IsOrthogonal(f));
 
-	SCTEST_CHECK(zeroVector.isZero());
-	SCTEST_CHECK(c.isParallel(zeroVector));
-	SCTEST_CHECK(c.isOrthogonal(zeroVector));
+	SCTEST_CHECK(zeroVector.IsZero());
+	SCTEST_CHECK(c.IsParallel(zeroVector));
+	SCTEST_CHECK(c.IsOrthogonal(zeroVector));
 
 	return true;
 }
@@ -222,13 +222,13 @@ Vector3FloatTests_ParallelOrthogonalVectors()
 static bool
 Vector3FloatTests_Projections()
 {
-	geom::Vector3f	a {4.866769214609107, 6.2356222686140566, 9.140878417029711};
-	geom::Vector3f	b {6.135533104801077, 8.757851406697895, 0.6738031370548048};
-	geom::Vector3f	c {4.843812341655318, 6.9140509888133055, 0.5319465962229454};
-	geom::Vector3f	d {0.02295687295378901, -0.6784287201992489, 8.608931820806765};
+	geom::Vector3F a {4.866769214609107, 6.2356222686140566, 9.140878417029711};
+	geom::Vector3F b {6.135533104801077, 8.757851406697895, 0.6738031370548048};
+	geom::Vector3F c {4.843812341655318, 6.9140509888133055, 0.5319465962229454};
+	geom::Vector3F d {0.02295687295378901, -0.6784287201992489, 8.608931820806765};
 
-	SCTEST_CHECK_EQ(a.projectParallel(b), c);
-	SCTEST_CHECK_EQ(a.projectOrthogonal(b), d);
+	SCTEST_CHECK_EQ(a.ProjectParallel(b), c);
+	SCTEST_CHECK_EQ(a.ProjectOrthogonal(b), d);
 
 	return true;
 }
@@ -237,12 +237,12 @@ Vector3FloatTests_Projections()
 static bool
 Vector3FloatTests_CrossProduct()
 {
-	geom::Vector3f	a {8.462, 7.893, -8.187};
-	geom::Vector3f	b {6.984, -5.975, 4.778};
-	geom::Vector3f	c {-11.2046, -97.6094, -105.685};
+	geom::Vector3F a {8.462, 7.893, -8.187};
+	geom::Vector3F b {6.984, -5.975, 4.778};
+	geom::Vector3F c {-11.2046, -97.6094, -105.685};
 
-	c.setEpsilon(0.001);
-	SCTEST_CHECK_EQ(c, a.cross(b));
+	c.SetEpsilon(0.001);
+	SCTEST_CHECK_EQ(c, a.Cross(b));
 
 	return true;
 }
@@ -251,10 +251,10 @@ Vector3FloatTests_CrossProduct()
 static bool
 Vector3DoubleTests_Magnitude()
 {
-	geom::Vector3d	v3d{1.0, -2.0, 3.0};
-	const double	expected = 3.74165738677394;
+	geom::Vector3D v3d{1.0, -2.0, 3.0};
+	const double   expected = 3.74165738677394;
 	
-	SCTEST_CHECK_DEQ(v3d.magnitude(), expected);
+	SCTEST_CHECK_DEQ(v3d.Magnitude(), expected);
 	return true;
 }
 
@@ -262,9 +262,9 @@ Vector3DoubleTests_Magnitude()
 static bool
 Vector3DoubleTests_Equality()
 {
-	geom::Vector3d	a {1.0, 2.0, 3.0};
-	geom::Vector3d	b {1.0, 2.0, 3.0};
-	geom::Vector3d	c {1.0, 2.0, 1.0};
+	geom::Vector3D a {1.0, 2.0, 3.0};
+	geom::Vector3D b {1.0, 2.0, 3.0};
+	geom::Vector3D c {1.0, 2.0, 1.0};
 
 	SCTEST_CHECK_EQ(a, b);
 	SCTEST_CHECK_EQ(b, a);
@@ -278,9 +278,9 @@ Vector3DoubleTests_Equality()
 static bool
 Vector3DoubleTests_Addition()
 {
-	geom::Vector3d	a {1.0, 2.0, 3.0};
-	geom::Vector3d	b {4.0, 5.0, 6.0};
-	geom::Vector3d	expected {5.0, 7.0, 9.0};
+	geom::Vector3D a {1.0, 2.0, 3.0};
+	geom::Vector3D b {4.0, 5.0, 6.0};
+	geom::Vector3D expected {5.0, 7.0, 9.0};
 
 	SCTEST_CHECK_EQ(a+b, expected);
 
@@ -291,9 +291,9 @@ Vector3DoubleTests_Addition()
 static bool
 Vector3DoubleTests_Subtraction()
 {
-	geom::Vector3d	a {1.0, 2.0, 3.0};
-	geom::Vector3d	b {4.0, 5.0, 6.0};
-	geom::Vector3d	c {5.0, 7.0, 9.0};
+	geom::Vector3D a {1.0, 2.0, 3.0};
+	geom::Vector3D b {4.0, 5.0, 6.0};
+	geom::Vector3D c {5.0, 7.0, 9.0};
 
 	SCTEST_CHECK_EQ(c-b, a);
 
@@ -304,8 +304,8 @@ Vector3DoubleTests_Subtraction()
 static bool
 Vector3DoubleTests_ScalarMultiplication()
 {
-	geom::Vector3d	a {1.0, 2.0, 3.0};
-	geom::Vector3d	expected {3.0, 6.0, 9.0};
+	geom::Vector3D a {1.0, 2.0, 3.0};
+	geom::Vector3D expected {3.0, 6.0, 9.0};
 
 	SCTEST_CHECK_EQ(a * 3.0, expected);
 
@@ -316,8 +316,8 @@ Vector3DoubleTests_ScalarMultiplication()
 static bool
 Vector3DoubleTests_ScalarDivision()
 {
-	geom::Vector3d	a {1.0, 2.0, 3.0};
-	geom::Vector3d	b {3.0, 6.0, 9.0};
+	geom::Vector3D a {1.0, 2.0, 3.0};
+	geom::Vector3D b {3.0, 6.0, 9.0};
 
 	SCTEST_CHECK_EQ(b / 3.0, a);
 
@@ -328,8 +328,8 @@ Vector3DoubleTests_ScalarDivision()
 static bool
 Vector3DoubleTests_DotProduct()
 {
-	geom::Vector3d	a {1.0, 2.0, 3.0};
-	geom::Vector3d	b {4.0, 5.0, 6.0};
+	geom::Vector3D a {1.0, 2.0, 3.0};
+	geom::Vector3D b {4.0, 5.0, 6.0};
 
 	SCTEST_CHECK_DEQ(a * b, 32.0);
 
@@ -341,14 +341,14 @@ static bool
 Vector3DoubleTests_UnitVector()
 {
 	// Test values randomly generated and calculated with numpy.
-	geom::Vector3d	vec3 {5.320264018493507, 5.6541812891273935, 1.9233435162644652};
-	geom::Vector3d	unit {0.6651669556972103, 0.7069150218815566, 0.24046636539587804};
-	geom::Vector3d	unit2;
+	geom::Vector3D vec3 {5.320264018493507, 5.6541812891273935, 1.9233435162644652};
+	geom::Vector3D unit {0.6651669556972103, 0.7069150218815566, 0.24046636539587804};
+	geom::Vector3D unit2;
 
-	SCTEST_CHECK_EQ(vec3.unitVector(), unit);
-	SCTEST_CHECK_FALSE(vec3.isUnitVector());
-	SCTEST_CHECK(unit.isUnitVector());
-	SCTEST_CHECK(unit2.isUnitVector());
+	SCTEST_CHECK_EQ(vec3.UnitVector(), unit);
+	SCTEST_CHECK_FALSE(vec3.IsUnitVector());
+	SCTEST_CHECK(unit.IsUnitVector());
+	SCTEST_CHECK(unit2.IsUnitVector());
 
 	return true;
 }
@@ -357,13 +357,13 @@ Vector3DoubleTests_UnitVector()
 static bool
 Vector3DoubleTests_Angle()
 {
-	geom::Vector3d	a {0.3977933061361172, 8.053980094436525, 8.1287759943773};
-	geom::Vector3d	b {9.817895298608196, 4.034166890407462, 4.37628316513266};
-	geom::Vector3d	c {7.35, 0.221, 5.188};
-	geom::Vector3d	d {2.751, 8.259, 3.985};
+	geom::Vector3D a {0.3977933061361172, 8.053980094436525, 8.1287759943773};
+	geom::Vector3D b {9.817895298608196, 4.034166890407462, 4.37628316513266};
+	geom::Vector3D c {7.35, 0.221, 5.188};
+	geom::Vector3D d {2.751, 8.259, 3.985};
 
-	SCTEST_CHECK_DEQ(a.angle(b), 0.9914540426033251);
-	if (!scmp::WithinTolerance(c.angle(d), (double)1.052, (double)0.001)) {
+	SCTEST_CHECK_DEQ(a.Angle(b), 0.9914540426033251);
+	if (!scmp::WithinTolerance(c.Angle(d), (double)1.052, (double)0.001)) {
 		return false;
 	}
 
@@ -374,26 +374,26 @@ Vector3DoubleTests_Angle()
 static bool
 Vector3DoubleTests_ParallelOrthogonalVectors()
 {
-	geom::Vector3d	a {-2.029, 9.97, 4.172};
-	geom::Vector3d	b {-9.231, -6.639, -7.245};
-	geom::Vector3d	c {-2.328, -7.284, -1.214};
-	geom::Vector3d	d {-1.821, 1.072, -2.94};
-	geom::Vector3d	e {-2.0, 1.0, 3.0};
-	geom::Vector3d	f {-6.0, 3.0, 9.0};
-	geom::Vector3d	zeroVector {0.0, 0.0, 0.0};
+	geom::Vector3D a {-2.029, 9.97, 4.172};
+	geom::Vector3D b {-9.231, -6.639, -7.245};
+	geom::Vector3D c {-2.328, -7.284, -1.214};
+	geom::Vector3D d {-1.821, 1.072, -2.94};
+	geom::Vector3D e {-2.0, 1.0, 3.0};
+	geom::Vector3D f {-6.0, 3.0, 9.0};
+	geom::Vector3D zeroVector {0.0, 0.0, 0.0};
 
-	SCTEST_CHECK_FALSE(a.isParallel(b));
-	SCTEST_CHECK_FALSE(a.isOrthogonal(b));
+	SCTEST_CHECK_FALSE(a.IsParallel(b));
+	SCTEST_CHECK_FALSE(a.IsOrthogonal(b));
 
-	SCTEST_CHECK_FALSE(c.isParallel(d));
-	SCTEST_CHECK(c.isOrthogonal(d));
+	SCTEST_CHECK_FALSE(c.IsParallel(d));
+	SCTEST_CHECK(c.IsOrthogonal(d));
 
-	SCTEST_CHECK(e.isParallel(f));
-	SCTEST_CHECK_FALSE(e.isOrthogonal(f));
+	SCTEST_CHECK(e.IsParallel(f));
+	SCTEST_CHECK_FALSE(e.IsOrthogonal(f));
 
-	SCTEST_CHECK(zeroVector.isZero());
-	SCTEST_CHECK(c.isParallel(zeroVector));
-	SCTEST_CHECK(c.isOrthogonal(zeroVector));
+	SCTEST_CHECK(zeroVector.IsZero());
+	SCTEST_CHECK(c.IsParallel(zeroVector));
+	SCTEST_CHECK(c.IsOrthogonal(zeroVector));
 
 	return true;
 }
@@ -402,13 +402,13 @@ Vector3DoubleTests_ParallelOrthogonalVectors()
 static bool
 Vector3DoubleTests_Projections()
 {
-	geom::Vector3d	a {4.866769214609107, 6.2356222686140566, 9.140878417029711};
-	geom::Vector3d	b {6.135533104801077, 8.757851406697895, 0.6738031370548048};
-	geom::Vector3d	c {4.843812341655318, 6.9140509888133055, 0.5319465962229454};
-	geom::Vector3d	d {0.02295687295378901, -0.6784287201992489, 8.608931820806765};
+	geom::Vector3D a {4.866769214609107, 6.2356222686140566, 9.140878417029711};
+	geom::Vector3D b {6.135533104801077, 8.757851406697895, 0.6738031370548048};
+	geom::Vector3D c {4.843812341655318, 6.9140509888133055, 0.5319465962229454};
+	geom::Vector3D d {0.02295687295378901, -0.6784287201992489, 8.608931820806765};
 
-	SCTEST_CHECK_EQ(a.projectParallel(b), c);
-	SCTEST_CHECK_EQ(a.projectOrthogonal(b), d);
+	SCTEST_CHECK_EQ(a.ProjectParallel(b), c);
+	SCTEST_CHECK_EQ(a.ProjectOrthogonal(b), d);
 
 	return true;
 }
@@ -417,12 +417,12 @@ Vector3DoubleTests_Projections()
 static bool
 Vector3DoubleTests_CrossProduct()
 {
-	geom::Vector3d	a {8.462, 7.893, -8.187};
-	geom::Vector3d	b {6.984, -5.975, 4.778};
-	geom::Vector3d	c {-11.2046, -97.6094, -105.685};
+	geom::Vector3D a {8.462, 7.893, -8.187};
+	geom::Vector3D b {6.984, -5.975, 4.778};
+	geom::Vector3D c {-11.2046, -97.6094, -105.685};
 
-	c.setEpsilon(0.001); // double trouble
-	SCTEST_CHECK_EQ(c, a.cross(b));
+	c.SetEpsilon(0.001); // double trouble
+	SCTEST_CHECK_EQ(c, a.Cross(b));
 
 	return true;
 }

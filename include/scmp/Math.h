@@ -49,26 +49,26 @@ int			BestDie(int k, int m, int n);
 
 /// \brief Convert radians to degrees.
 ///
-/// \param rads the angle in radians
-/// \return the angle in degrees.
+/// \param rads the Angle in radians
+/// \return the Angle in degrees.
 float	RadiansToDegreesF(float rads);
 
 /// \brief Convert radians to degrees.
 ///
-/// \param rads the angle in radians
-/// \return the angle in degrees.
+/// \param rads the Angle in radians
+/// \return the Angle in degrees.
 double	RadiansToDegreesD(double rads);
 
 /// \brief Convert degrees to radians.
 ///
-/// \param degrees the angle in degrees
-/// \return the angle in radians.
+/// \param degrees the Angle in degrees
+/// \return the Angle in radians.
 float	DegreesToRadiansF(float degrees);
 
 /// \brief Convert degrees to radians.
 ///
-/// \param degrees the angle in degrees
-/// \return the angle in radians.
+/// \param degrees the Angle in degrees
+/// \return the Angle in radians.
 double	DegreesToRadiansD(double degrees);
 
 /// \brief RotateRadians rotates theta0 by theta1 radians, wrapping
