@@ -55,7 +55,7 @@ typedef union {
 } FlagValue;
 
 
-/// Flag describes an individual command-line flag.
+/// \brief Individual command-line flag
 typedef struct {
 	FlagType    Type; ///< The type of the value in the flag.
 	bool        WasSet; ///< The flag was set on the command-line.
@@ -64,7 +64,7 @@ typedef struct {
 	FlagValue   Value; ///< The flag's value.
 } Flag;
 
-/// NewFlag is a helper function for constructing a new flag.
+/// \brief NewFlag is a helper function for constructing a new flag.
 ///
 /// \param fName The name of the flag.
 /// \param fType The type of the flag.
@@ -72,7 +72,7 @@ typedef struct {
 /// \return A pointer to a flag.
 Flag	*NewFlag(std::string fName, FlagType fType, std::string fDescription);
 
-/// Flags provides a basic facility for processing command line flags.
+/// \brief Basic facility for processing command line flags.
 ///
 /// Any remaining arguments after the args are added to the parser as
 /// arguments that can be accessed with NumArgs, Args, and Arg.

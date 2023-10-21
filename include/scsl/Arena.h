@@ -61,7 +61,7 @@ enum class ArenaType
 };
 
 
-/// Arena is the class that implements a memory arena.
+/// \brief Fixed, pre-allocated memory.
 ///
 /// The Arena uses the concept of a cursor to point to memory in the arena. The
 /// #Start and #End methods return pointers to the start and end of the

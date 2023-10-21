@@ -58,7 +58,7 @@ Flags::ParseStatusToString(ParseStatus status)
 Flag *
 NewFlag(std::string fName, FlagType fType, std::string fDescription)
 {
-	auto flag = new Flag;
+	auto *flag = new Flag;
 
 	flag->Type        = fType;
 	flag->WasSet      = false;
@@ -71,9 +71,8 @@ NewFlag(std::string fName, FlagType fType, std::string fDescription)
 
 
 Flags::Flags(std::string fName)
-    : name(std::move(fName)), description("")
-{
-}
+    : name(std::move(fName))
+{}
 
 
 Flags::Flags(std::string fName, std::string fDescription)
@@ -104,7 +103,7 @@ Flags::Register(std::string fName, FlagType fType, std::string fDescription)
 		return false;
 	}
 
-	auto flag = NewFlag(fName, fType, std::move(fDescription));
+	auto *flag = NewFlag(fName, fType, std::move(fDescription));
 	assert(flag != nullptr);
 	this->flags[fName] = flag;
 	return true;
@@ -194,7 +193,7 @@ Flags::Lookup(std::string fName)
 bool
 Flags::ValueOf(std::string fName, FlagValue &value)
 {
-	if (this->flags.count(fName)) {
+	if (this->flags.count(fName) != 0U) {
 		return false;
 	}
 
@@ -207,7 +206,7 @@ Flags::ParseStatus
 Flags::parseArg(int argc, char **argv, int &index)
 {
 	std::string arg(argv[index]);
-	U::S::TrimWhitespace(arg);
+	string::TrimWhitespace(arg);
 
 	index++;
 	if (!std::regex_search(arg, isFlag)) {
@@ -221,7 +220,7 @@ Flags::parseArg(int argc, char **argv, int &index)
 		return ParseStatus::NotRegistered;
 	}
 
-	auto flag = flags[arg];
+	auto *flag = flags[arg];
 	if ((flag->Type != FlagType::Boolean) && index == argc) {
 		return ParseStatus::NotEnoughArgs;
 	}
@@ -233,11 +232,11 @@ Flags::parseArg(int argc, char **argv, int &index)
 		return ParseStatus::OK;
 	case FlagType::Integer:
 		flag->WasSet  = true;
-		flag->Value.i = std::stoi(argv[++index], 0, 0);
+		flag->Value.i = std::stoi(argv[++index], nullptr, 0);
 		return ParseStatus::OK;
 	case FlagType::UnsignedInteger:
 		flag->WasSet  = true;
-		flag->Value.u = static_cast<unsigned int>(std::stoi(argv[index++], 0, 0));
+		flag->Value.u = static_cast<unsigned int>(std::stoi(argv[index++], nullptr, 0));
 		return ParseStatus::OK;
 	case FlagType::String:
 		flag->WasSet  = true;
@@ -275,7 +274,7 @@ Flags::Parse(int argc, char **argv, bool skipFirst)
 
 		case ParseStatus::EndOfFlags:
 			while (index < argc) {
-				this->args.push_back(std::string(argv[index]));
+				this->args.emplace_back(argv[index]);
 				index++;
 			}
 			continue;
@@ -303,7 +302,7 @@ Flags::Usage(std::ostream &os, int exitCode)
 	os << this->name << ":\t";
 	auto indent = this->name.size() + 7;
 
-	U::S::WriteTabIndented(os, description, 72 - indent, indent / 8, false);
+	string::WriteTabIndented(os, description, 72 - indent, indent / 8, false);
 	os << "\n\n";
 
 	for (const auto &pair : this->flags) {
@@ -337,7 +336,7 @@ Flags::Usage(std::ostream &os, int exitCode)
 
 		os << argLine;
 		indent = argLine.size();
-		U::S::WriteTabIndented(os, pair.second->Description,
+		string::WriteTabIndented(os, pair.second->Description,
 				       72-indent, (indent/8)+2, false);
 	}
 
@@ -374,11 +373,11 @@ Flags::Arg(size_t i)
 Flag *
 Flags::checkGetArg(std::string& fName, FlagType eType)
 {
-	if (this->flags[fName] == 0) {
+	if (this->flags[fName] == nullptr) {
 		return nullptr;
 	}
 
-	auto flag = this->flags[fName];
+	auto *flag = this->flags[fName];
 	if (flag == nullptr) {
 		return nullptr;
 	}
@@ -394,7 +393,7 @@ Flags::checkGetArg(std::string& fName, FlagType eType)
 bool
 Flags::GetBool(std::string fName, bool &flagValue)
 {
-	auto flag = this->checkGetArg(fName, FlagType::Boolean);
+	auto *flag = this->checkGetArg(fName, FlagType::Boolean);
 
 	flagValue = flag->Value.b;
 	return flag->WasSet;
@@ -404,7 +403,7 @@ Flags::GetBool(std::string fName, bool &flagValue)
 bool
 Flags::GetInteger(std::string fName, int &flagValue)
 {
-	auto flag = this->checkGetArg(fName, FlagType::Integer);
+	auto *flag = this->checkGetArg(fName, FlagType::Integer);
 
 	flagValue = flag->Value.i;
 	return flag->WasSet;
@@ -414,7 +413,7 @@ Flags::GetInteger(std::string fName, int &flagValue)
 bool
 Flags::GetUnsignedInteger(std::string fName, unsigned int &flagValue)
 {
-	auto flag = this->checkGetArg(fName, FlagType::UnsignedInteger);
+	auto *flag = this->checkGetArg(fName, FlagType::UnsignedInteger);
 
 	flagValue = flag->Value.u;
 	return flag->WasSet;
@@ -424,7 +423,7 @@ Flags::GetUnsignedInteger(std::string fName, unsigned int &flagValue)
 bool
 Flags::GetSizeT(std::string fName, std::size_t &flagValue)
 {
-	auto flag = this->checkGetArg(fName, FlagType::SizeT);
+	auto *flag = this->checkGetArg(fName, FlagType::SizeT);
 
 	flagValue = flag->Value.size;
 	return flag->WasSet;
@@ -434,7 +433,7 @@ Flags::GetSizeT(std::string fName, std::size_t &flagValue)
 bool
 Flags::GetString(std::string fName, std::string &flagValue)
 {
-	auto flag = this->checkGetArg(fName, FlagType::String);
+	auto *flag = this->checkGetArg(fName, FlagType::String);
 
 	if (flag->Value.s == nullptr) {
 		return false;

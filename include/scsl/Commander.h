@@ -1,5 +1,5 @@
 ///
-/// \file Commander.h
+/// \file include/scsl/Commander.h
 /// \author K. Isom <kyle@imap.cc>
 /// \date 2023-10-10
 /// \brief Subprogram tooling.
@@ -47,6 +47,8 @@ namespace scsl {
 using CommanderFunc = std::function<bool (int, char **)>;
 
 
+/// \brief Subcommands used by Commander.
+///
 /// Subcommands are the individual commands for the program. A Subcommand
 /// will check that it has enough arguments before running its function.
 class Subcommand {
@@ -89,6 +91,8 @@ private:
 	std::string command;
 };
 
+/// \brief Subcommander manager for programs.
+///
 /// Commander collects subcommands and can run the apppropriate one.
 ///
 /// For example:

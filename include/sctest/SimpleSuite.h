@@ -1,5 +1,5 @@
 ///
-/// \file SimpleSuite.h
+/// \file include/sctest/SimpleSuite.h
 /// \author K. Isom <kyle@imap.cc>
 /// \date 2017-06-05
 /// \brief Defines a simple unit testing framework.
@@ -33,8 +33,9 @@
 namespace sctest {
 
 
-/// \brief UnitTest describes a single unit test. It is a predicate:
-///        did the test pass?
+/// \brief UnitTest describes a single unit test.
+///
+/// It is a predicate: did the test pass?
 struct UnitTest {
 	/// What name should be shown when running tests?
 	std::string		name;
@@ -99,12 +100,13 @@ public:
 	/// resetting the suite's internal state.
 	void Reset();
 
-	/// \brief
-	// HasRun returns true if a report is ready.
+	/// \brief Returns true if Run has been called.
 	bool HasRun() const;
 
-	// Report returns a Report.
-	Report GetReport(void);
+	/// \brief Retrieve the test run results.
+	///
+	/// The results will only be valid if Run has been called.
+	Report GetReport();
 
 private:
 	bool				quiet;

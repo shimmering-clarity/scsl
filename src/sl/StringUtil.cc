@@ -28,11 +28,7 @@
 
 
 namespace scsl {
-/// namespace U contains utilities.
-namespace U {
-
-/// namespace S contains string-related functions.
-namespace S {
+namespace string {
 
 
 std::vector<std::string>
@@ -40,9 +36,11 @@ SplitKeyValuePair(std::string line, std::string delimiter)
 {
 	auto pair = SplitN(std::move(line), std::move(delimiter), 2);
 
-	if (pair.size() == 0) {
+	if (pair.empty()) {
 		return {"", ""};
-	} else if (pair.size() == 1) {
+	}
+
+	if (pair.size() == 1) {
 		return {pair[0], ""};
 	}
 
@@ -61,7 +59,7 @@ SplitKeyValuePair(std::string line, char delimiter)
 {
 	std::string sDelim;
 
-	sDelim.push_back(std::move(delimiter));
+	sDelim.push_back(delimiter);
 	return SplitKeyValuePair(std::move(line), sDelim);
 }
 
@@ -72,7 +70,7 @@ TrimLeadingWhitespace(std::string &s)
 	s.erase(s.begin(),
 		std::find_if(s.begin(), s.end(),
 			     [](unsigned char ch) {
-				 return !std::isspace(ch);
+				 return std::isspace(ch) == 0;
 			     }));
 }
 
@@ -81,7 +79,7 @@ void
 TrimTrailingWhitespace(std::string &s)
 {
 	s.erase(std::find_if(s.rbegin(), s.rend(), [](unsigned char ch) {
-	    return !std::isspace(ch);
+	    return std::isspace(ch) == 0;
 	}).base(), s.end());
 }
 
@@ -125,9 +123,9 @@ SplitN(std::string s, std::string delim, size_t maxCount)
 	size_t                   ss = 0;
 	size_t                   se = 0;
 
-	for (ss = 0; s.size() != 0 && ss < s.size(); ss++) {
+	for (ss = 0; !s.empty() && ss < s.size(); ss++) {
 		se = s.find(delim, ss);
-		if ((maxCount > 0) && (parts.size() == maxCount - 1)) {
+		if ((maxCount > 0) && (parts.size() == (maxCount - 1))) {
 			se = s.size();
 		} else if (se == std::string::npos) {
 			se = s.size();
@@ -155,7 +153,7 @@ WrapText(std::string& line, size_t lineLength)
 
 	std::string wLine;
 	for (auto &word: parts) {
-		if (word.size() == 0) {
+		if (word.empty()) {
 			continue;
 		}
 
@@ -164,13 +162,13 @@ WrapText(std::string& line, size_t lineLength)
 			wLine.clear();
 		}
 
-		if (wLine.size() > 0) {
+		if (!wLine.empty()) {
 			wLine += " ";
 		}
 		wLine += word;
 	}
 
-	if (wLine.size() > 0) {
+	if (!wLine.empty()) {
 		wrapped.push_back(wLine);
 	}
 
@@ -182,7 +180,7 @@ void
 WriteTabIndented(std::ostream &os, std::vector<std::string> lines,
 		 int tabStop, bool indentFirst)
 {
-	std::string indent(tabStop, '\t');
+	std::string const indent(tabStop, '\t');
 
 	for (size_t i = 0; i < lines.size(); i++) {
 		if (i > 0 || indentFirst) {
@@ -230,6 +228,5 @@ VectorToString(const std::vector<std::string> &svec)
 }
 
 
-} // namespace S
-} // namespace U
+} // namespace string
 } // namespace scsl

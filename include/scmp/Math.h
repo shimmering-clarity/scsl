@@ -22,8 +22,8 @@
 /// PERFORMANCE OF THIS SOFTWARE.
 ///
 
-#ifndef SCCCL_MATH_H
-#define SCCCL_MATH_H
+#ifndef SCSL_SCMP_MATH_H
+#define SCSL_SCMP_MATH_H
 
 #include <cmath>
 #include <vector>
@@ -118,4 +118,4 @@ WithinTolerance(T a, T b, T epsilon)
 } // namespace scmp
 
 
-#endif //SCCCL_MATH_H
+#endif //SCSL_SCMP_MATH_H

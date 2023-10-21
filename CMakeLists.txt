@@ -41,23 +41,27 @@ set(HEADER_FILES
         include/scsl/Buffer.h
         include/scsl/Commander.h
         include/scsl/Dictionary.h
-        include/sctest/Exceptions.h
         include/scsl/Flags.h
         include/scsl/StringUtil.h
         include/scsl/TLV.h
 
+        include/scmp/estimation.h
         include/scmp/geom.h
         include/scmp/scmp.h
         include/scmp/Math.h
-        include/scmp/Motion2D.h
         include/scmp/geom/Coord2D.h
         include/scmp/geom/Orientation.h
         include/scmp/geom/Quaternion.h
         include/scmp/geom/Vector.h
-        include/scmp/filter/Madgwick.h
+        include/scmp/estimation/Madgwick.h
 
+        include/sctest/sctest.h
         include/sctest/Assert.h
+        include/sctest/Checks.h
+        include/sctest/Debug.h
+        include/sctest/Exceptions.h
         include/sctest/Report.h
+        include/sctest/SimpleSuite.h
 )
 
 include_directories(include)
@@ -74,7 +78,6 @@ set(SOURCE_FILES
 
         src/scmp/Math.cc
         src/scmp/Coord2D.cc
-        src/scmp/Motion2D.cc
         src/scmp/Orientation.cc
         src/scmp/Quaternion.cc
 

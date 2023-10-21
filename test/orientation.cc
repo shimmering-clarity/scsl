@@ -45,7 +45,7 @@ UnitConversions_RadiansToDegreesD()
 bool
 Orientation2f_Heading()
 {
-	geom::Vector2F a{2.0, 2.0};
+	geom::Vector2F const a{2.0, 2.0};
 
 	SCTEST_CHECK_FEQ(geom::Heading2F(a), scmp::DegreesToRadiansF(45));
 
@@ -56,9 +56,9 @@ Orientation2f_Heading()
 bool
 Orientation3f_Heading()
 {
-	geom::Vector3F a{2.0, 2.0, 2.0};
+	geom::Vector3F const a{2.0, 2.0, 2.0};
 
-	SCTEST_CHECK_FEQ(geom::Heading3f(a), scmp::DegreesToRadiansF(45));
+	SCTEST_CHECK_FEQ(geom::Heading3F(a), scmp::DegreesToRadiansF(45));
 
 	return true;
 }
@@ -67,18 +67,18 @@ Orientation3f_Heading()
 bool
 Orientation2d_Heading()
 {
-	geom::Vector2D a{2.0, 2.0};
+	geom::Vector2D const a{2.0, 2.0};
 
-	return scmp::WithinTolerance(geom::Heading2d(a), scmp::DegreesToRadiansD(45), 0.000001);
+	return scmp::WithinTolerance(geom::Heading2D(a), scmp::DegreesToRadiansD(45), 0.000001) != 0.0;
 }
 
 
 bool
 Orientation3d_Heading()
 {
-	geom::Vector3D a{2.0, 2.0, 2.0};
+	geom::Vector3D const a{2.0, 2.0, 2.0};
 
-	return scmp::WithinTolerance(geom::Heading3d(a), scmp::DegreesToRadiansD(45), 0.000001);
+	return scmp::WithinTolerance(geom::Heading3D(a), scmp::DegreesToRadiansD(45), 0.000001) != 0.0;
 }
 
 
@@ -90,7 +90,7 @@ main(int argc, char *argv[])
 {
 	auto noReport = false;
 	auto quiet = false;
-	auto flags = new scsl::Flags("test_orientation",
+	auto *flags = new scsl::Flags("test_orientation",
 				     "This test validates various orientation-related components in scmp.");
 	flags->Register("-n", false, "don't print the report");
 	flags->Register("-q", false, "suppress test output");

@@ -30,11 +30,6 @@
 #include <scmp/geom/Vector.h>
 
 
-// coord2d.cpp contains 2D geometric functions and data structures, such as
-// cartesian and polar coordinates and rotations.
-
-// TODO: deprecate Point2D in favour of Vector
-
 namespace scmp {
 namespace geom {
 
@@ -60,7 +55,7 @@ Point2D::Point2D(const Polar2D &pol)
 int
 Point2D::X() const
 {
-	return this->At(0);
+	return this->At(BasisX);
 }
 
 
@@ -74,21 +69,21 @@ Point2D::X(int _x)
 int
 Point2D::Y() const
 {
-	return this->At(1);
+	return this->At(BasisY);
 }
 
 
 void
 Point2D::Y(int _y)
 {
-	this->Set(1, _y);
+	this->Set(BasisY, _y);
 }
 
 
 std::ostream &
 operator<<(std::ostream &outs, const Point2D &pt)
 {
-	outs << "(" << std::to_string(pt[0]) << ", " << std::to_string(pt[1]) << ")";
+	outs << "(" << std::to_string(pt.X()) << ", " << std::to_string(pt.Y()) << ")";
 	return outs;
 }
 
@@ -192,8 +187,8 @@ Polar2D::Theta(const double _theta)
 void
 Polar2D::ToPoint(Point2D &point)
 {
-	point.Y(std::rint(std::sin(this->Theta()) * this->R()));
-	point.X(std::rint(std::cos(this->Theta()) * this->R()));
+	point.Y(static_cast<int>(std::rint(std::sin(this->Theta()) * this->R())));
+	point.X(static_cast<int>(std::rint(std::cos(this->Theta()) * this->R())));
 }
 
 
@@ -232,4 +227,4 @@ operator<<(std::ostream &outs, const Polar2D &pol)
 
 
 } // end namespace geom
-} // end namespace math
+} // end namespace scmp

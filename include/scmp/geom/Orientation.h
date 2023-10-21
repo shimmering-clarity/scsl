@@ -91,19 +91,19 @@ float	Heading2F(Vector2F vec);
 ///
 /// \param vec A vector Orientation.
 /// \return The compass heading of the vector in radians.
-double	Heading2d(Vector2D vec);
+double	Heading2D(Vector2D vec);
 
 /// \brief Compass heading for a Vector2F.
 ///
 /// \param vec A vector Orientation.
 /// \return The compass heading of the vector in radians.
-float	Heading3f(Vector3F vec);
+float	Heading3F(Vector3F vec);
 
-/// Heading3d returns a compass heading for a Vector2F.
+/// Heading3D returns a compass heading for a Vector2F.
 ///
 /// \param vec A vector Orientation.
 /// \return The compass heading of the vector in radians.
-double	Heading3d(Vector3D vec);
+double	Heading3D(Vector3D vec);
 
 
 } // namespace geom

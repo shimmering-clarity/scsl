@@ -1,5 +1,5 @@
 ///
-/// \file TLV.h
+/// \file include/scsl/TLV.h
 /// \author K. Isom <kyle@imap.cc>
 /// \date 2023-10-06
 /// \brief TLV.h implements basic tag-length-value records.
@@ -21,6 +21,8 @@
 
 
 namespace scsl {
+
+/// \brief Tag-length-value record tooling
 namespace TLV {
 
 
@@ -31,7 +33,7 @@ static constexpr size_t TLV_MAX_LEN = 253;
 static constexpr uint8_t TAG_EMPTY = 0;
 
 
-/// Record describes a tag-length-value record.
+/// \brief Tag-length-value record with single byte tags and lengths.
 ///
 /// TLV records occupy a fixed size in memory, which can be controlled with the
 /// TLV_MAX_LEN define. If this isn't defined, it defaults to a size of 253.

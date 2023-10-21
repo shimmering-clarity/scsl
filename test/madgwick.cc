@@ -7,7 +7,7 @@
 #include <scmp/geom/Quaternion.h>
 #include <scmp/Math.h>
 
-#include <scmp/filter/Madgwick.h>
+#include <scmp/estimation/Madgwick.h>
 #include <sctest/Assert.h>
 #include <sctest/Checks.h>
 #include <sctest/SimpleSuite.h>
@@ -20,22 +20,22 @@ using namespace scmp;
 bool
 SimpleAngularOrientationFloat()
 {
-	filter::Madgwickf       mflt;
-	const geom::Vector3F    gyro{0.174533, 0.0, 0.0}; // 10° X rotation.
+	estimation::Madgwickf estimation;
+	const geom::Vector3F  gyro{0.174533, 0.0, 0.0}; // 10° X rotation.
 	const geom::Quaternionf frame20Deg{0.984808, 0.173648, 0, 0}; // 20° final Orientation.
-	const float             delta         = 0.00917; // assume 109 updates per second, as per the paper.
-	const float             twentyDegrees = scmp::DegreesToRadiansF(20.0);
+	const float           delta         = 0.00917; // assume 109 updates per second, as per the paper.
+	const float           twentyDegrees = scmp::DegreesToRadiansF(20.0);
 
 	// The paper specifies a minimum of 109 IMU readings to stabilize; for
 	// two seconds, that means 218 updates.
 	for (int i = 0; i < 218; i++) {
-		mflt.UpdateAngularOrientation(gyro, delta);
+		estimation.UpdateAngularOrientation(gyro, delta);
 	}
 
 
-	SCTEST_CHECK_EQ(mflt.Orientation(), frame20Deg);
+	SCTEST_CHECK_EQ(estimation.Orientation(), frame20Deg);
 
-	auto euler = mflt.Euler();
+	auto euler = estimation.Euler();
 	SCTEST_CHECK_FEQ_EPS(euler[0], twentyDegrees, 0.01);
 	SCTEST_CHECK_FEQ_EPS(euler[1], 0.0, 0.01);
 	SCTEST_CHECK_FEQ_EPS(euler[2], 0.0, 0.01);
@@ -47,7 +47,7 @@ SimpleAngularOrientationFloat()
 bool
 SimpleAngularOrientationFloatDefaultDT()
 {
-	filter::Madgwickf       mflt;
+	estimation::Madgwickf       mflt;
 	const geom::Vector3F    gyro{0.174533, 0.0, 0.0}; // 10° X rotation.
 	const geom::Quaternionf frame20Deg{0.984808, 0.173648, 0, 0}; // 20° final Orientation.
 	const float             delta         = 0.00917; // assume 109 updates per second, as per the paper.
@@ -75,7 +75,7 @@ SimpleAngularOrientationFloatDefaultDT()
 bool
 VerifyUpdateWithZeroDeltaTFails()
 {
-	filter::Madgwickf       mflt;
+	estimation::Madgwickf       mflt;
 	const geom::Vector3F    gyro{0.174533, 0.0, 0.0}; // 10° X rotation.
 	const geom::Quaternionf frame20Deg{0.984808, 0.173648, 0, 0}; // 20° final Orientation.
 	const float             twentyDegrees = scmp::DegreesToRadiansF(20.0);
@@ -100,7 +100,7 @@ VerifyUpdateWithZeroDeltaTFails()
 bool
 SimpleAngularOrientationDouble()
 {
-	filter::Madgwickd       mflt;
+	estimation::Madgwickd       mflt;
 	const geom::Vector3D    gyro{0.174533, 0.0, 0.0}; // 10° X rotation.
 	const geom::Quaterniond frame20Deg{0.984808, 0.173648, 0, 0}; // 20° final Orientation.
 	const double            delta         = 0.00917; // assume 109 updates per second, as per the paper.
@@ -127,7 +127,7 @@ bool
 SimpleAngularOrientation2InitialVector3f()
 {
 	const geom::Vector3F    initialFrame{0, 0, 0};
-	filter::Madgwickf       mflt(initialFrame);
+	estimation::Madgwickf       mflt(initialFrame);
 	const geom::Vector3F    gyro{0.174533, 0.0, 0.0}; // 10° X rotation.
 	const geom::Quaternionf frame20Deg{0.984808, 0.173648, 0, 0}; // 20° final Orientation.
 	const float             delta         = 0.00917; // assume 109 updates per second, as per the paper.
@@ -154,7 +154,7 @@ bool
 SimpleAngularOrientation2InitialQuaternionf()
 {
 	const auto              initialFrame = geom::FloatQuaternionFromEuler({0, 0, 0});
-	filter::Madgwickf       mflt(initialFrame);
+	estimation::Madgwickf       mflt(initialFrame);
 	const geom::Vector3F    gyro{0.174533, 0.0, 0.0}; // 10° X rotation.
 	const geom::Quaternionf frame20Deg{0.984808, 0.173648, 0, 0}; // 20° final Orientation.
 	const float             delta         = 0.00917; // assume 109 updates per second, as per the paper.
@@ -181,7 +181,7 @@ bool
 SimpleAngularOrientation2InitialVector3d()
 {
 	const geom::Vector3D    initialFrame{0, 0, 0};
-	filter::Madgwickd       mflt(initialFrame);
+	estimation::Madgwickd       mflt(initialFrame);
 	const geom::Vector3D    gyro{0.174533, 0.0, 0.0}; // 10° X rotation.
 	const geom::Quaterniond frame20Deg{0.984808, 0.173648, 0, 0}; // 20° final Orientation.
 	const double            delta         = 0.00917; // assume 109 updates per second, as per the paper.
@@ -208,7 +208,7 @@ bool
 SimpleAngularOrientation2InitialQuaterniond()
 {
 	const auto              initialFrame = geom::DoubleQuaternionFromEuler({0, 0, 0});
-	filter::Madgwickd       mflt(initialFrame);
+	estimation::Madgwickd       mflt(initialFrame);
 	const geom::Vector3D    gyro{0.174533, 0.0, 0.0}; // 10° X rotation.
 	const geom::Quaterniond frame20Deg{0.984808, 0.173648, 0, 0}; // 20° final Orientation.
 	const double            delta         = 0.00917; // assume 109 updates per second, as per the paper.
@@ -236,8 +236,8 @@ main(int argc, char **argv)
 {
 	auto quiet = false;
 	auto noReport = false;
-	auto flags = new scsl::Flags("test_madgwick",
-				     "This test validates the Madgwick filter code");
+	auto *flags = new scsl::Flags("test_madgwick",
+				     "This test validates the Madgwick estimation code");
 	flags->Register("-n", false, "don't print the report");
 	flags->Register("-q", false, "suppress test output");
 

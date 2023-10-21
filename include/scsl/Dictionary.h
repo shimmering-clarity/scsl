@@ -1,5 +1,5 @@
 ///
-/// \file Dictionary.h
+/// \file include/scsl/Dictionary.h
 /// \author kyle (kyle@imap.cc)
 /// \date 2023-10-12
 /// \brief Key-value store built on top of Arena and TLV.
@@ -39,11 +39,7 @@ static constexpr uint8_t	DICTIONARY_TAG_VAL = 2;
 namespace scsl {
 
 
-/*
- * A Dictionary is a collection of key-value pairs, similar to how
- * a dictionary is a mapping of names to definitions.
- */
-/// Dictionary implements a key-value store on top of Arena and TLV::Record.
+/// \brief Key-value store on top of Arena and TLV::Record.
 ///
 /// Keys and vales are stored as sequential pairs of TLV records; they are
 /// expected to contain string values but this isn't necessarily the case. The

@@ -1,5 +1,5 @@
 ///
-/// \file Buffer.h
+/// \file include/scsl/Buffer.h
 /// \author K. Isom <kyle@imap.cc>
 /// \date 2023-10-09
 /// \brief Buffer implements basic line buffers.
@@ -33,7 +33,7 @@
 
 namespace scsl {
 
-/// Buffer is a basic line buffer.
+/// \brief Basic line buffer.
 ///
 /// The buffer manages its own internal memory, growing and shrinking
 /// as needed. Its capacity is separate from its length; the optimal

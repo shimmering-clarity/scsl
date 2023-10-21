@@ -1,5 +1,5 @@
 ///
-/// \file Exceptions.h
+/// \file include/sctest/Exceptions.h
 /// \author K. Isom <kyle@imap.cc>
 /// \date 2023-10-10
 /// \brief Custom exceptions for use in SCSL used in writing test programs.
@@ -31,7 +31,7 @@
 namespace sctest {
 
 
-/// NotImplemented is an exception reserved for unsupported platforms.
+/// \brief Exception reserved for unsupported platforms.
 ///
 /// It is used to mark functionality included for compatibility, and useful for
 /// debugging.

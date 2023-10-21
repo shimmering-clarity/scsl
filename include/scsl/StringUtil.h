@@ -1,5 +1,5 @@
 ///
-/// \file StringUtil.h
+/// \file include/scsl/StringUtil.h
 /// \author K. Isom <kyle@imap.cc>
 /// \date 2023-10-14
 /// \brief Utilities for working with strings.
@@ -32,11 +32,8 @@
 
 namespace scsl {
 
-/// namespace U contains utilities.
-namespace U {
-
-/// namespace S contains string-related functions.
-namespace S {
+/// String-related utility functions.
+namespace string {
 
 
 /// Remove any whitespace At the beginning of the string. The string
@@ -125,8 +122,7 @@ std::ostream &VectorToString(std::ostream &os, const std::vector<std::string> &s
 std::string   VectorToString(const std::vector<std::string> &svec);
 
 
-} // namespace S
-} // namespace U
+} // namespace string
 } // namespace scsl
 
 

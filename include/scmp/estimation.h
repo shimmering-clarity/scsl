@@ -1,11 +1,10 @@
 ///
-/// \file src/scmp/geom/Orientation.cc
+/// \file include/scmp/estimation.h
 /// \author K. Isom <kyle@imap.cc>
-/// \date 2017-06-05
-/// \brief Orientation of vectors w.r.t. a reference plane, assumed to
-///        be the Earth.
+/// \date 2023-10-20
+/// \brief
 ///
-/// Copyright 2017 K. Isom <kyle@imap.cc>
+/// Copyright 2023 K. Isom <kyle@imap.cc>
 ///
 /// Permission to use, copy, modify, and/or distribute this software for
 /// any purpose with or without fee is hereby granted, provided that
@@ -21,43 +20,20 @@
 /// PERFORMANCE OF THIS SOFTWARE.
 ///
 
-#include <scmp/geom/Vector.h>
-#include <scmp/geom/Orientation.h>
+#include <scmp/estimation/Madgwick.h>
 
+
+#ifndef SCSL_ESTIMATION_H
+#define SCSL_ESTIMATION_H
 
 namespace scmp {
-namespace geom {
 
 
-float
-Heading2F(Vector2F vec)
-{
-	return vec.Angle(Basis2F[BasisX]);
+/// \brief Algorithms for estimation position, and system state.
+namespace estimation {}
+
+
 }
 
 
-float
-Heading3F(Vector3F vec)
-{
-	const Vector2F vec2f {vec.At(BasisX), vec.At(BasisY)};
-	return Heading2F(vec2f);
-}
-
-
-double
-Heading2D(Vector2D vec)
-{
-	return vec.Angle(Basis2D[BasisX]);
-}
-
-
-double
-Heading3D(Vector3D vec)
-{
-	const Vector2D vec2d {vec.At(BasisX), vec.At(BasisY)};
-	return Heading2D(vec2d);
-}
-
-
-} // namespace geom
-} // namespace scmp
+#endif // SCSL_ESTIMATION_H
