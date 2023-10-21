@@ -16,7 +16,7 @@ jobs:
       - checkout
       - run:
           name: Trunk check
-          command: ./trunk check --upstream=${PR_BASE_REF:--remotes/origin/${CIRCLE_BRANCH}}
+          command: ./trunk check --upstream=remotes/origin/${CIRCLE_BRANCH}
 
 workflows:
   ctest:
