@@ -58,7 +58,6 @@ set(HEADER_FILES
         include/sctest/sctest.h
         include/sctest/Assert.h
         include/sctest/Checks.h
-        include/sctest/Debug.h
         include/sctest/Exceptions.h
         include/sctest/Report.h
         include/sctest/SimpleSuite.h
