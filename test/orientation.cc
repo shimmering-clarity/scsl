@@ -88,9 +88,11 @@ Orientation3d_Heading()
 int
 main(int argc, char *argv[])
 {
+	auto noReport = false;
 	auto quiet = false;
 	auto flags = new scsl::Flags("test_orientation",
 				     "This test validates various orientation-related components in scmp.");
+	flags->Register("-n", false, "don't print the report");
 	flags->Register("-q", false, "suppress test output");
 
 	auto parsed = flags->Parse(argc, argv);
@@ -100,6 +102,7 @@ main(int argc, char *argv[])
 	}
 
 	SimpleSuite suite;
+	flags->GetBool("-n", noReport);
 	flags->GetBool("-q", quiet);
 	if (quiet) {
 		suite.Silence();
@@ -114,6 +117,6 @@ main(int argc, char *argv[])
 
 	delete flags;
 	auto result = suite.Run();
-	std::cout << suite.GetReport() << "\n";
+	if (!noReport) { std::cout << suite.GetReport() << "\n"; }
 	return result ? 0 : 1;
 }

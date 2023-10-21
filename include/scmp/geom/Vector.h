@@ -24,6 +24,7 @@
 #ifndef SCMATH_VECTORS_H
 #define SCMATH_VECTORS_H
 
+
 #include <array>
 #include <cassert>
 #include <cmath>
@@ -53,15 +54,15 @@ namespace geom {
 ///
 /// Vectors can be indexed like arrays, and they contain an epsilon value
 /// that defines a tolerance for equality.
-template <typename T, size_t N>
+template<typename T, size_t N>
 class Vector {
 public:
 	/// The default constructor creates a unit vector for a given type
 	/// and size.
 	Vector()
 	{
-		T	unitLength = (T)1.0 / std::sqrt(N);
-		for (size_t i = 0; i < N; i++) {
+		T           unitLength = (T) 1.0 / std::sqrt(N);
+		for (size_t i          = 0; i < N; i++) {
 			this->arr[i] = unitLength;
 		}
 
@@ -72,7 +73,7 @@ public:
 	/// If given an initializer_list, the vector is created with
 	/// those values. There must be exactly N elements in the list.
 	/// @param ilst An intializer list with N elements of type T.
-	Vector(std::initializer_list<T>	ilst)
+	Vector(std::initializer_list<T> ilst)
 	{
 		assert(ilst.size() == N);
 
@@ -81,10 +82,51 @@ public:
 	}
 
 
+	/// \brief Return the element at index i.
+	///
+	/// \throws std::out_of_range if the index is out of bounds.
+	///
+	/// \param index The index of the item to retrieve.
+	/// \return The value at the index.
+	T at(size_t index) const
+	{
+		if (index > this->arr.size()) {
+			throw std::out_of_range("index " +
+						std::to_string(index) + " > " +
+						std::to_string(this->arr.size()));
+		}
+		return this->arr.at(index);
+	}
+
+
+	/// \brief Set a new value for the vector.
+	///
+	/// This is used to modify the vector in place.
+	///
+	/// \throws std::out_of_range if the index is out of bounds.
+	///
+	/// \param index The index to insert the value at.
+	/// \param value
+	void Set(size_t index, T value)
+	{
+		if (index > this->arr.size()) {
+			throw std::out_of_range("index " +
+						std::to_string(index) + " > " +
+						std::to_string(this->arr.size()));
+		}
+
+		this->arr[index] = value;
+	}
+
+
+
+
+
 	/// Compute the length of the vector.
 	/// @return The length of the vector.
-	T magnitude() const {
-		T	result = 0;
+	T magnitude() const
+	{
+		T result = 0;
 
 		for (size_t i = 0; i < N; i++) {
 			result += (this->arr[i] * this->arr[i]);
@@ -110,7 +152,7 @@ public:
 	isZero() const
 	{
 		for (size_t i = 0; i < N; i++) {
-			if (!scmp::WithinTolerance(this->arr[i], (T)0.0, this->epsilon)) {
+			if (!scmp::WithinTolerance(this->arr[i], (T) 0.0, this->epsilon)) {
 				return false;
 			}
 		}
@@ -132,7 +174,7 @@ public:
 	bool
 	isUnitVector() const
 	{
-		return scmp::WithinTolerance(this->magnitude(), (T)1.0, this->epsilon);
+		return scmp::WithinTolerance(this->magnitude(), (T) 1.0, this->epsilon);
 	}
 
 
@@ -142,8 +184,8 @@ public:
 	T
 	angle(const Vector<T, N> &other) const
 	{
-		Vector<T, N>	unitA = this->unitVector();
-		Vector<T, N>	unitB = other.unitVector();
+		Vector<T, N> unitA = this->unitVector();
+		Vector<T, N> unitB = other.unitVector();
 
 		// Can't compute angles with a zero vector.
 		assert(!this->isZero());
@@ -163,7 +205,7 @@ public:
 		}
 
 		T angle = this->angle(other);
-		if (scmp::WithinTolerance(angle, (T)0.0, this->epsilon)) {
+		if (scmp::WithinTolerance(angle, (T) 0.0, this->epsilon)) {
 			return true;
 		}
 
@@ -182,7 +224,7 @@ public:
 			return true;
 		}
 
-		return scmp::WithinTolerance(*this * other, (T)0.0, this->epsilon);
+		return scmp::WithinTolerance(*this * other, (T) 0.0, this->epsilon);
 	}
 
 
@@ -193,7 +235,7 @@ public:
 	Vector
 	projectParallel(const Vector<T, N> &basis) const
 	{
-		Vector<T, N>	unit_basis = basis.unitVector();
+		Vector<T, N> unit_basis = basis.unitVector();
 
 		return unit_basis * (*this * unit_basis);
 	}
@@ -207,7 +249,7 @@ public:
 	Vector
 	projectOrthogonal(const Vector<T, N> &basis)
 	{
-		Vector<T, N>	spar = this->projectParallel(basis);
+		Vector<T, N> spar = this->projectParallel(basis);
 		return *this - spar;
 	}
 
@@ -220,10 +262,10 @@ public:
 	cross(const Vector<T, N> &other) const
 	{
 		assert(N == 3);
-		return Vector<T, N> {
-			(this->arr[1] * other.arr[2]) - (other.arr[1] * this->arr[2]),
-			-((this->arr[0] * other.arr[2]) - (other.arr[0] * this->arr[2])),
-			(this->arr[0] * other.arr[1]) - (other.arr[0] * this->arr[1])
+		return Vector<T, N>{
+		    (this->arr[1] * other.arr[2]) - (other.arr[1] * this->arr[2]),
+		    -((this->arr[0] * other.arr[2]) - (other.arr[0] * this->arr[2])),
+		    (this->arr[0] * other.arr[1]) - (other.arr[0] * this->arr[1])
 		};
 	}
 
@@ -235,7 +277,7 @@ public:
 	Vector
 	operator+(const Vector<T, N> &other) const
 	{
-		Vector<T, N>	vec;
+		Vector<T, N> vec;
 
 		for (size_t i = 0; i < N; i++) {
 			vec.arr[i] = this->arr[i] + other.arr[i];
@@ -252,7 +294,7 @@ public:
 	Vector
 	operator-(const Vector<T, N> &other) const
 	{
-		Vector<T, N>	vec;
+		Vector<T, N> vec;
 
 		for (size_t i = 0; i < N; i++) {
 			vec.arr[i] = this->arr[i] - other.arr[i];
@@ -268,7 +310,7 @@ public:
 	Vector
 	operator*(const T k) const
 	{
-		Vector<T, N>	vec;
+		Vector<T, N> vec;
 
 		for (size_t i = 0; i < N; i++) {
 			vec.arr[i] = this->arr[i] * k;
@@ -284,7 +326,7 @@ public:
 	Vector
 	operator/(const T k) const
 	{
-		Vector<T, N>	vec;
+		Vector<T, N> vec;
 
 		for (size_t i = 0; i < N; i++) {
 			vec.arr[i] = this->arr[i] / k;
@@ -300,7 +342,7 @@ public:
 	T
 	operator*(const Vector<T, N> &other) const
 	{
-		T	result = 0;
+		T result = 0;
 
 		for (size_t i = 0; i < N; i++) {
 			result += (this->arr[i] * other.arr[i]);
@@ -317,7 +359,7 @@ public:
 	bool
 	operator==(const Vector<T, N> &other) const
 	{
-		for (size_t i = 0; i<N; i++) {
+		for (size_t i = 0; i < N; i++) {
 			if (!scmp::WithinTolerance(this->arr[i], other.arr[i], this->epsilon)) {
 				return false;
 			}
@@ -349,7 +391,7 @@ public:
 	///
 	/// @param i The component index.
 	/// @return The value of the vector component at i.
-	const T&
+	const T &
 	operator[](size_t i) const
 	{
 		return this->arr[i];
@@ -360,13 +402,13 @@ public:
 	/// @param outs An output stream.
 	/// @param vec The vector to be formatted.
 	/// @return The output stream.
-	friend std::ostream&
-	operator<<(std::ostream& outs, const Vector<T, N>& vec)
+	friend std::ostream &
+	operator<<(std::ostream &outs, const Vector<T, N> &vec)
 	{
 		outs << "<";
 		for (size_t i = 0; i < N; i++) {
 			outs << vec.arr[i];
-			if (i < (N-1)) {
+			if (i < (N - 1)) {
 				outs << ", ";
 			}
 		}
@@ -375,9 +417,9 @@ public:
 	}
 
 private:
-	static const size_t	dim = N;
-	T			epsilon;
-	std::array<T, N>	arr;
+	static const size_t dim = N;
+	T                   epsilon;
+	std::array<T, N>    arr;
 };
 
 ///
@@ -391,27 +433,27 @@ private:
 
 /// \ingroup vector_aliases
 /// @brief Type alias for a two-dimensional float vector.
-typedef Vector<float,  2>	Vector2f;
+typedef Vector<float, 2> Vector2f;
 
 /// \ingroup vector_aliases
 /// @brief Type alias for a three-dimensional float vector.
-typedef Vector<float,  3>	Vector3f;
+typedef Vector<float, 3> Vector3f;
 
 /// \ingroup vector_aliases
 /// @brief Type alias for a four-dimensional float vector.
-typedef Vector<float,  4>	Vector4f;
+typedef Vector<float, 4> Vector4f;
 
 /// \ingroup vector_aliases
 /// @brief Type alias for a two-dimensional double vector.
-typedef Vector<double,  2>	Vector2d;
+typedef Vector<double, 2> Vector2d;
 
 /// \ingroup vector_aliases
 /// @brief Type alias for a three-dimensional double vector.
-typedef	Vector<double, 3>	Vector3d;
+typedef Vector<double, 3> Vector3d;
 
 /// \ingroup vector_aliases
 /// @brief Type alias for a four-dimensional double vector.
-typedef Vector<double, 4>	Vector4d;
+typedef Vector<double, 4> Vector4d;
 
 
 } // namespace geom

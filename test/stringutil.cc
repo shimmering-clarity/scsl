@@ -24,6 +24,7 @@
 #include <functional>
 #include <iostream>
 
+#include <scsl/Flags.h>
 #include <scsl/StringUtil.h>
 #include <sctest/Assert.h>
 #include <sctest/SimpleSuite.h>
@@ -135,9 +136,27 @@ TestWrapping()
 
 
 int
-main()
+main(int argc, char *argv[])
 {
+	auto noReport = false;
+	auto quiet = false;
+	auto flags = new scsl::Flags("test_orientation",
+				     "This test validates various orientation-related components in scmp.");
+	flags->Register("-n", false, "don't print the report");
+	flags->Register("-q", false, "suppress test output");
+
+	auto parsed = flags->Parse(argc, argv);
+	if (parsed != scsl::Flags::ParseStatus::OK) {
+		std::cerr << "Failed to parse flags: "
+			  << scsl::Flags::ParseStatusToString(parsed) << "\n";
+	}
+
 	sctest::SimpleSuite suite;
+	flags->GetBool("-n", noReport);
+	flags->GetBool("-q", quiet);
+	if (quiet) {
+		suite.Silence();
+	}
 
 	TestTrimming(" foo\t ", "foo\t ", " foo", "foo");
 	TestTrimming(" foo\tbar ", "foo\tbar ", " foo\tbar", "foo\tbar");
@@ -155,7 +174,9 @@ main()
 				std::vector<std::string>{"abc", "", "def", "ghi"}));
 	suite.AddTest("TestSplitKV(char)", TestSplitChar);
 	suite.AddTest("TextWrapping", TestWrapping);
+
+	delete flags;
 	auto result = suite.Run();
-	std::cout << suite.GetReport() << "\n";
+	if (!noReport) { std::cout << suite.GetReport() << "\n"; }
 	return result ? 0 : 1;
 }

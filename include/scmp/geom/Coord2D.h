@@ -28,6 +28,8 @@
 #include <ostream>
 #include <vector>
 
+#include <scmp/geom/Vector.h>
+
 
 namespace scmp {
 namespace geom {
@@ -39,60 +41,78 @@ class Polar2D;
 
 /// \brief Point2D is a logical grouping of a set of 2D cartesian
 ///        coordinates.
-class Point2D {
+class Point2D : public Vector<int, 2> {
 public:
-	int x, y;
-
-	// A Point2D can be initialised by setting its members to 0, by providing the
-	// x and y coordiantes, or through translation from a polar coordinate.
+	/// \brief A Point2D defaults to (0,0).
 	Point2D();
-	Point2D(int _x, int _y);
-	Point2D(const Polar2D &);
 
+	/// \brief Initialize a Point2D at (_x, _y).
+	Point2D(int _x, int _y);
+
+	/// \brief Initialize a Point2D from a Polar2D coordinate.
+	Point2D(const Polar2D &pol);
+
+	/// \brief Return the X component of the point.
+	int X() const;
+
+	/// \brief Set the X component of the point.
+	void X(int _x);
+
+	/// \brief Return the Y component of the point.
+	int Y() const;
+
+	/// Set the Y component of the point.
+	void Y(int _y);
+
+	/// \brief ToString returns a string in the format (x,y).
 	std::string ToString();
+
+	/// \brief ToPolar converts the Point2D to a polar coordinate
+	///        in-place.
 	void ToPolar(Polar2D &);
 
-	// Rotate rotates the point by theta radians. Alternatively, a rotation
-	// can use this point as the centre, with a polar coordinate and a rotation
-	// amount (in radians). The latter is used to specify a central point
-	// of rotation with vertices specified as polar coordinates from the centre.
-	// Both forms take a reference to a Point2D to store the rotated point.
-	void Rotate(Point2D &rotated, double theta);
-	std::vector<Point2D> Rotate(std::vector<Polar2D>, double);
+	/// \brief Rotate rotates the point by theta radians.
+	///
+	/// \param rotated Stores the rotated point.
+	/// \param theta The angle (in radians) to rotate the point.
+	void Rotate(Point2D& rotated, double theta);
 
-	// Translate adds this point to the first argument, storing the result in the
-	// second argument.
+	/// \brief Rotate this point around a series of vertices.
+	///
+	/// \param vertices A series of vertices to rotate this point around.
+	/// \param theta The angle to rotate by.
+	/// \return A series of rotated points.
+	std::vector<Point2D> Rotate(std::vector<Polar2D> vertices, double theta);
+
+	/// \brief Translate adds this point to the first argument,
+	///        storing the result in the second argument.
+	///
+	/// \param other The point to translate by.
+	/// \param translated The point to store the translation in.
 	void Translate(const Point2D &other, Point2D &translated);
 
-	// Distance returns the distance from this point to another.
-	int Distance(const Point2D &other);
+	/// \brief Distance returns the distance from this point to another.
+	int Distance(const Point2D &other) const;
 
-	Point2D operator+(const Point2D &rhs) const
-	{ return Point2D(x + rhs.x, y + rhs.y); }
-	Point2D operator-(const Point2D &rhs) const
-	{ return Point2D(x - rhs.x, y - rhs.y); }
-	Point2D operator*(const int k) const
-	{ return Point2D(x * k, y * k); }
-	bool operator==(const Point2D &rhs) const;
-	bool operator!=(const Point2D &rhs) const
-	{ return !(*this == rhs); }
 	friend std::ostream &operator<<(std::ostream &outs, const Point2D &pt);
 };
 
 // A Polar2D is a 2D polar coordinate, specified in terms of the radius from
 // some origin and the angle from the positive X axis of a cartesian coordinate
 // system.
-class Polar2D {
+class Polar2D : public Vector<double, 2> {
 public:
-	double r, theta;
-
 	// A Polar2D can be initialised as a zeroised polar coordinate, by specifying
 	// the radius and angle directly, or via conversion from a Point2D.
-	Polar2D() : r(0.0), theta(0.0)
-	{}
-	Polar2D(double _r, double _theta) : r(_r), theta(_theta)
-	{}
+	Polar2D();
+	Polar2D(double _r, double _theta);
 	Polar2D(const Point2D &);
+
+	double R() const;
+	void R(const double _r);
+
+	double Theta() const;
+	void Theta(const double _theta);
 
 	std::string ToString();
 	void ToPoint(Point2D &);

@@ -131,16 +131,23 @@ static constexpr float  Epsilon_float = 0.0001;
 
 
 void
-DefaultEpsilon(double &epsilon)
+DefaultEpsilon(double& epsilon)
 {
 	epsilon = Epsilon_double;
 }
 
 
 void
-DefaultEpsilon(float &epsilon)
+DefaultEpsilon(float& epsilon)
 {
 	epsilon = Epsilon_float;
+}
+
+
+void
+DefaultEpsilon(int& epsilon)
+{
+	epsilon = 0;
 }
 
 

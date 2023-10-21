@@ -219,15 +219,37 @@ geomRotatePointsAboutOrigin()
 
 	return true;
 }
+
+
+bool
+pointDistances()
+{
+	const Point2D	origin;
+	const Point2D	y2(0, 2);
+	const Point2D	x2(2, 0);
+	const int 	dist2 = 2;
+	const int 	dist10 = 10;
+	const Point2D	deg45{8, 6};
+
+	SCTEST_CHECK_EQ(y2.Distance(origin), dist2);
+	SCTEST_CHECK_EQ(x2.Distance(origin), dist2);
+	SCTEST_CHECK_EQ(deg45.Distance(origin), dist10);
+
+	return true;
+};
+
+
 } // anonymous namespace
 
 
 int
 main(int argc, char *argv[])
 {
+	auto noReport = false;
 	auto quiet = false;
 	auto flags = new scsl::Flags("test_orientation",
 				     "This test validates various orientation-related components in scmp.");
+	flags->Register("-n", false, "don't print the report");
 	flags->Register("-q", false, "suppress test output");
 
 	auto parsed = flags->Parse(argc, argv);
@@ -237,6 +259,7 @@ main(int argc, char *argv[])
 	}
 
 	SimpleSuite suite;
+	flags->GetBool("-n", noReport);
 	flags->GetBool("-q", quiet);
 	if (quiet) {
 		suite.Silence();
@@ -248,9 +271,10 @@ main(int argc, char *argv[])
 	suite.AddTest("geomComparePoint2D", geomComparePoint2D);
 	suite.AddTest("geomRotatePoint2D", geomRotatePoint2D);
 	suite.AddTest("geomRotatePointsAboutOrigin", geomRotatePointsAboutOrigin);
+	suite.AddTest("pointDistances", pointDistances);
 
 	delete flags;
 	auto result = suite.Run();
-	std::cout << suite.GetReport() << "\n";
+	if (!noReport) { std::cout << suite.GetReport() << "\n"; }
 	return result ? 0 : 1;
 }

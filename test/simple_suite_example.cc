@@ -25,6 +25,7 @@
 
 #include <iostream>
 
+#include <scsl/Flags.h>
 #include <sctest/SimpleSuite.h>
 
 
@@ -52,16 +53,36 @@ static bool nope()   { return 2 + 2 == 5; }
 
 
 int
-main()
+main(int argc, char *argv[])
 {
+	auto noReport = false;
+	auto quiet = false;
+	auto flags = new scsl::Flags("test_orientation",
+				     "This test validates various orientation-related components in scmp.");
+	flags->Register("-n", false, "don't print the report");
+	flags->Register("-q", false, "suppress test output");
+
+	auto parsed = flags->Parse(argc, argv);
+	if (parsed != scsl::Flags::ParseStatus::OK) {
+		std::cerr << "Failed to parse flags: "
+			  << scsl::Flags::ParseStatusToString(parsed) << "\n";
+	}
+
 	sctest::SimpleSuite suite;
+	flags->GetBool("-n", noReport);
+	flags->GetBool("-q", quiet);
+	if (quiet) {
+		suite.Silence();
+	}
+
 	suite.Setup(prepareTests);
 	suite.Teardown(destroyTests);
 	suite.AddTest("1 + 1", addOne);
 	suite.AddTest("fourness", four);
 	suite.AddFailingTest("self-evident truth", nope);
-	auto result = suite.Run();
 
-	std::cout << suite.GetReport() << "\n";
+	delete flags;
+	auto result = suite.Run();
+	if (!noReport) { std::cout << suite.GetReport() << "\n"; }
 	return result ? 0 : 1;
 }

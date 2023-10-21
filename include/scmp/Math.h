@@ -84,10 +84,16 @@ double	RotateRadians(double theta0, double theta1);
 /// \param epsilon The variable to store the epsilon value in.
 void	DefaultEpsilon(double &epsilon);
 
-/// Get the default epsilon value.
+/// \brief Get the default epsilon value.
 ///
 /// \param epsilon The variable to store the epsilon value in.
 void	DefaultEpsilon(float &epsilon);
+
+
+/// \brief Get the default epsilon for integer types.
+///
+/// \param epsilon The variable to store the epsilon value in.
+void	DefaultEpsilon(int& epsilon);
 
 
 /// \brief Return whether the two values of type T are equal to within

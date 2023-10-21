@@ -26,6 +26,7 @@
 #include <scmp/geom/Vector.h>
 #include <sctest/SimpleSuite.h>
 #include <sctest/Checks.h>
+#include "scsl/Flags.h"
 
 
 using namespace scmp;
@@ -428,9 +429,28 @@ Vector3DoubleTests_CrossProduct()
 
 
 int
-main()
+main(int argc, char *argv[])
 {
+	auto noReport = false;
+	auto quiet = false;
+	auto flags = new scsl::Flags("test_vector",
+				     "This test validates the vector implementation.");
+	flags->Register("-n", false, "don't print the report");
+	flags->Register("-q", false, "suppress test output");
+
+	auto parsed = flags->Parse(argc, argv);
+	if (parsed != scsl::Flags::ParseStatus::OK) {
+		std::cerr << "Failed to parse flags: "
+			  << scsl::Flags::ParseStatusToString(parsed) << "\n";
+	}
+
 	SimpleSuite suite;
+	flags->GetBool("-n", noReport);
+	flags->GetBool("-q", quiet);
+	if (quiet) {
+		suite.Silence();
+	}
+
 	suite.AddTest("Vector3Miscellaneous_ExtractionOperator3d",
 		      Vector3Miscellaneous_ExtractionOperator3d);
 	suite.AddTest("Vector3Miscellaneous_ExtractionOperator3f",
@@ -485,8 +505,9 @@ main()
 		      Vector3DoubleTests_Projections);
 	suite.AddTest("Vector3DoubleTests_CrossProduct",
 		      Vector3DoubleTests_CrossProduct);
-	auto result = suite.Run();
 
-	std::cout << suite.GetReport() << "\n";
+	delete flags;
+	auto result = suite.Run();
+	if (!noReport) { std::cout << suite.GetReport() << "\n"; }
 	return result ? 0 : 1;
 }

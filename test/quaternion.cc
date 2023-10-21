@@ -1,8 +1,8 @@
 #include <cmath>
 #include <sstream>
 
+#include <scsl/Flags.h>
 #include <scmp/geom/Quaternion.h>
-
 #include <sctest/Checks.h>
 #include <sctest/SimpleSuite.h>
 
@@ -427,9 +427,27 @@ QuaternionMiscellanous_InitializerConstructor()
 
 
 int
-main(void)
+main(int argc, char *argv[])
 {
+	auto noReport = false;
+	auto quiet = false;
+	auto flags = new scsl::Flags("test_quaternion",
+				     "This test validates the Quaternion class.");
+	flags->Register("-n", false, "don't print the report");
+	flags->Register("-q", false, "suppress test output");
+
+	auto parsed = flags->Parse(argc, argv);
+	if (parsed != scsl::Flags::ParseStatus::OK) {
+		std::cerr << "Failed to parse flags: "
+			  << scsl::Flags::ParseStatusToString(parsed) << "\n";
+	}
+
 	SimpleSuite suite;
+	flags->GetBool("-n", noReport);
+	flags->GetBool("-q", quiet);
+	if (quiet) {
+		suite.Silence();
+	}
 
 	suite.AddTest("Quaternion_SelfTest", Quaternion_SelfTest);
 	suite.AddTest("QuaternionMiscellanous_InitializerConstructor",
@@ -465,7 +483,8 @@ main(void)
 	suite.AddTest("Quaternionf_Unit", Quaternionf_Unit);
 	suite.AddTest("Quaternionf_UtilityCreator", Quaternionf_UtilityCreator);
 
+	delete flags;
 	auto result = suite.Run();
-	std::cout << suite.GetReport() << "\n";
+	if (!noReport) { std::cout << suite.GetReport() << "\n"; }
 	return result ? 0 : 1;
 }

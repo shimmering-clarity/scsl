@@ -1,5 +1,5 @@
 ///
-/// \file Madgwick.h
+/// \file include/scmp/filter/Madgwick.h
 /// \author K. Isom <kyle@imap.cc>
 /// \date 2019-08-06
 /// \brief Implementation of a Madgwick filter.

@@ -1,14 +1,17 @@
 #include <cmath>
 #include <sstream>
 
+#include <scsl/Flags.h>
+
 #include <scmp/geom/Vector.h>
 #include <scmp/geom/Quaternion.h>
 #include <scmp/Math.h>
-#include <scmp/filter/Madgwick.h>
 
+#include <scmp/filter/Madgwick.h>
 #include <sctest/Assert.h>
 #include <sctest/Checks.h>
 #include <sctest/SimpleSuite.h>
+
 
 using namespace std;
 using namespace scmp;
@@ -231,10 +234,25 @@ SimpleAngularOrientation2InitialQuaterniond()
 int
 main(int argc, char **argv)
 {
-	(void)argc;
-	(void)argv;
+	auto quiet = false;
+	auto noReport = false;
+	auto flags = new scsl::Flags("test_madgwick",
+				     "This test validates the Madgwick filter code");
+	flags->Register("-n", false, "don't print the report");
+	flags->Register("-q", false, "suppress test output");
+
+	auto parsed = flags->Parse(argc, argv);
+	if (parsed != scsl::Flags::ParseStatus::OK) {
+		std::cerr << "Failed to parse flags: "
+			  << scsl::Flags::ParseStatusToString(parsed) << "\n";
+	}
 
 	sctest::SimpleSuite	suite;
+	flags->GetBool("-n", noReport);
+	flags->GetBool("-q", quiet);
+	if (quiet) {
+		suite.Silence();
+	}
 
 	suite.AddTest("SimpleAngularOrientationFloat",
 		      SimpleAngularOrientationFloat);
@@ -253,8 +271,8 @@ main(int argc, char **argv)
 	suite.AddTest("SimpleAngularOrientationDouble (inital quaterniond)",
 		      SimpleAngularOrientation2InitialQuaterniond);
 
+	delete flags;
 	auto result = suite.Run();
-
-	std::cout << suite.GetReport() << "\n";
+	if (!noReport) { std::cout << suite.GetReport() << "\n"; }
 	return result ? 0 : 1;
 }
