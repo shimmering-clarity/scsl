@@ -6,6 +6,8 @@
 ///
 /// See https://courses.cs.washington.edu/courses/cse466/14au/labs/l4/madgwick_internal_report.pdf.
 ///
+/// \section COPYRIGHT
+///
 /// Copyright 2019 K. Isom <kyle@imap.cc>
 ///
 /// Permission to use, copy, modify, and/or distribute this software for

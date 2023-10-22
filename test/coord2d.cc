@@ -1,8 +1,10 @@
 ///
-/// \file tset/coord2d.cc
+/// \file test/coord2d.cc
 /// \author K.Isom <kyle@imap.cc>
 /// \date 2017-06-05
 /// \brief Unit tests on 2D geometry code.
+///
+/// \section COPYRIGHT
 ///
 /// Copyright 2017 K. Isom <kyle@imap.cc>
 ///

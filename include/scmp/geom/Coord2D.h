@@ -4,6 +4,8 @@
 /// \date 2017-06-05
 /// \brief 2D point and polar coordinate systems.
 ///
+/// \section COPYRIGHT
+///
 /// Copyright 2017 K. Isom <kyle@imap.cc>
 ///
 /// Permission to use, copy, modify, and/or distribute this software for

@@ -1,13 +1,41 @@
-#include <cassert>
-#include <cstring>
+///
+/// \file test/tlv.cc
+/// \author K. Isom <kyle@imap.cc>
+/// \date 2023-10-05
+/// \brief Unit tests for the TLV namespace.
+///
+/// simple_suite_example demonstrates the usage of the SimpleSuite test class
+/// and serves to unit test the unit tester (qui custodiet ipsos custodes)?
+///
+/// \section COPYRIGHT
+///
+/// Copyright 2023 K. Isom <kyle@imap.cc>
+///
+/// Permission to use, copy, modify, and/or distribute this software for
+/// any purpose with or without fee is hereby granted, provided that the
+/// above copyright notice and this permission notice appear in all copies.
+///
+/// THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL
+/// WARRANTIES WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED
+/// WARRANTIES OF MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR
+/// BE LIABLE FOR ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES
+/// OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS,
+/// WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION,
+/// ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS
+/// SOFTWARE.
+///
+
 #include <exception>
 #include <iostream>
 
 #include <scsl/Arena.h>
+#include <scsl/Flags.h>
 #include <scsl/TLV.h>
-#include <sctest/Assert.h>
+#include <sctest/Checks.h>
+#include <sctest/SimpleSuite.h>
 
 #include "test_fixtures.h"
+
 
 using namespace scsl;
 
@@ -15,116 +43,129 @@ using namespace scsl;
 static uint8_t		arenaBuffer[ARENA_SIZE];
 
 
-void
-tlvTestSuite(Arena &backend)
+bool
+runTLVTest(Arena &backend)
 {
-	TLV::Record	 rec1, rec2, rec3, rec4;
-	uint8_t		*cursor = nullptr;
+	TLV::Record rec1, rec2, rec3, rec4;
+	uint8_t     *cursor = nullptr;
 
-	std::cout << "\tSetting first three records." << "\n";
 	TLV::SetRecord(rec1, 1, TEST_STRLEN1, TEST_STR1);
 	TLV::SetRecord(rec2, 2, TEST_STRLEN2, TEST_STR2);
 	TLV::SetRecord(rec3, 1, TEST_STRLEN4, TEST_STR4);
 	rec4.Tag = 1;
 
-	std::cout << "\twriting new rec1" << "\n";
 	cursor = TLV::WriteToMemory(backend, cursor, rec1);
-	sctest::Assert(cursor != nullptr,
-		       "cursor should not be NULL after writing rec1");
-	std::cout << "\twriting new rec2" << "\n";
+	SCTEST_CHECK_NE(cursor, nullptr);
+
 	cursor = TLV::WriteToMemory(backend, cursor, rec2);
-	sctest::Assert(cursor != nullptr,
-		       "cursor should not be NULL after writing rec2");
-	std::cout << "\twriting new rec3" << "\n";
+	SCTEST_CHECK_NE(cursor, nullptr);
+
 	cursor = TLV::WriteToMemory(backend, cursor, rec3);
-	sctest::Assert(cursor != nullptr);
-	cursor = nullptr;
+	SCTEST_CHECK_NE(cursor, nullptr);
+
 
 	// the cursor should point At the next record,
 	// and rec4 should contain the same data as rec1.
-	std::cout << "\tFindTag 1" << "\n";
-	cursor = TLV::FindTag(backend, cursor, rec4);
-	sctest::Assert(cursor != nullptr, "cursor should not be null");
-	sctest::Assert(cursor != backend.Start());
-	sctest::Assert(cmpRecord(rec1, rec4));
+	cursor = TLV::FindTag(backend, nullptr, rec4);
+	SCTEST_CHECK_NE(cursor, nullptr);
+	SCTEST_CHECK_NE(cursor, backend.Start());
+	SCTEST_CHECK(cmpRecord(rec1, rec4));
 
-	std::cout << "\tFindTag 2" << "\n";
 	cursor = TLV::FindTag(backend, cursor, rec4);
-	sctest::Assert(cursor != nullptr,
-		       "cursor should not be null after reading last record");
-	sctest::Assert(cmpRecord(rec3, rec4), "rec3 != rec4");
+	SCTEST_CHECK_NE(cursor, nullptr);
+	SCTEST_CHECK(cmpRecord(rec3, rec4));
 
-	std::cout << "\tSetRecord 1\n";
 	TLV::SetRecord(rec4, 3, TEST_STRLEN3, TEST_STR3);
-	sctest::Assert(TLV::WriteToMemory(backend, nullptr, rec4));
+	SCTEST_CHECK(TLV::WriteToMemory(backend, nullptr, rec4));
 
-	std::cout << "FindTag 3\n";
 	rec4.Tag = 2;
 	cursor = TLV::FindTag(backend, nullptr, rec4);
-	sctest::Assert(cursor != nullptr);
+	SCTEST_CHECK_NE(cursor, nullptr);
 
-	std::cout << "DeleteRecord\n";
 	TLV::DeleteRecord(backend, cursor);
-	sctest::Assert(cursor[0] == 3);
-}
+	SCTEST_CHECK_EQ(cursor[0], 3);
+	rec4.Tag = 3;
+	cursor = nullptr;
 
-bool
-runSuite(Arena &backend, const char *label)
-{
-	std::exception exc;
-
-	std::cout << backend << "\n";
-	std::cout << "running test suite " << label << ": ";
-	try {
-		tlvTestSuite(backend);
-	} catch (std::exception &exc){
-		std::cout << "FAILED: " << exc.what() << "\n";
-		return false;
-	}
-	std::cout << "OK" << "\n";
-
-	std::cout << "\tdestroying arena: ";
-	backend.Destroy();
-
-	std::cout << "OK" << "\n";
 	return true;
 }
 
 
-int
-main(int argc, const char *argv[])
+bool
+tlvTestSuite(ArenaType arenaType)
 {
-	(void)argc; (void)argv;
+	Arena backend;
 
-	Arena	arenaStatic;
-	Arena	arenaMem;
-
-	std::cout << "TESTPROG: " << argv[0] << "\n";
-
-	if (-1 == arenaStatic.SetStatic(arenaBuffer, ARENA_SIZE)) {
-		abort();
-	} else if (!runSuite(arenaStatic, "arenaStatic")) {
-		abort();
+	switch (arenaType) {
+	case ArenaType::Static:
+		if (backend.SetStatic(arenaBuffer, ARENA_SIZE) != 0) {
+			std::cerr << "[!] failed to set up statically-allocated arena\n";
+			return false;
+		}
+		break;
+	case ArenaType::Alloc:
+		if (backend.SetAlloc(ARENA_SIZE) != 0) {
+			std::cerr << "[!] failed to set up dynamically-allocated arena\n";
+			return false;
+		}
+		break;
+	case ArenaType::MemoryMapped:
+		if (backend.Create(ARENA_FILE, ARENA_SIZE)) {
+			std::cerr << "[!] failed to set up memory-mapped arena\n";
+			return false;
+		}
+		break;
+	default:
+		std::cerr << "[!] " << static_cast<int>(arenaType) << " is invalid for this test.\n";
+		return false;
 	}
-	arenaStatic.Clear();
 
-	Arena	arenaFile;
-	auto	status = arenaFile.Create(ARENA_FILE, ARENA_SIZE);
+	auto result = runTLVTest(backend);
+	if (!result) {
+		std::cerr << "[!] suite failed with " << backend << "\n";
+	}
+	backend.Destroy();
+	return result;
+}
 
-	if (status != 0) {
-		std::cerr << "Create failed with error " << status << "\n";
-		abort();
-	} else if (!runSuite(arenaFile, "arenaFile")) {
-		abort();
+std::function<bool()>
+buildTestSuite(ArenaType arenaType)
+{
+	return [arenaType](){
+		return tlvTestSuite(arenaType);
+	};
+}
+
+
+int
+main(int argc, char *argv[])
+{
+	auto noReport = false;
+	auto quiet = false;
+	auto flags = new scsl::Flags("test_tlv",
+				     "This test validates various TLV-related components in scsl.");
+	flags->Register("-n", false, "don't print the report");
+	flags->Register("-q", false, "suppress test output");
+
+	auto parsed = flags->Parse(argc, argv);
+	if (parsed != scsl::Flags::ParseStatus::OK) {
+		std::cerr << "Failed to parse flags: "
+			  << scsl::Flags::ParseStatusToString(parsed) << "\n";
 	}
 
-	if (-1 == arenaMem.SetAlloc(ARENA_SIZE)) {
-		abort();
-	} else if (!runSuite(arenaMem, "arenaMem")) {
-		abort();
+	sctest::SimpleSuite suite;
+	flags->GetBool("-n", noReport);
+	flags->GetBool("-q", quiet);
+	if (quiet) {
+		suite.Silence();
 	}
-	arenaMem.Clear();
 
-	std::cout << "OK" << "\n";
-	return 0;
+	suite.AddTest("ArenaStatic", buildTestSuite(ArenaType::Static));
+	suite.AddTest("ArenaAlloc", buildTestSuite(ArenaType::Alloc));
+	suite.AddTest("ArenaFile", buildTestSuite(ArenaType::MemoryMapped));
+
+	delete flags;
+	auto result = suite.Run();
+	if (!noReport) { std::cout << suite.GetReport() << "\n"; }
+	return result ? 0 : 1;
 }

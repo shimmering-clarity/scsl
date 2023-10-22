@@ -113,7 +113,6 @@ endmacro()
 generate_test(buffer)
 generate_test(tlv)
 generate_test(dictionary)
-generate_test(flags)
 generate_test(stringutil)
 
 # math and physics
@@ -123,6 +122,9 @@ generate_test(math)
 generate_test(orientation)
 generate_test(quaternion)
 generate_test(vector)
+
+add_executable(flags-demo test/flags.cc)
+target_link_libraries(flags-demo ${PROJECT_NAME})
 
 # test tooling
 generate_test(simple_suite_example)
