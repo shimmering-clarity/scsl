@@ -123,11 +123,13 @@ generate_test(orientation)
 generate_test(quaternion)
 generate_test(vector)
 
+
+# test tooling
 add_executable(flags-demo test/flags.cc)
 target_link_libraries(flags-demo ${PROJECT_NAME})
 
-# test tooling
-generate_test(simple_suite_example)
+add_executable(simple-test-demo test/simple_suite_example.cc)
+target_link_libraries(simple-test-demo ${PROJECT_NAME})
 
 include(CMakePackageConfigHelpers)
 write_basic_package_version_file(
