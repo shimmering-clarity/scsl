@@ -33,7 +33,7 @@
 namespace scsl {
 
 /// String-related utility functions.
-namespace string {
+namespace scstring {
 
 
 /// Remove any whitespace At the beginning of the string. The string

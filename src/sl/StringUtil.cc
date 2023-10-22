@@ -28,7 +28,7 @@
 
 
 namespace scsl {
-namespace string {
+namespace scstring {
 
 
 std::vector<std::string>

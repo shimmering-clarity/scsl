@@ -42,30 +42,30 @@ TestTrimming(std::string line, std::string lExpected, std::string rExpected, std
 	std::string result;
 	std::string message;
 
-	result  = string::TrimLeadingWhitespaceDup(line);
+	result  = scstring::TrimLeadingWhitespaceDup(line);
 	message = "TrimLeadingDup(\"" + line + "\"): '" + result + "'";
 	sctest::Assert(result == lExpected, message);
 
-	result  = string::TrimTrailingWhitespaceDup(line);
+	result  = scstring::TrimTrailingWhitespaceDup(line);
 	message = "TrimTrailingDup(\"" + line + "\"): '" + result + "'";
 	sctest::Assert(result == rExpected, message);
 
-	result  = string::TrimWhitespaceDup(line);
+	result  = scstring::TrimWhitespaceDup(line);
 	message = "TrimDup(\"" + line + "\"): '" + result + "'";
 	sctest::Assert(result == expected, message);
 
 	result = line;
-	string::TrimLeadingWhitespace(result);
+	scstring::TrimLeadingWhitespace(result);
 	message = "TrimLeadingDup(\"" + line + "\"): '" + result + "'";
 	sctest::Assert(result == lExpected, message);
 
 	result = line;
-	string::TrimTrailingWhitespace(result);
+	scstring::TrimTrailingWhitespace(result);
 	message = "TrimTrailingDup(\"" + line + "\"): '" + result + "'";
 	sctest::Assert(result == rExpected, message);
 
 	result = line;
-	string::TrimWhitespace(result);
+	scstring::TrimWhitespace(result);
 	message = "TrimDup(\"" + line + "\"): '" + result + "'";
 	sctest::Assert(result == expected, message);
 }
@@ -75,7 +75,7 @@ std::function<bool()>
 TestSplit(std::string line, std::string delim, size_t maxCount, std::vector<std::string> expected)
 {
 	return [line, delim, maxCount, expected]() {
-	    return string::SplitN(line, delim, maxCount) == expected;
+	    return scstring::SplitN(line, delim, maxCount) == expected;
 
 	};
 }
@@ -86,7 +86,7 @@ TestSplitChar()
 {
 	auto expected = std::vector<std::string>{"hello", "world"};
 	const auto *inputLine = "hello=world\n";
-	auto actual = string::SplitKeyValuePair(inputLine, '=');
+	auto actual = scstring::SplitKeyValuePair(inputLine, '=');
 
 	return actual == expected;
 }
@@ -109,11 +109,11 @@ TestWrapping()
 	    "hope so.",
 	};
 
-	auto wrapped = string::WrapText(testLine, 16);
+	auto wrapped = scstring::WrapText(testLine, 16);
 	if (wrapped.size() != expected.size()) {
-		std::cerr << string::VectorToString(wrapped)
+		std::cerr << scstring::VectorToString(wrapped)
 			  << " != "
-			  << string::VectorToString(expected)
+			  << scstring::VectorToString(expected)
 			  << "\n";
 	}
 
@@ -127,7 +127,7 @@ TestWrapping()
 		return false;
 	}
 
-//	string::WriteTabIndented(std::cout, wrapped, 4, true);
+//	scstring::WriteTabIndented(std::cout, wrapped, 4, true);
 	return true;
 }
 
@@ -149,7 +149,6 @@ main(int argc, char *argv[])
 	if (parsed != scsl::Flags::ParseStatus::OK) {
 		std::cerr << "Failed to parse flags: "
 			  << scsl::Flags::ParseStatusToString(parsed) << "\n";
-		exit(1);
 	}
 
 	sctest::SimpleSuite suite;

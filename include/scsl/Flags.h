@@ -245,6 +245,17 @@ public:
 		      std::string defaultValue,
 		      std::string fDescription);
 
+	/// Register a new string command line flag with a default value.
+	///
+	/// \param fName The name of the flag, including a leading dash.
+	/// \param defaultValue The default value for the flag.
+	/// \param fDescription A short description of the flag.
+	/// \return True if the flag was registered, false if the flag could
+	///         not be registered (e.g. a duplicate flag was registered).
+	bool Register(std::string fName,
+		      const char *defaultValue,
+		      std::string fDescription);
+
 	/// Return the number of registered flags.
 	size_t Size();
 

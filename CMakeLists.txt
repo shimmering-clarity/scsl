@@ -42,6 +42,7 @@ set(HEADER_FILES
         include/scsl/Commander.h
         include/scsl/Dictionary.h
         include/scsl/Flags.h
+        include/scsl/SimpleConfig.h
         include/scsl/StringUtil.h
         include/scsl/TLV.h
 
@@ -72,6 +73,7 @@ set(SOURCE_FILES
         src/sl/Dictionary.cc
         src/test/Exceptions.cc
         src/sl/Flags.cc
+        src/sl/SimpleConfig.cc
         src/sl/StringUtil.cc
         src/sl/TLV.cc
 
@@ -123,13 +125,15 @@ generate_test(orientation)
 generate_test(quaternion)
 generate_test(vector)
 
-
 # test tooling
 add_executable(flags-demo test/flags.cc)
 target_link_libraries(flags-demo ${PROJECT_NAME})
 
 add_executable(simple-test-demo test/simple_suite_example.cc)
 target_link_libraries(simple-test-demo ${PROJECT_NAME})
+
+add_executable(config-explorer test/config-explorer.cc)
+target_link_libraries(config-explorer ${PROJECT_NAME})
 
 include(CMakePackageConfigHelpers)
 write_basic_package_version_file(

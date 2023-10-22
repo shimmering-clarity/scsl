@@ -80,7 +80,7 @@ hasKey(std::vector<std::string> argv)
 	}
 
 	cout << "not found\n";
-	return true;
+	return false;
 }
 
 

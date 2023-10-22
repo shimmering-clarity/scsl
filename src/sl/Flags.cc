@@ -20,7 +20,6 @@
 /// PERFORMANCE OF THIS SOFTWARE.
 ///
 
-
 #include <cassert>
 #include <iostream>
 #include <regex>
@@ -172,6 +171,18 @@ Flags::Register(std::string fName, std::string defaultValue, std::string fDescri
 }
 
 
+bool
+Flags::Register(std::string fName, const char *defaultValue, std::string fDescription)
+{
+	if (!this->Register(fName, FlagType::String, std::move(fDescription))) {
+		return false;
+	}
+
+	this->flags[fName]->Value.s = new std::string(defaultValue);
+	return true;
+}
+
+
 size_t
 Flags::Size()
 {
@@ -206,7 +217,7 @@ Flags::ParseStatus
 Flags::parseArg(int argc, char **argv, int &index)
 {
 	std::string arg(argv[index]);
-	string::TrimWhitespace(arg);
+	scstring::TrimWhitespace(arg);
 
 	if (!std::regex_search(arg, isFlag)) {
 		return ParseStatus::EndOfFlags;
@@ -302,7 +313,7 @@ Flags::Usage(std::ostream &os, int exitCode)
 	os << this->name << ":\t";
 	auto indent = this->name.size() + 7;
 
-	string::WriteTabIndented(os, description, 72 - indent, indent / 8, false);
+	scstring::WriteTabIndented(os, description, 72 - indent, indent / 8, false);
 	os << "\n\n";
 
 	for (const auto &pair : this->flags) {
@@ -312,16 +323,16 @@ Flags::Usage(std::ostream &os, int exitCode)
 			argLine += "\t\t";
 			break;
 		case FlagType::Integer:
-			argLine += "int\t\t";
+			argLine += " int\t\t";
 			break;
 		case FlagType::UnsignedInteger:
-			argLine += "uint\t\t";
+			argLine += " uint\t\t";
 			break;
 		case FlagType::SizeT:
-			argLine += "size_t\t";
+			argLine += " size_t\t";
 			break;
 		case FlagType::String:
-			argLine += "string\t";
+			argLine += " string\t";
 			break;
 		case FlagType::Unknown:
 			// fallthrough
@@ -336,7 +347,7 @@ Flags::Usage(std::ostream &os, int exitCode)
 
 		os << argLine;
 		indent = argLine.size();
-		string::WriteTabIndented(os, pair.second->Description,
+		scstring::WriteTabIndented(os, pair.second->Description,
 				       72-indent, (indent/8)+2, false);
 	}
 
