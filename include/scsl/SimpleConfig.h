@@ -89,7 +89,7 @@ public:
 	///
 	/// \param prefix The prefix to prepend to the key when looking
 	///        up values from the environment.
-	static void		SetPrefixGlobal(const std::string prefix);
+	static void		SetPrefixGlobal(const std::string &prefix);
 
 	/// \brief Return the keys cached in the config.
 	///
@@ -108,7 +108,7 @@ public:
 	/// \param key The key to look up. See the class documentation
 	///        for information on how this is used.
 	/// \return The value stored under the key, or an empty string.
-	static std::string	GetGlobal(std::string key);
+	static std::string	GetGlobal(std::string &key);
 
 	/// \brief Get the value stored for the key from the config.
 	///
@@ -120,7 +120,7 @@ public:
 	///        value is stored under the key.
 	/// \return The value stored under the key, or the default
 	///         value.
-	static std::string	GetGlobal(std::string key, std::string defaultValue);
+	static std::string	GetGlobal(std::string &key, const std::string &defaultValue);
 #endif
 
 	/// \brief The constructor doesn't need any initialisation.
@@ -128,7 +128,7 @@ public:
 
 	/// \brief The constructor can explicitly set the environment
 	///	   prefix.
-	SimpleConfig(std::string prefix);
+	explicit SimpleConfig(std::string &prefix);
 
 	/// \brief Load key-value pairs from a file.
 	///
@@ -146,7 +146,7 @@ public:
 	///
 	/// \param prefix The prefix to prepend to the key when looking
 	///        up values from the environment.
-	void	SetPrefix(const std::string prefix);
+	void	SetPrefix(const std::string &prefix);
 
 	/// \brief Return the keys cached in the config.
 	///
@@ -161,7 +161,7 @@ public:
 	/// \param key The key to look up. See the class documentation
 	///        for information on how this is used.
 	/// \return The value stored under the key, or an empty string.
-	std::string	Get(std::string key);
+	std::string	Get(std::string &key);
 
 	/// \brief Get the value stored for the key from the config.
 	///
@@ -171,7 +171,7 @@ public:
 	///        value is stored under the key.
 	/// \return The value stored under the key, or the default
 	///         value.
-	std::string	Get(std::string key, std::string defaultValue);
+	std::string	Get(std::string &key, std::string defaultValue);
 
 private:
 	std::string 				envPrefix;

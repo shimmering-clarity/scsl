@@ -63,7 +63,7 @@ SimpleConfig::LoadGlobal(std::string &path)
 
 
 void
-SimpleConfig::SetPrefixGlobal(const std::string prefix)
+SimpleConfig::SetPrefixGlobal(const std::string &prefix)
 {
 	globalConfig.SetPrefix(prefix);
 }
@@ -77,14 +77,14 @@ SimpleConfig::KeyListGlobal()
 
 
 std::string
-SimpleConfig::GetGlobal(std::string key)
+SimpleConfig::GetGlobal(std::string &key)
 {
 	return globalConfig.Get(key);
 }
 
 
 std::string
-SimpleConfig::GetGlobal(std::string key, std::string defaultValue)
+SimpleConfig::GetGlobal(std::string &key, const std::string &defaultValue)
 {
 	return globalConfig.Get(key, defaultValue);
 }
@@ -95,7 +95,7 @@ SimpleConfig::SimpleConfig()
 }
 
 
-SimpleConfig::SimpleConfig(std::string prefix)
+SimpleConfig::SimpleConfig(std::string &prefix)
 : envPrefix(prefix)
 {
 }
@@ -140,21 +140,21 @@ SimpleConfig::Load(std::string &path)
 
 
 void
-SimpleConfig::SetPrefix(const std::string prefix)
+SimpleConfig::SetPrefix(const std::string &prefix)
 {
 	this->envPrefix = std::move(prefix);
 }
 
 
 std::string
-SimpleConfig::Get(std::string key)
+SimpleConfig::Get(std::string &key)
 {
 	return this->Get(key, "");
 }
 
 
 std::string
-SimpleConfig::Get(std::string key, std::string defaultValue)
+SimpleConfig::Get(std::string &key, std::string defaultValue)
 {
 	if (this->vars.count(key)) {
 		return this->vars[key];
@@ -168,7 +168,7 @@ SimpleConfig::Get(std::string key, std::string defaultValue)
 		return this->Get(key);
 	}
 
-	this->vars[key] = defaultValue;
+	this->vars[key] = std::move(defaultValue);
 	return this->Get(key);
 }
 
@@ -178,10 +178,8 @@ SimpleConfig::KeyList()
 {
 	std::vector<std::string>	keyList;
 
-	for (auto &entry : this->vars) {
-		keyList.push_back(entry.first);
-	}
-
+	std::transform(this->vars.begin(), this->vars.end(), std::back_inserter(keyList),
+		       [](std::pair<std::string, std::string> pair){return pair.first;});
 	return keyList;
 }
 

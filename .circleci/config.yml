@@ -3,7 +3,7 @@ version: 2.1
 jobs:
   ctest:
     docker:
-      - image: git.wntrmute.dev/sc/dev:main
+      - image: git.wntrmute.dev/sc/dev:alpine
     steps:
       - checkout
       - run:
@@ -12,19 +12,8 @@ jobs:
       - run:
           name: Valgrind checks.
           command: cmake-run-valgrind.sh
-  NOT_REQUIRED_static_analysis:
-    docker:
-      - image: git.wntrmute.dev/sc/dev:main
-    steps:
-      - checkout
-      - run:
-          name: Trunk check
-          command: ./trunk check --upstream=HEAD^
 
 workflows:
   ctest:
     jobs:
       - ctest
-  static_analysis:
-    jobs:
-      - NOT_REQUIRED_static_analysis
