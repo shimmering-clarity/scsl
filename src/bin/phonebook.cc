@@ -138,6 +138,7 @@ usage(ostream &os, int exc)
 int
 main(int argc, char *argv[])
 {
+	int retc = 1;
 	bool help = false;
 	std::string fileName(pbFile);
 
@@ -190,18 +191,24 @@ main(int argc, char *argv[])
 	switch (result) {
 	case Subcommand::Status::OK:
 		std::cout << "[+] OK\n";
+		retc = 0;
 		break;
 	case Subcommand::Status::NotEnoughArgs:
+		delete flags;
 		usage(cerr, 1);
 		break;
 	case Subcommand::Status::Failed:
 		cerr << "[!] '"<< command << "' failed\n";
 		break;
 	case Subcommand::Status::CommandNotRegistered:
+		delete flags;
 		cerr << "[!] '" << command << "' not registered.\n";
 		usage(cerr, 1);
 		break;
 	default:
+		delete flags;
 		abort();
 	}
+
+	return retc;
 }
