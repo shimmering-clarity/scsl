@@ -159,7 +159,7 @@ main(int argc, char *argv[])
 	pbFile = fileName;
 
 	if (help) {
-		usage(std::cerr, 1);
+		usage(std::cout, 0);
 	}
 
 	if (flags->NumArgs() == 0) {
