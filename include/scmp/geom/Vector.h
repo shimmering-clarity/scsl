@@ -193,8 +193,8 @@ public:
 	T
 	Angle(const Vector<T, N> &other) const
 	{
-		Vector<T, N> unitA = this->UnitVector();
-		Vector<T, N> unitB = other.UnitVector();
+		auto unitA = this->UnitVector();
+		auto unitB = other.UnitVector();
 
 		// Can't compute angles with a zero vector.
 		assert(!this->IsZero());
@@ -214,12 +214,24 @@ public:
 			return true;
 		}
 
-		T angle = this->Angle(other);
-		if (scmp::WithinTolerance(angle, (T) 0.0, this->epsilon)) {
-			return true;
-		}
+		// If the two unit vectors are equal, the two vectors
+		// lie on the same path.
+		//
+		// Context: this used to use Vector::Angle to check for
+		// a zero angle between the two. However, the vagaries
+		// of floating point math meant that while this worked
+		// fine on Linux amd64 builds, it failed on Linux arm64
+		// and MacOS builds. Parallel float vectors would have
+		// an angle of ~0.0003 radians, while double vectors
+		// would have an angle of +NaN. I suspect this is due to
+		// tiny variations in floating point math, such that a dot
+		// product of unit vectors would be just a hair over 1,
+		// e.g. 1.000000001 - which would still fall outside the
+		// domain of acos.
+		auto unitA = this->UnitVector();
+		auto unitB = other.UnitVector();
 
-		return false;
+		return unitA == unitB;
 	}
 
 

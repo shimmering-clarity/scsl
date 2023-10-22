@@ -7,6 +7,9 @@
       <option name="FUNCTION_BRACE_PLACEMENT" value="2" />
       <option name="FUNCTION_TOP_AFTER_RETURN_TYPE_WRAP" value="2" />
     </Objective-C>
+    <clangFormatSettings>
+      <option name="ENABLED" value="true" />
+    </clangFormatSettings>
     <files>
       <extensions>
         <pair source="cc" header="h" fileNamingConvention="PASCAL_CASE" />
