@@ -44,7 +44,7 @@ namespace scsl {
 /// CommanderFunc describes a function that can be run in Commander.
 ///
 /// It expects an argument count and a list of arguments.
-using CommanderFunc = std::function<bool (int, char **)>;
+using CommanderFunc = std::function<bool (std::vector<std::string>)>;
 
 
 /// \brief Subcommands used by Commander.
@@ -72,8 +72,8 @@ public:
 	/// \param name The subcommand name; this is the name that will select this command.
 	/// \param argc The minimum number of arguments required by this subcommand.
 	/// \param func A valid CommanderFunc.
-	Subcommand(std::string name, int argc, CommanderFunc func)
-	    : fn(func), args(argc), command(name)
+	Subcommand(std::string name, size_t argc, CommanderFunc func)
+	    : fn(func), requiredArgs(argc), command(name)
 	{}
 
 	/// Name returns the name of this subcommand.
@@ -81,13 +81,12 @@ public:
 
 	/// Run attempts to run the CommanderFunc for this subcommand.
 	///
-	/// \param argc The number of arguments supplied.
-	/// \param argv The argument list.
+	/// \param args The argument list.
 	/// \return A Status type indicating the status of running the command.
-	Status Run(int argc, char **argv);
+	Status Run(std::vector<std::string> args);
 private:
 	CommanderFunc fn;
-	int args;
+	size_t requiredArgs;
 	std::string command;
 };
 
@@ -119,7 +118,7 @@ public:
 	bool Register(Subcommand scmd);
 
 	/// Try to run a subcommand registered with this Commander.
-	Subcommand::Status Run(std::string command, int argc, char **argv);
+	Subcommand::Status Run(std::string command, std::vector<std::string> args);
 private:
 	std::map<std::string, Subcommand *>	cmap;
 };

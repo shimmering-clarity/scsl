@@ -442,6 +442,7 @@ main(int argc, char *argv[])
 	if (parsed != scsl::Flags::ParseStatus::OK) {
 		std::cerr << "Failed to parse flags: "
 			  << scsl::Flags::ParseStatusToString(parsed) << "\n";
+		exit(1);
 	}
 
 	SimpleSuite suite;

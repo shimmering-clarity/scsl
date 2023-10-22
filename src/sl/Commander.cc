@@ -29,15 +29,16 @@ namespace scsl {
 
 
 Subcommand::Status
-Subcommand::Run(int argc, char **argv)
+Subcommand::Run(std::vector<std::string> args)
 {
-	if (argc < this->args) {
+	auto argc = args.size();
+	if (argc < this->requiredArgs) {
 		std::cerr << "[!] " << this->command << " expects ";
-		std::cerr << this->args << " args, but was given ";
+		std::cerr << this->requiredArgs << " args, but was given ";
 		std::cerr << argc << " args.\n";
 		return Subcommand::Status::NotEnoughArgs;
 	}
-	if (this->fn(argc, argv)) {
+	if (this->fn(args)) {
 		return Subcommand::Status::OK;
 	}
 
@@ -64,14 +65,14 @@ Commander::Register(Subcommand scmd)
 
 
 Subcommand::Status
-Commander::Run(std::string command, int argc, char **argv)
+Commander::Run(std::string command, std::vector<std::string> args)
 {
 	if (this->cmap.count(command) != 1) {
 		return Subcommand::Status::CommandNotRegistered;
 	}
 
 	auto scmd = this->cmap[command];
-	return scmd->Run(argc, argv);
+	return scmd->Run(args);
 }
 
 

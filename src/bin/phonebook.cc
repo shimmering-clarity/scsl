@@ -27,48 +27,50 @@ using namespace std;
 #include <scsl/Arena.h>
 #include <scsl/Commander.h>
 #include <scsl/Dictionary.h>
+#include <scsl/Flags.h>
+
+
 using namespace scsl;
 
 static const char	*defaultPhonebook = "pb.dat";
-static char		*pbFile = (char *)defaultPhonebook;
+static std::string	 pbFile(defaultPhonebook);
 static Arena	 	 arena;
 static Dictionary	 pb(arena);
 
 
 static bool
-listFiles(int argc, char **argv)
+listFiles(std::vector<std::string> argv)
 {
-	(void)argc; (void)argv;
+	(void) argv; // provided for interface compatibility.
 	cout << "[+] keys in '" << pbFile << "':\n";
 	cout << pb;
 	return true;
 }
 
-static bool
-newPhonebook(int argc, char **argv)
-{
-	(void)argc;
 
-	auto	size = std::stoul(string(argv[0]));
+static bool
+newPhonebook(std::vector<std::string> argv)
+{
+	auto	size = std::stoul(argv[0]);
 	cout << "[+] create new " << size << "B phonebook '" << pbFile << "'\n";
 
-	return arena.Create(pbFile, size) == 0;
+	return arena.Create(pbFile.c_str(), size) == 0;
 }
 
+
 static bool
-delKey(int argc, char **argv)
+delKey(std::vector<std::string> argv)
 {
-	(void)argc;
 	string key = argv[0];
 
 	cout << "[+] deleting key '" << key << "'\n";
 	return pb.Delete(key.c_str(), key.size());
 }
 
+
 static bool
-hasKey(int argc, char **argv)
+hasKey(std::vector<std::string> argv)
 {
-	(void)argc;
 	string key = argv[0];
 
 	cout << "[+] looking up '" << key << "': ";
@@ -81,10 +83,10 @@ hasKey(int argc, char **argv)
 	return true;
 }
 
+
 static bool
-getKey(int argc, char **argv)
+getKey(std::vector<std::string> argv)
 {
-	(void)argc;
 	TLV::Record	rec;
 	auto key = string(argv[0]);
 
@@ -100,9 +102,8 @@ getKey(int argc, char **argv)
 
 
 static bool
-putKey(int argc, char **argv)
+putKey(std::vector<std::string> argv)
 {
-	(void)argc;
 	auto key = string(argv[0]);
 	auto val = string(argv[1]);
 
@@ -115,6 +116,7 @@ putKey(int argc, char **argv)
 	cout << "set\n";
 	return true;
 }
+
 
 static void
 usage(ostream &os, int exc)
@@ -136,28 +138,35 @@ usage(ostream &os, int exc)
 int
 main(int argc, char *argv[])
 {
-	int		 optind = 1;
+	bool help = false;
+	std::string fileName(pbFile);
 
-	for (optind = 1; optind < argc; optind++) {
-		auto arg = string(argv[optind]);
-		if (arg[0] != '-')	break;
-		if (arg == "-h")	usage(cout, 0);
-		if (arg == "-f") {
-			pbFile = argv[optind+1];
-			optind++;
-			continue;
-		}
+	auto *flags = new scsl::Flags("phonebook",
+				      "A tool for interacting with Arena-backed dictionary files.");
+	flags->Register("-f", pbFile, "path to a phonebook file");
+	flags->Register("-h", false, "print a help message");
 
-		usage(cerr, 1);
+	auto parsed = flags->Parse(argc, argv);
+	if (parsed != scsl::Flags::ParseStatus::OK) {
+		std::cerr << "Failed to parse flags: "
+			  << scsl::Flags::ParseStatusToString(parsed) << "\n";
+		exit(1);
 	}
 
-	if (argc <= 1) {
-		usage(cout, 0);
+	flags->GetString("-f", fileName);
+	flags->GetBool("-h", help);
+
+	pbFile = fileName;
+
+	if (help) {
+		usage(std::cerr, 1);
 	}
 
-	auto command = string(argv[optind++]);
+	if (flags->NumArgs() == 0) {
+		usage(std::cerr, 1);
+	}
+
 	Commander	commander;
-
 	commander.Register(Subcommand("list", 0, listFiles));
 	commander.Register(Subcommand("new", 1, newPhonebook));
 	commander.Register(Subcommand("del", 1, delKey));
@@ -165,15 +174,19 @@ main(int argc, char *argv[])
 	commander.Register(Subcommand("get", 1, getKey));
 	commander.Register(Subcommand("put", 2, putKey));
 
+	auto command = flags->Arg(0);
 	if (command != "new") {
 		cout << "[+] loading phonebook from " << pbFile << "\n";
-		if (arena.Open(pbFile) != 0) {
+		if (arena.Open(pbFile.c_str()) != 0) {
 			cerr << "Failed to open " << pbFile << "\n";
 			exit(1);
 		}
 	}
 
-	auto result = commander.Run(command, argc-optind, argv+optind);
+	auto args = flags->Args();
+	args.erase(args.begin());
+
+	auto result = commander.Run(command, args);
 	switch (result) {
 	case Subcommand::Status::OK:
 		std::cout << "[+] OK\n";

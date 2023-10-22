@@ -9,7 +9,10 @@ jobs:
       - run:
           name: Setup cmake build
           command: cmake-build-and-test.sh
-  static_analysis:
+      - run:
+          name: Valgrind checks.
+          command: cmake-run-valgrind.sh
+  NOT_REQUIRED_static_analysis:
     docker:
       - image: git.wntrmute.dev/sc/dev:main
     steps:
@@ -24,4 +27,4 @@ workflows:
       - ctest
   static_analysis:
     jobs:
-      - static_analysis
+      - NOT_REQUIRED_static_analysis

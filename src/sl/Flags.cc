@@ -95,7 +95,7 @@ Flags::~Flags()
 bool
 Flags::Register(std::string fName, FlagType fType, std::string fDescription)
 {
-	if (!std::regex_search(fName, isFlag) || fName == "-h") {
+	if (!std::regex_search(fName, isFlag)) {
 		return false;
 	}
 

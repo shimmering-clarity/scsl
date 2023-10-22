@@ -60,7 +60,7 @@ namespace geom {
 template<typename T>
 class Quaternion {
 public:
-	/// \brief Construct an identity MakeQuaternion.
+	/// \brief Construct an identity Quaternion.
 	Quaternion() : v(Vector<T, 3>{0.0, 0.0, 0.0}), w(1.0)
 	{
 		scmp::DefaultEpsilon(this->eps);
@@ -68,7 +68,7 @@ public:
 	};
 
 
-	/// \brief Construct a MakeQuaternion with an Axis and Angle of
+	/// \brief Construct a Quaternion with an Axis and Angle of
 	///        rotation.
 	///
 	/// A Quaternion may be initialised with a Vector<T, 3> Axis
@@ -119,7 +119,7 @@ public:
 	}
 
 	
-	/// \brief Set the comparison tolerance for this MakeQuaternion.
+	/// \brief Set the comparison tolerance for this Quaternion.
 	///
 	/// \param epsilon A tolerance value.
 	void
@@ -130,9 +130,9 @@ public:
 	}
 
 
-	/// \brief Return the Axis of rotation of this MakeQuaternion.
+	/// \brief Return the Axis of rotation of this Quaternion.
 	///
-	/// \return The Axis of rotation of this MakeQuaternion.
+	/// \return The Axis of rotation of this Quaternion.
 	Vector<T, 3>
 	Axis() const
 	{
@@ -140,9 +140,9 @@ public:
 	}
 
 
-	/// \brief Return the Angle of rotation of this MakeQuaternion.
+	/// \brief Return the Angle of rotation of this Quaternion.
 	///
-	/// \return the Angle of rotation of this MakeQuaternion.
+	/// \return the Angle of rotation of this Quaternion.
 	T
 	Angle() const
 	{
@@ -152,7 +152,7 @@ public:
 
 	/// \brief Compute the Dot product of two quaternions.
 	///
-	/// \param other Another MakeQuaternion.
+	/// \param other Another Quaternion.
 	/// \return The Dot product between the two quaternions.
 	T
 	Dot(const Quaternion<T> &other) const
@@ -166,7 +166,7 @@ public:
 	}
 
 
-	/// \brief Compute the Norm of a MakeQuaternion.
+	/// \brief Compute the Norm of a Quaternion.
 	///
 	/// Treating the Quaternion as a Vector<T, 4>, this is the same
 	/// process as computing the Magnitude.
@@ -186,18 +186,18 @@ public:
 	}
 
 
-	/// \brief Return the unit MakeQuaternion.
+	/// \brief Return the unit Quaternion.
 	///
-	/// \return The unit MakeQuaternion.
+	/// \return The unit Quaternion.
 	Quaternion
 	UnitQuaternion()
 	{
 		return *this / this->Norm();
 	}
 
-	/// \brief Compute the Conjugate of a MakeQuaternion.
+	/// \brief Compute the Conjugate of a Quaternion.
 	///
-	/// \return The Conjugate of this MakeQuaternion.
+	/// \return The Conjugate of this Quaternion.
 	Quaternion
 	Conjugate() const
 	{
@@ -205,9 +205,9 @@ public:
 	}
 
 
-	/// \brief Compute the Inverse of a MakeQuaternion.
+	/// \brief Compute the Inverse of a Quaternion.
 	///
-	/// \return The Inverse of this MakeQuaternion.
+	/// \return The Inverse of this Quaternion.
 	Quaternion
 	Inverse() const
 	{
@@ -217,9 +217,9 @@ public:
 	}
 
 
-	/// \brief Determine whether this is an identity MakeQuaternion.
+	/// \brief Determine whether this is an identity Quaternion.
 	///
-	/// \return true if this is an identity MakeQuaternion.
+	/// \return true if this is an identity Quaternion.
 	bool
 	IsIdentity() const {
 		return this->v.IsZero() &&
@@ -227,22 +227,23 @@ public:
 	}
 
 
-	/// \brief Determine whether this is a unit MakeQuaternion.
+	/// \brief Determine whether this is a unit Quaternion.
 	///
-	/// \return true if this is a unit MakeQuaternion.
+	/// \return true if this is a unit Quaternion.
 	bool
 	IsUnitQuaternion() const
 	{
-		return scmp::WithinTolerance(this->Norm(), (T) 1.0, this->eps);
+		auto normal = this->Norm();
+		return scmp::WithinTolerance(normal, (T) 1.0, this->eps);
 	}
 
 
 	/// \brief Convert to Vector form.
 	///
-	/// Return the MakeQuaternion as a Vector<T, 4>, with the Axis of
+	/// Return the Quaternion as a Vector<T, 4>, with the Axis of
 	/// rotation followed by the Angle of rotation.
 	///
-	/// \return A vector representation of the MakeQuaternion.
+	/// \return A vector representation of the Quaternion.
 	Vector<T, 4>
 	AsVector() const
 	{
@@ -250,7 +251,7 @@ public:
 	}
 
 
-	/// \brief Rotate Vector vr about this MakeQuaternion.
+	/// \brief Rotate Vector vr about this Quaternion.
 	///
 	/// \param vr The vector to be rotated.
 	/// \return The rotated vector.
@@ -261,9 +262,9 @@ public:
 	}
 
 
-	/// \brief Return Euler angles for this MakeQuaternion.
+	/// \brief Return Euler angles for this Quaternion.
 	///
-	/// Return the Euler angles for this MakeQuaternion as a vector of
+	/// Return the Euler angles for this Quaternion as a vector of
 	/// <yaw, pitch, roll>.
 	///
 	/// \warning Users of this function should watch out for gimbal
@@ -289,7 +290,7 @@ public:
 
 	/// \brief Quaternion addition.
 	///
-	/// \param other The MakeQuaternion to be added with this one.
+	/// \param other The Quaternion to be added with this one.
 	/// \return The result of adding the two quaternions together.
 	Quaternion
 	operator+(const Quaternion<T> &other) const
@@ -300,8 +301,8 @@ public:
 
 	/// \brief Quaternion subtraction.
 	///
-	/// \param other The MakeQuaternion to be subtracted from this one.
-	/// \return The result of subtracting the other MakeQuaternion from this one.
+	/// \param other The Quaternion to be subtracted from this one.
+	/// \return The result of subtracting the other Quaternion from this one.
 	Quaternion
 	operator-(const Quaternion<T> &other) const
 	{
@@ -312,7 +313,7 @@ public:
 	/// \brief Scalar multiplication.
 	///
 	/// \param k The scaling value.
-	/// \return A scaled MakeQuaternion.
+	/// \return A scaled Quaternion.
 	Quaternion
 	operator*(const T k) const
 	{
@@ -323,7 +324,7 @@ public:
 	/// \brief Scalar division.
 	///
 	/// \param k The scalar divisor.
-	/// \return A scaled MakeQuaternion.
+	/// \return A scaled Quaternion.
 	Quaternion
 	operator/(const T k) const
 	{
@@ -334,11 +335,11 @@ public:
 	/// \brief Quaternion Hamilton multiplication with a three-
 	///        dimensional vector.
 	///
-	/// This is done by treating the vector as a pure MakeQuaternion
+	/// This is done by treating the vector as a pure Quaternion
 	/// (e.g. with an Angle of rotation of 0).
 	///
-	/// \param vector The vector to multiply with this MakeQuaternion.
-	/// \return The Hamilton product of the MakeQuaternion and vector.
+	/// \param vector The vector to multiply with this Quaternion.
+	/// \return The Hamilton product of the Quaternion and vector.
 	Quaternion
 	operator*(const Vector<T, 3> &vector) const
 	{
@@ -349,7 +350,7 @@ public:
 
 	/// \brief Quaternion Hamilton multiplication.
 	///
-	/// \param other The other MakeQuaternion to multiply with this one.
+	/// \param other The other Quaternion to multiply with this one.
 	/// @result The Hamilton product of the two quaternions.
 	Quaternion
 	operator*(const Quaternion<T> &other) const
@@ -365,7 +366,7 @@ public:
 
 	/// \brief Quaternion equivalence.
 	///
-	/// \param other The MakeQuaternion to check equality against.
+	/// \param other The Quaternion to check equality against.
 	/// \return True if the two quaternions are equal within their tolerance.
 	bool
 	operator==(const Quaternion<T> &other) const
@@ -377,7 +378,7 @@ public:
 
 	/// \brief Quaternion non-equivalence.
 	///
-	/// \param other The MakeQuaternion to check inequality against.
+	/// \param other The Quaternion to check inequality against.
 	/// \return True if the two quaternions are unequal within their tolerance.
 	bool
 	operator!=(const Quaternion<T> &other) const
@@ -386,13 +387,13 @@ public:
 	}
 
 
-	/// \brief Output a MakeQuaternion to a stream in the form
+	/// \brief Output a Quaternion to a stream in the form
 	///        `a + <i, j, k>`.
 	///
 	/// \todo improve the formatting.
 	///
 	/// \param outs An output stream
-	/// \param q A MakeQuaternion
+	/// \param q A Quaternion
 	/// \return The output stream
 	friend std::ostream &
 	operator<<(std::ostream &outs, const Quaternion<T> &q)
@@ -438,41 +439,41 @@ typedef Quaternion<double> Quaterniond;
 
 /// \brief Convenience Quaternion construction function.
 ///
-/// Return a float MakeQuaternion scaled appropriately from a vector and
+/// Return a float Quaternion scaled appropriately from a vector and
 /// Angle, e.g.
 ///     angle = cos(Angle / 2),
 ///     Axis.UnitVector() * sin(Angle / 2).
 ///
 /// \param axis The Axis of rotation.
 /// \param angle The Angle of rotation.
-/// \return A MakeQuaternion.
+/// \return A Quaternion.
 /// \relatesalso Quaternion
 Quaternionf	MakeQuaternion(Vector3F axis, float angle);
 
 /// \brief Convience Quaternion construction function.
 ///
-/// Return a double MakeQuaternion scaled appropriately from a vector and
+/// Return a double Quaternion scaled appropriately from a vector and
 /// Angle, e.g.
 ///     Angle = cos(Angle / 2),
 ///     Axis.UnitVector() * sin(Angle / 2).
 ///
 /// \param axis The Axis of rotation.
 /// \param angle The Angle of rotation.
-/// \return A MakeQuaternion.
+/// \return A Quaternion.
 /// \relatesalso Quaternion
 Quaterniond	MakeQuaternion(Vector3D axis, double angle);
 
 
 /// \brief Convience Quaternion construction function.
 ///
-/// Return a double MakeQuaternion scaled appropriately from a vector and
+/// Return a double Quaternion scaled appropriately from a vector and
 /// Angle, e.g.
 ///     Angle = cos(Angle / 2),
 ///     Axis.UnitVector() * sin(Angle / 2).
 ///
 /// \param axis The Axis of rotation.
 /// \param angle The Angle of rotation.
-/// \return A MakeQuaternion.
+/// \return A Quaternion.
 /// \relatesalso Quaternion
 template <typename T>
 Quaternion<T>
@@ -513,8 +514,8 @@ Quaterniond	DoubleQuaternionFromEuler(Vector3D euler);
 /// fraction of the distance between them.
 ///
 /// \tparam T
-/// \param p The starting MakeQuaternion.
-/// \param q The ending MakeQuaternion.
+/// \param p The starting Quaternion.
+/// \param q The ending Quaternion.
 /// \param t The fraction of the distance between the two quaternions to
 ///	     interpolate.
 /// \return A Quaternion representing the linear interpolation of the
@@ -534,8 +535,8 @@ LERP(Quaternion<T> p, Quaternion<T> q, T t)
 /// distance between them.
 ///
 /// \tparam T
-/// \param p The starting MakeQuaternion.
-/// \param q The ending MakeQuaternion.Short
+/// \param p The starting Quaternion.
+/// \param q The ending Quaternion.
 /// \param t The fraction of the distance between the two quaternions
 ///	     to interpolate.
 /// \return A Quaternion representing the shortest path between two
