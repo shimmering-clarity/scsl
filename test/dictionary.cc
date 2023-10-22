@@ -103,6 +103,7 @@ dictionaryTest()
 	SCTEST_CHECK(dict.Lookup(TEST_KVSTR4, TEST_KVSTRLEN4, value));
 	SCTEST_CHECK(cmpRecord(value, expect));
 
+	arena.Write("pb.dat");
 	arena.Clear();
 	return true;
 }

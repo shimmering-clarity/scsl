@@ -186,27 +186,25 @@ main(int argc, char *argv[])
 
 	auto args = flags->Args();
 	args.erase(args.begin());
-
 	auto result = commander.Run(command, args);
+	delete flags;
+
 	switch (result) {
 	case Subcommand::Status::OK:
 		std::cout << "[+] OK\n";
 		retc = 0;
 		break;
 	case Subcommand::Status::NotEnoughArgs:
-		delete flags;
 		usage(cerr, 1);
 		break;
 	case Subcommand::Status::Failed:
 		cerr << "[!] '"<< command << "' failed\n";
 		break;
 	case Subcommand::Status::CommandNotRegistered:
-		delete flags;
 		cerr << "[!] '" << command << "' not registered.\n";
 		usage(cerr, 1);
 		break;
 	default:
-		delete flags;
 		abort();
 	}
 

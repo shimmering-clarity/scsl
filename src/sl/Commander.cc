@@ -46,7 +46,6 @@ Subcommand::Run(std::vector<std::string> args)
 }
 
 Commander::Commander()
-    : cmap()
 {
 	this->cmap.clear();
 }
@@ -72,7 +71,7 @@ Commander::Run(std::string command, std::vector<std::string> args)
 	}
 
 	auto scmd = this->cmap[command];
-	return scmd->Run(args);
+	return scmd->Run(std::move(args));
 }
 
 

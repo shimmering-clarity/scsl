@@ -83,10 +83,43 @@ Buffer::Buffer(const char *data)
 }
 
 
-Buffer::Buffer(const std::string s)
+Buffer::Buffer(const std::string& s)
     : contents(nullptr), length(0), capacity(0), autoTrim(true)
 {
 	this->Append(s);
+}
+
+
+Buffer::~Buffer()
+{
+	this->Reclaim();
+}
+
+uint8_t *
+Buffer::Contents() const
+{
+	return this->contents;
+}
+
+
+std::string
+Buffer::ToString() const
+{
+	return std::string((const char *)(this->contents));
+}
+
+
+size_t
+Buffer::Length() const
+{
+	return this->length;
+}
+
+
+size_t
+Buffer::Capacity() const
+{
+	return this->capacity;
 }
 
 
@@ -100,7 +133,7 @@ Buffer::Append(const char *s)
 
 
 bool
-Buffer::Append(const std::string s)
+Buffer::Append(const std::string &s)
 {
 	return this->Append((const uint8_t *) s.c_str(), s.size());
 }
@@ -156,7 +189,7 @@ Buffer::Insert(const size_t index, const char *s)
 
 
 bool
-Buffer::Insert(const size_t index, const std::string s)
+Buffer::Insert(const size_t index, const std::string &s)
 {
 	return this->Insert(index, (const uint8_t *) s.c_str(), s.size());
 }
@@ -239,6 +272,28 @@ Buffer::Trim()
 
 	return 0;
 }
+
+
+void
+Buffer::DisableAutoTrim()
+{
+	this->autoTrim = false;
+}
+
+
+void
+Buffer::EnableAutoTrim()
+{
+	this->autoTrim = true;
+}
+
+
+bool
+Buffer::AutoTrimIsEnabled()
+{
+	return this->autoTrim;
+}
+
 
 void
 Buffer::Clear()
@@ -328,7 +383,11 @@ Buffer::shiftRight(size_t offset, size_t delta)
 		resized = true;
 	}
 
-	if (this->length == 0) return 0;
+	if (this->length < offset) {
+		for (size_t i = this->length; i < offset; i++) {
+			this->contents[i] = ' ';
+		}
+	}
 
 
 	memmove(this->contents + (offset + delta), this->contents + offset,

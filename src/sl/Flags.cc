@@ -208,11 +208,11 @@ Flags::parseArg(int argc, char **argv, int &index)
 	std::string arg(argv[index]);
 	string::TrimWhitespace(arg);
 
-	index++;
 	if (!std::regex_search(arg, isFlag)) {
 		return ParseStatus::EndOfFlags;
 	}
 
+	index++;
 	if (this->flags.count(arg) == 0) {
 		if (arg == "-h" || arg == "--help") {
 			Usage(std::cout, 0);

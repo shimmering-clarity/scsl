@@ -47,99 +47,116 @@ namespace scsl {
 /// memory if possible, but only if #AutoTrimIsEnabled (it is by default).
 class Buffer {
 public:
-	/// A Buffer can be constructed empty, with no memory allocated (yet).
+	/// \brief Construct an empty buffer with no memory allocated.
 	Buffer();
 
-	/// A Buffer can be constructed with an explicit capacity.
+	/// \buffer Constructor with explicit memory capacity.
 	///
-	/// \param initialCapacity The initial allocation size for the buffer.
+	/// \param initialCapacity The initial allocation size for the
+	///        buffer.
 	explicit Buffer(size_t initialCapacity);
 
-	/// A Buffer can be initialized with a starting C-style string.
+	/// \brief Construct with a C-style string.
 	explicit Buffer(const char *s);
 
-	/// A Buffer can be initialized with a starting string.
-	explicit Buffer(const std::string s);
+	/// \buffer Construct with an initial string.
+	explicit Buffer(const std::string& s);
 
-	~Buffer()
-	{ this->Reclaim(); }
+	~Buffer();
 
-	/// Contents returns the Buffer's contents.
-	uint8_t *Contents() const
-	{ return this->contents; }
+	/// \brief Retrieve the buffer's contents.
+	uint8_t *Contents() const;
 
-	/// Length returns the length of the data currently stored in the
-	/// buffer.
-	size_t Length() const
-	{ return this->length; };
+	std::string ToString() const;
 
-	/// Capacity returns the amount of memory allocated to the Buffer.
-	size_t Capacity() const
-	{ return this->capacity; }
+	/// \brief The length of data stored in the buffer.
+	///
+	/// \return The number of bytes stored in the Buffer.
+	size_t Length() const;
 
-	/// Append copies in a C-style string to the end of the buffer.
+	/// \brief Return the amount of memory allocated for the
+	///        Buffer.
+	size_t Capacity() const;
+
+	/// \brief Append a C-style string to the end of the buffer.
 	///
 	/// \param s The string to append.
 	/// \return True if the Buffer was resized.
 	bool Append(const char *s);
 
-	/// Append copies in a string to the end of the buffer.
+	/// Append Append a string to the end of the buffer.
 	///
 	/// \param s The string to append.
 	/// \return True if the Buffer was resized.
-	bool Append(const std::string s);
+	bool Append(const std::string &s);
 
-	/// Append copies in a byte buffer to the end of the buffer.
+	/// \brief Append a byte buffer to the end of the buffer.
 	///
 	/// \param data The byte buffer to insert.
 	/// \param datalen The length of the byte buffer.
 	/// \return True if the Buffer was resized.
 	bool Append(const uint8_t *data, const size_t datalen);
 
-	/// Append copies a single character to the end of the buffer.
+	/// \brief Append a single character to the end of the buffer.
 	///
 	/// \param c The character to append.
 	/// \return True if the Buffer was resized.
 	bool Append(const uint8_t c);
 
-	/// Insert copies a C-style string into the buffer At index.
+	/// \brief Insert a C-style string into the buffer at index.
 	///
-	/// \param index The index to insert the string At.
+	/// \note As this is intended for use in text editing, an
+	///       insert into a buffer after the length will insert
+	///       spaces before the content.
+	///
+	/// \param index The index to insert the string at.
 	/// \param s The string to insert.
 	/// \return True if the Buffer was resized.
 	bool Insert(const size_t index, const char *s);
 
-	/// Insert copies a string into the buffer At index.
+	/// \brief Insert a string into the buffer at index.
 	///
-	/// \param index The index the string should be inserted At.
+	/// \note As this is intended for use in text editing, an
+	///       insert into a buffer after the length will insert
+	///       spaces before the content.
+	///
+	/// \param index The index the string should be inserted at.
 	/// \param s The string to insert.
 	/// \return True if the Buffer was resized.
-	bool Insert(const size_t index, const std::string s);
+	bool Insert(const size_t index, const std::string &s);
 
-	/// Insert copies a uint8_t buffer into the buffer At index.
+	/// \brief Insert a uint8_t buffer into the buffer at index.
 	///
-	/// \param index The index to insert the buffer At.
+	/// \note As this is intended for use in text editing, an
+	///       insert into a buffer after the length will insert
+	///       spaces before the content.
+	///
+	/// \param index The index to insert the buffer at.
 	/// \param data The buffer to insert.
 	/// \param datalen The size of the data buffer.
 	/// \return True if the Buffer was resized.
 	bool
 	Insert(const size_t index, const uint8_t *data, const size_t datalen);
 
-	/// Insert copies a character into the buffer At index.
+	/// \brief Insert a character into the buffer at index.
 	///
-	/// \param index The index to insert the character At.
+	/// \note As this is intended for use in text editing, an
+	///       insert into a buffer after the length will insert
+	///       spaces before the content.
+	///
+	/// \param index The index to insert the character at.
 	/// \param c The character to insert.
 	/// \return True if the Buffer was resized.
 	bool Insert(const size_t index, const uint8_t c);
 
-	/// Remove removes `count` bytes from the buffer At `index`.
+	/// \brief Remove `count` bytes from the buffer at `index`.
 	///
 	/// \param index The starting index to remove bytes from.
 	/// \param count The number of bytes to remove.
 	/// \return True if the Buffer was resized.
 	bool Remove(const size_t index, const size_t count);
 
-	/// Remove removes a single byte from the buffer.
+	/// \brief Remove removes a single byte from the buffer.
 	///
 	/// \param index The index pointing to the byte to be removed.
 	/// \return True if the Buffer was resized.
@@ -147,7 +164,7 @@ public:
 
 	/* memory management */
 
-	/// Resize changes the capacity of the buffer to `newCapacity`.
+	/// \brief Changes the capacity of the buffer to `newCapacity`.
 	///
 	/// If newCapacity is less than the length of the Buffer, it
 	/// will remove enough bytes from the end to make this happen.
@@ -155,27 +172,23 @@ public:
 	/// \param newCapacity The new capacity for the Buffer.
 	void Resize(size_t newCapacity);
 
-	/// Trim will resize the Buffer to an appropriate size based on
-	/// its length.
+	/// \brief Resize the Buffer capacity based on its length.
 	///
 	/// \return The new capacity of the Buffer.
 	size_t Trim();
 
 	/// DisableAutoTrim prevents the #Buffer from automatically
 	/// trimming memory after a call to #Remove.
-	void DisableAutoTrim()
-	{ this->autoTrim = false; }
+	void DisableAutoTrim();
 
 	/// EnableAutoTrim enables automatically trimming memory after
 	/// calls to #Remove.
-	void EnableAutoTrim()
-	{ this->autoTrim = true; }
+	void EnableAutoTrim();
 
 	/// AutoTrimIsEnabled returns true if autotrim is enabled.
 	///
 	/// \return #Remove will call Trim.
-	bool AutoTrimIsEnabled()
-	{ return this->autoTrim; }
+	bool AutoTrimIsEnabled();
 
 	/// Clear removes the data stored in the buffer. It will not
 	/// call #Trim; the capacity of the buffer will not be altered.

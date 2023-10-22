@@ -20,23 +20,18 @@
 /// PERFORMANCE OF THIS SOFTWARE.
 ///
 
-#include <cstdio>
-#include <cstdlib>
-#include <cstring>
-
-
-#if defined(__posix__) || defined(__linux__) || defined(__APPLE__)
 #include <sys/mman.h>
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <unistd.h>
-
-#define PROT_RW                (PROT_WRITE|PROT_READ)
-#endif
-
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
 #include <ios>
 
 #include <scsl/Arena.h>
+
+#define PROT_RW                (PROT_WRITE|PROT_READ)
 
 
 namespace scsl {
@@ -74,9 +69,6 @@ Arena::SetAlloc(size_t allocSize)
 	this->arenaType = ArenaType::Alloc;
 	this->size = allocSize;
 	this->store = new uint8_t[allocSize];
-	if (this->store == nullptr) {
-		return -1;
-	}
 
 	this->Clear();
 	return 0;
@@ -221,16 +213,15 @@ Arena::Destroy()
 	this->arenaType = ArenaType::Uninit;
 	this->size = 0;
 	this->store = nullptr;
-	return;
 }
 
 std::ostream &
 operator<<(std::ostream &os, Arena &arena)
 {
-	auto cursor = arena.Start();
+	auto *cursor = arena.Start();
 	char cursorString[33] = {0};
 	snprintf(cursorString, 32, "%#016llx",
-		 (long long unsigned int) cursor);
+		 (long long unsigned int)(cursor));
 
 	os << "Arena<";
 	switch (arena.Type()) {
@@ -250,7 +241,7 @@ operator<<(std::ostream &os, Arena &arena)
 			os << "unknown (this is a bug)";
 	}
 	os << ">@0x";
-	os << std::hex << (uintptr_t) &arena;
+	os << std::hex << static_cast<void *>(&arena);
 	os << std::dec;
 	os << ",store<" << arena.Size() << "B>@";
 	os << std::hex << cursorString;

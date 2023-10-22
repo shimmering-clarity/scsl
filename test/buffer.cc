@@ -61,17 +61,69 @@ bufferTest()
 	SCTEST_CHECK_EQ(buffer.Capacity(), 0);
 
 	buffer.Append("and now for something completely different...");
-	buffer.Resize(128);
-	SCTEST_CHECK_EQ(buffer.Capacity(), 128);
-	buffer.Trim();
-	SCTEST_CHECK_EQ(buffer.Capacity(), 64);
-
 	Buffer	buffer2("and now for something completely different...");
 	SCTEST_CHECK_EQ(buffer, buffer2);
 
 	buffer2.Remove(buffer2.Length()-3, 3);
 	SCTEST_CHECK_NE(buffer, buffer2);
 
+	return true;
+}
+
+
+bool
+testBufferTrimming()
+{
+	const std::string contents = "and now for something completely different...";
+	Buffer	buffer(contents);
+
+	buffer.Resize(128);
+	SCTEST_CHECK_EQ(buffer.Capacity(), 128);
+
+	buffer.Trim();
+	SCTEST_CHECK_EQ(buffer.Capacity(), 64);
+
+	buffer.DisableAutoTrim();
+	buffer.Resize(128);
+	SCTEST_CHECK_EQ(buffer.Capacity(), 128);
+
+	buffer.Remove(buffer.Length() - 1);
+	SCTEST_CHECK_EQ(buffer.Capacity(), 128);
+
+	buffer.Append('.');
+	SCTEST_CHECK_EQ(buffer.Capacity(), 128);
+
+	buffer.EnableAutoTrim();
+	buffer.Remove(buffer.Length() - 1);
+	SCTEST_CHECK_EQ(buffer.Capacity(), 64);
+
+	return true;
+}
+
+
+bool
+testInserts()
+{
+	const std::string contents = "and now for something completely different...";
+	const std::string expected1 = "     and now for something completely different...";
+	const std::string hello = "hello";
+	const std::string world = "world";
+	const std::string helloWorld = "hello  world";
+
+	Buffer	buffer(64);
+
+	// Insert shouldn't resize the buffer.
+	SCTEST_CHECK_FALSE(buffer.Insert(5, contents));
+	SCTEST_CHECK_EQ(buffer.ToString(), expected1);
+
+	buffer.Clear();
+	SCTEST_CHECK_EQ(buffer.Length(), 0);
+
+	buffer.Append(hello);
+	SCTEST_CHECK_EQ(buffer.ToString(), hello);
+
+	buffer.Insert(7, world);
+	SCTEST_CHECK_EQ(buffer.ToString(), helloWorld);
 	return true;
 }
 
@@ -101,6 +153,8 @@ main(int argc, char *argv[])
 	}
 
 	suite.AddTest("bufferTest", bufferTest);
+	suite.AddTest("trimTest", testBufferTrimming);
+	suite.AddTest("insertTest", testInserts);
 
 	delete flags;
 	auto result = suite.Run();
