@@ -75,13 +75,13 @@ QuaternionSelfTest()
 	Vector3F		yAxis {0.0, 1.0, 0.0};
 	float			angle = M_PI / 2;
 
-	Quaternionf		p = quaternionf(yAxis, angle);
+	Quaternionf		p = MakeQuaternion(yAxis, angle);
 	Quaternionf		q;
 	Vector3F		vr {0.0, 0.0, 1.0};
 
-	assert(p.isUnitQuaternion());
-	std::cerr << p.rotate(v) << std::endl;
-	assert(p.rotate(v) == vr);
+	p.SetEpsilon(0.0001);
+	assert(p.IsUnitQuaternion());
+	assert(p.Rotate(v) == vr);
 	assert(p * q == p);
 #endif
 }
