@@ -111,6 +111,13 @@ SimpleConfig::PutGlobal(std::string &key, const std::string &value)
 }
 
 
+void
+SimpleConfig::PutGlobal(const char *key, const std::string &value)
+{
+	return globalConfig.Put(key, value);
+}
+
+
 SimpleConfig::SimpleConfig()
 {
 }
