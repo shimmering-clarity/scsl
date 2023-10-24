@@ -42,7 +42,7 @@ namespace geom {
 ///        and rotations in three dimensions.
 ///
 /// Quaternions encode rotations in three-dimensional space. While
-/// technically a MakeQuaternion is comprised of a real element and a
+/// technically a Quaternion is comprised of a real element and a
 /// complex vector<3>, for the purposes of this library, it is modeled
 /// as a floating point 4D vector of the form <w, x, y, z>, where x, y,
 /// and z represent an Axis of rotation in R3 and w the Angle, in

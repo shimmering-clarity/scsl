@@ -25,16 +25,16 @@
 #include <regex>
 #include <utility>
 
-#include <vector>
 #include <scsl/Flags.h>
 #include <scsl/StringUtil.h>
+#include <vector>
 
 
 namespace scsl {
 
 
 static const std::regex isFlag("^--?[a-zA-Z0-9][a-zA-Z0-9-_]*$",
-			       std::regex_constants::nosubs|std::regex_constants::optimize);
+			       std::regex_constants::nosubs | std::regex_constants::optimize);
 
 std::string
 Flags::ParseStatusToString(ParseStatus status)
@@ -82,7 +82,7 @@ Flags::Flags(std::string fName, std::string fDescription)
 
 Flags::~Flags()
 {
-	for (auto &flag : this->flags) {
+	for (auto &flag: this->flags) {
 		if (flag.second->Type == FlagType::String) {
 			delete flag.second->Value.s;
 		}
@@ -300,7 +300,6 @@ Flags::Parse(int argc, char **argv, bool skipFirst)
 			throw std::runtime_error("unhandled parse state");
 #endif
 		}
-
 	}
 
 	return ParseStatus::OK;
@@ -313,26 +312,44 @@ Flags::Usage(std::ostream &os, int exitCode)
 	os << this->name << ":\t";
 	auto indent = this->name.size() + 7;
 
-	scstring::WriteTabIndented(os, description, 72 - indent, indent / 8, false);
+	scstring::WriteTabIndented(os, this->description, 72 - indent,
+				   indent / 8, false);
 	os << "\n\n";
 
-	for (const auto &pair : this->flags) {
+	for (const auto &pair: this->flags) {
+		auto argDesc = pair.second->Description;
+		if (!argDesc.empty()) {
+			argDesc += ' ';
+		}
 		auto argLine = "\t" + pair.first;
 		switch (pair.second->Type) {
 		case FlagType::Boolean:
 			argLine += "\t\t";
+			argDesc += "(default=false)";
 			break;
 		case FlagType::Integer:
 			argLine += " int\t\t";
+			if (pair.second->Value.i != 0) {
+				argDesc += "(default=" + std::to_string(pair.second->Value.i) + ")";
+			}
 			break;
 		case FlagType::UnsignedInteger:
 			argLine += " uint\t\t";
+			if (pair.second->Value.u != 0) {
+				argDesc += "(default=" + std::to_string(pair.second->Value.u) + ")";
+			}
 			break;
 		case FlagType::SizeT:
 			argLine += " size_t\t";
+			if (pair.second->Value.size != 0) {
+				argDesc += "(default=" + std::to_string(pair.second->Value.size) + ")";
+			}
 			break;
 		case FlagType::String:
 			argLine += " string\t";
+			if (pair.second->Value.s != nullptr && !(pair.second->Value.s->empty())) {
+				argDesc += "(default=" + *(pair.second->Value.s) + ")";
+			}
 			break;
 		case FlagType::Unknown:
 			// fallthrough
@@ -347,8 +364,8 @@ Flags::Usage(std::ostream &os, int exitCode)
 
 		os << argLine;
 		indent = argLine.size();
-		scstring::WriteTabIndented(os, pair.second->Description,
-				       72-indent, (indent/8)+2, false);
+		scstring::WriteTabIndented(os, argDesc, 72 - indent,
+					   (indent / 8) + 2, false);
 	}
 
 	os << "\n";
@@ -382,7 +399,7 @@ Flags::Arg(size_t i)
 
 
 Flag *
-Flags::checkGetArg(std::string& fName, FlagType eType)
+Flags::checkGetArg(std::string &fName, FlagType eType)
 {
 	if (this->flags[fName] == nullptr) {
 		return nullptr;
@@ -455,5 +472,4 @@ Flags::GetString(std::string fName, std::string &flagValue)
 }
 
 
-} // namespace scsl
-
+}// namespace scsl
