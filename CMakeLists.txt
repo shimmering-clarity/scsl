@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.22)
 project(scsl LANGUAGES CXX
-        VERSION 1.0.1
+        VERSION 1.0.2
         DESCRIPTION "Shimmering Clarity Standard Library")
 
 set(CMAKE_CXX_STANDARD 14)
@@ -154,7 +154,7 @@ add_custom_target(deploy-docs
 configure_file(scsl.pc.in scsl.pc @ONLY)
 install(TARGETS scsl LIBRARY DESTINATION lib)
 install(TARGETS phonebook RUNTIME DESTINATION bin)
-install(FILES ${HEADER_FILES} DESTINATION include/scsl)
+install(DIRECTORY include/ DESTINATION include)
 install(FILES scslConfig.cmake DESTINATION share/scsl/cmake)
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/scsl.pc DESTINATION lib/pkgconfig)
 
