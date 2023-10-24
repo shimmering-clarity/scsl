@@ -116,6 +116,27 @@ public:
 	///
 	/// \param key The key to look up. See the class documentation
 	///        for information on how this is used.
+	/// \return The value stored under the key, or an empty string.
+	static std::string	GetGlobal(const char *key);
+
+	/// \brief Get the value stored for the key from the config.
+	///
+	/// \note This operates on the global config.
+	///
+	/// \param key The key to look up. See the class documentation
+	///        for information on how this is used.
+	/// \param defaultValue A default value to cache and use if no
+	///        value is stored under the key.
+	/// \return The value stored under the key, or the default
+	///         value.
+	static std::string	GetGlobal(const char *key, const std::string &defaultValue);
+
+	/// \brief Get the value stored for the key from the config.
+	///
+	/// \note This operates on the global config.
+	///
+	/// \param key The key to look up. See the class documentation
+	///        for information on how this is used.
 	/// \param defaultValue A default value to cache and use if no
 	///        value is stored under the key.
 	/// \return The value stored under the key, or the default
@@ -125,6 +146,10 @@ public:
 	/// \brief Set a configuration value. This will override any
 	///        value set.
 	static void	 	PutGlobal(std::string &key, const std::string &value);
+
+	/// \brief Set a configuration value. This will override any
+	///        value set.
+	static void	 	PutGlobal(const char *key, const std::string &value);
 #endif
 
 	/// \brief The constructor doesn't need any initialisation.
@@ -171,11 +196,28 @@ public:
 	///
 	/// \param key The key to look up. See the class documentation
 	///        for information on how this is used.
+	/// \return The value stored under the key, or an empty string.
+	std::string	Get(const char *key);
+
+	/// \brief Get the value stored for the key from the config.
+	///
+	/// \param key The key to look up. See the class documentation
+	///        for information on how this is used.
 	/// \param defaultValue A default value to cache and use if no
 	///        value is stored under the key.
 	/// \return The value stored under the key, or the default
 	///         value.
 	std::string	Get(std::string &key, std::string defaultValue);
+
+	/// \brief Get the value stored for the key from the config.
+	///
+	/// \param key The key to look up. See the class documentation
+	///        for information on how this is used.
+	/// \param defaultValue A default value to cache and use if no
+	///        value is stored under the key.
+	/// \return The value stored under the key, or the default
+	///         value.
+	std::string	Get(const char *key, std::string defaultValue);
 
 	/// \brief Set a configuration value. This will override any
 	///        value set.
@@ -183,9 +225,15 @@ public:
 	/// \param key The key to look up. See the class documentation
 	///        for information on how this is used.
 	/// \param value The value to set.
-	/// \return
 	void 	Put(std::string &key, const std::string value);
 
+	/// \brief Set a configuration value. This will override any
+	///        value set.
+	///
+	/// \param key The key to look up. See the class documentation
+	///        for information on how this is used.
+	/// \param value The value to set.
+	void	Put(const char *key, const std::string value);
 private:
 	std::string 				envPrefix;
 	std::map<std::string, std::string>	vars;

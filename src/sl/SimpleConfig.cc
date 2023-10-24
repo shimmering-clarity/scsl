@@ -84,7 +84,21 @@ SimpleConfig::GetGlobal(std::string &key)
 
 
 std::string
+SimpleConfig::GetGlobal(const char *key)
+{
+	return globalConfig.Get(key);
+}
+
+
+std::string
 SimpleConfig::GetGlobal(std::string &key, const std::string &defaultValue)
+{
+	return globalConfig.Get(key, defaultValue);
+}
+
+
+std::string
+SimpleConfig::GetGlobal(const char *key, const std::string &defaultValue)
 {
 	return globalConfig.Get(key, defaultValue);
 }
@@ -161,6 +175,14 @@ SimpleConfig::Get(std::string &key)
 
 
 std::string
+SimpleConfig::Get(const char *key)
+{
+	auto keyStr = std::string(key);
+	return this->Get(keyStr, "");
+}
+
+
+std::string
 SimpleConfig::Get(std::string &key, std::string defaultValue)
 {
 	if (this->vars.count(key)) {
@@ -180,10 +202,26 @@ SimpleConfig::Get(std::string &key, std::string defaultValue)
 }
 
 
+std::string
+SimpleConfig::Get(const char *key, std::string defaultValue)
+{
+	auto keyStr = std::string(key);
+	return this->Get(keyStr, std::move(defaultValue));
+}
+
+
 void
 SimpleConfig::Put(std::string &key, const std::string value)
 {
 	this->vars[key] = std::move(key);
+}
+
+
+void
+SimpleConfig::Put(const char *key, const std::string value)
+{
+	auto keyStr = std::string(key);
+	this->vars[std::move(keyStr)] = std::move(key);
 }
 
 
