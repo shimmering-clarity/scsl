@@ -90,6 +90,13 @@ SimpleConfig::GetGlobal(std::string &key, const std::string &defaultValue)
 }
 
 
+void
+SimpleConfig::PutGlobal(std::string &key, const std::string &value)
+{
+	return globalConfig.Put(key, value);
+}
+
+
 SimpleConfig::SimpleConfig()
 {
 }
@@ -170,6 +177,13 @@ SimpleConfig::Get(std::string &key, std::string defaultValue)
 
 	this->vars[key] = std::move(defaultValue);
 	return this->Get(key);
+}
+
+
+void
+SimpleConfig::Put(std::string &key, const std::string value)
+{
+	this->vars[key] = std::move(key);
 }
 
 

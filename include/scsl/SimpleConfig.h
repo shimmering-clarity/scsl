@@ -121,6 +121,10 @@ public:
 	/// \return The value stored under the key, or the default
 	///         value.
 	static std::string	GetGlobal(std::string &key, const std::string &defaultValue);
+
+	/// \brief Set a configuration value. This will override any
+	///        value set.
+	static void	 	PutGlobal(std::string &key, const std::string &value);
 #endif
 
 	/// \brief The constructor doesn't need any initialisation.
@@ -172,6 +176,15 @@ public:
 	/// \return The value stored under the key, or the default
 	///         value.
 	std::string	Get(std::string &key, std::string defaultValue);
+
+	/// \brief Set a configuration value. This will override any
+	///        value set.
+	///
+	/// \param key The key to look up. See the class documentation
+	///        for information on how this is used.
+	/// \param value The value to set.
+	/// \return
+	void 	Put(std::string &key, const std::string value);
 
 private:
 	std::string 				envPrefix;
