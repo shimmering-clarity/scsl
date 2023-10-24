@@ -220,7 +220,7 @@ SimpleConfig::Get(const char *key, std::string defaultValue)
 void
 SimpleConfig::Put(std::string &key, const std::string value)
 {
-	this->vars[key] = std::move(key);
+	this->vars[key] = std::move(value);
 }
 
 
@@ -228,7 +228,7 @@ void
 SimpleConfig::Put(const char *key, const std::string value)
 {
 	auto keyStr = std::string(key);
-	this->vars[std::move(keyStr)] = std::move(key);
+	this->vars[std::move(keyStr)] = std::move(value);
 }
 
 
