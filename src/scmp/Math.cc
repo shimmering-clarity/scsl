@@ -151,5 +151,37 @@ DefaultEpsilon(int& epsilon)
 }
 
 
+size_t
+ISqrt(size_t n)
+{
+	if (n < 2) {
+		return n;
+	}
+
+	size_t	start = 0;
+	size_t	end = n / 2;
+	size_t	result = 0;
+
+	while (start <= end) {
+		auto middle = (start + end) >> 1;
+		result = middle * middle;
+		if (result == n) {
+			return middle;
+		}
+
+		if (result < n) {
+			start = middle + 1;
+			result = middle;
+		} else {
+			end = middle - 1;
+			result = middle;
+		}
+	}
+
+	return result;
+}
+
+
+
 } // namespace scmp
 

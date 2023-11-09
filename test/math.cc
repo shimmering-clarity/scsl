@@ -116,6 +116,35 @@ RotateRadians()
 }
 
 
+bool
+IntegerSquareRoot()
+{
+	static std::vector<size_t> ns{
+	    // standard integer roots
+	    4, 9, 16, 25, 36, 49, 64, 81, 100, 121, 144,
+
+	    // a few float cases
+	    42, 90, 92
+	};
+	static std::vector<size_t> expected{
+	    // standard integer roots
+	    2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12,
+
+	    // a few float cases
+	    6, 9, 10
+	};
+
+	SCTEST_CHECK_EQ(ns.size(), expected.size());
+
+	for (size_t i = 0; i < ns.size(); i++) {
+		auto root = scmp::ISqrt(ns.at(i));
+		SCTEST_CHECK_EQ(root, expected.at(i));
+	}
+
+	return true;
+}
+
+
 } // anonymous namespace
 
 
@@ -148,6 +177,7 @@ main(int argc, char *argv[])
 	suite.AddTest("WithinToleranceFloat", WithinToleranceFloat);
 	suite.AddTest("WithinToleranceDouble", WithinToleranceDouble);
 	suite.AddTest("RotateRadians", RotateRadians);
+	suite.AddTest("IntegerSquareRoot", IntegerSquareRoot);
 
 	delete flags;
 	auto result = suite.Run();

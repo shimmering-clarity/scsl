@@ -115,6 +115,13 @@ WithinTolerance(T a, T b, T epsilon)
 }
 
 
+/// \brief Integer square-root.
+///
+/// \param n A max-value integer whose square root should be returned.
+/// \return The square root of $n$.
+size_t	ISqrt(size_t n);
+
+
 } // namespace scmp
 
 
