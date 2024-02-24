@@ -72,6 +72,12 @@ namespace scsl {
 /// working on a graphical editor. For this, I needed some data structures to
 /// manage memory in the editor. Thus, Buffer was born.
 ///
+/// \subsection finally Finally
+///
+/// I'd been writing Go professionally for a while, but C was my first love. I
+/// recently started a job that is mostly in C++, and the best way for me to
+/// learn is to build a bunch of stuff with it. So, I took a bunch of micro-
+/// controller stuff I'd been writing and started building out some other stuff.
 
 
 }
